@@ -14,7 +14,7 @@ namespace AntC.DevHelper.CodeGenerate.MysqlShema
             //创建数据库对象
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "Data Source=localhost;Initial Catalog=information_schema;User ID=root;Password=123456",//连接符字串
+                ConnectionString = "Data Source=10.4.1.248;Initial Catalog=information_schema;User ID=root;Password=123456",//连接符字串
                 DbType = DbType.MySql,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute//从特性读取主键自增信息

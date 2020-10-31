@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SqlSugar;
 
 namespace AntC.DevHelper.CodeGenerate
 {
@@ -76,11 +77,12 @@ namespace AntC.DevHelper.CodeGenerate
         public string GetFeildTypeName() =>
             DataType.ToLower() switch
             {
+                #region Mysql
+
                 "binary" => "byte[]",
                 "bit" => "bool",
                 "text" => "string",
                 "longtext" => "string",
-                "vchar" => "string",
                 "char" => "string",
                 "varchar" => "string",
                 "nvarchar" => "string",
@@ -90,9 +92,15 @@ namespace AntC.DevHelper.CodeGenerate
                 "decimal" => "decimal",
                 "float" => "float",
                 "double" => "double",
-                "intger" => "int",
+                "integer" => "int",
                 "int" => "int",
+                "smallint" => "int",
+                "tinyint" when DataTypeName == "tinyint(1)" => "bool",
+                //"tinyint" => "byte",
+                "tinyint" => "int",
                 "bigint" => "long",
+
+                #endregion
                 _ => DataType
             };
 

@@ -22,16 +22,22 @@ namespace AntC.DevHelper
             //构建容器
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-
             //解析
             var classGenerator = serviceProvider.GetService<ClassGenerator>();
             var dbTableInfoModels = classGenerator.GetDbTableInfoModels("libra.kpidb");
 
+            var codeConverter = serviceProvider.GetService<ICodeConverter>();
             foreach (var dbTableInfoModel in dbTableInfoModels)
             {
-                var str = dbTableInfoModel.ToClassContentString("Benchint.Libra.KpiStatService", serviceProvider.GetService<ICodeConverter>());
-                Console.WriteLine(str);
+
+                var str = dbTableInfoModel.ToClassContentString("Benchint.Libra.KpiStatService.Kpi.Model", codeConverter, OrmFramework.SqlSugar | OrmFramework.EntityFramework);
+                //Console.WriteLine(str);
+                Console.WriteLine(Output.ToFile(str,
+                    $"{codeConverter.Convert(CodeType.ClassName, dbTableInfoModel.TableName)}.cs",
+                    @"F:\Work\Dev.Git\Libra.KpiStatService\Benchint.Libra.KpiStatService\Kpi\Model"));
             }
+
+            Console.WriteLine("完成导出");
             Console.ReadKey();
         }
     }
