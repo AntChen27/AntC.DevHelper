@@ -4,6 +4,9 @@ using System.Text;
 
 namespace AntC.DevHelper.CodeGenerate.Interfaces
 {
+    /// <summary>
+    /// 数据库信息提供者
+    /// </summary>
     public interface IDbInfoProvider
     {
         /// <summary>
@@ -18,6 +21,7 @@ namespace AntC.DevHelper.CodeGenerate.Interfaces
         /// <param name="dbName"></param>
         /// <returns></returns>
         IEnumerable<DbTableInfoModel> GetTables(string dbName);
+
         /// <summary>
         /// 获取数据表列信息
         /// </summary>

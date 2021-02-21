@@ -43,7 +43,7 @@ namespace AntC.DevHelper.CodeGenerate
                 sb.AppendLine($"    [SugarTable(\"{dbTableInfo.TableName}\")]");
             }
 
-            sb.AppendLine($"    public partial class {codeConverter.Convert(CodeType.ClassName, dbTableInfo.TableName)}");
+            sb.AppendLine($"    public partial class {codeConverter.Convert(dbTableInfo.TableName, CodeType.ClassName)}");
             sb.AppendLine("    {");
 
             if (dbTableInfo.Columns != null && dbTableInfo.Columns.Any())
@@ -96,7 +96,7 @@ namespace AntC.DevHelper.CodeGenerate
 
             #endregion
 
-            sb.AppendLine($"        public {dbColumnInfo.GetFeildTypeName()}{(dbColumnInfo.Nullable && !new string[] { "string" }.Contains(dbColumnInfo.GetFeildTypeName()) ? "?" : "")} {codeConverter.Convert(CodeType.PerportyName, dbColumnInfo.ColumnName)} {{ get; set; }}");
+            sb.AppendLine($"        public {dbColumnInfo.GetFeildTypeName()}{(dbColumnInfo.Nullable && !new string[] { "string" }.Contains(dbColumnInfo.GetFeildTypeName()) ? "?" : "")} {codeConverter.Convert(dbColumnInfo.ColumnName, CodeType.PerportyName)} {{ get; set; }}");
 
             return sb.ToString();
         }

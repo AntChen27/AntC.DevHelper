@@ -4,8 +4,10 @@ using System.Text;
 
 namespace AntC.DevHelper.CodeGenerate.Interfaces
 {
-    public interface ICodeConverter
+    /// <summary>
+    /// 代码创建器管理
+    /// </summary>
+    public interface ICodeGeneratorManager
     {
-        string Convert(CodeType type, string value);
     }
 }

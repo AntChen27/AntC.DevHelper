@@ -1,32 +1,24 @@
 ﻿using AntC.DevHelper.CodeGenerate.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace AntC.DevHelper.CodeGenerate.Impl
 {
     public class DefaultCodeConverter : ICodeConverter
     {
-        //private readonly LittleCamelCaseCodeConverter _littleCamelCaseCodeConverter = new LittleCamelCaseCodeConverter();
-        //private readonly BigCamelCaseCodeConverter _bigCamelCaseCodeConverter = new BigCamelCaseCodeConverter();
-
-        public string Convert(CodeType type, string value)
+        public virtual string Convert(string value, CodeType type = CodeType.ClassName)
         {
-            if (type == CodeType.Namespace
+            if (type == CodeType.ClassFileName
+                || type == CodeType.Namespace
                 || type == CodeType.ClassName
                 || type == CodeType.PerportyName
                 || type == CodeType.MethodName)
             {
-                //return _bigCamelCaseCodeConverter.Convert(type, value);
                 return FirstCharUpper(value);
             }
             if (type == CodeType.FieldName)
             {
-                //return _littleCamelCaseCodeConverter.Convert(type, value);
                 return FirstCharLower(value);
             }
-
             return value;
         }
 
@@ -41,6 +33,5 @@ namespace AntC.DevHelper.CodeGenerate.Impl
             return string.Join("", value.Split("_")
                 .Select(t => "_" + t.ToLower().Substring(0, 1) + t.Substring(1)));
         }
-
     }
 }

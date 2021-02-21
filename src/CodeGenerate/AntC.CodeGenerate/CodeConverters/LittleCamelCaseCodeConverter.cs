@@ -1,11 +1,10 @@
-﻿using AntC.DevHelper.CodeGenerate.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using AntC.CodeGenerate.Interfaces;
 
-namespace AntC.DevHelper.CodeGenerate.Impl
+namespace AntC.CodeGenerate.CodeConverters
 {
     /// <summary>
     /// 小驼峰命名代码转换器
@@ -17,7 +16,7 @@ namespace AntC.DevHelper.CodeGenerate.Impl
         /// </summary>
         private const char charSplit = '_';
 
-        public string Convert(CodeType type, string value)
+        public virtual string Convert(string value, CodeType type = CodeType.ClassName)
         {
             return PieceString(value, false);
         }

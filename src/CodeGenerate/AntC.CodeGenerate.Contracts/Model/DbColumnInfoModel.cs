@@ -1,34 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SqlSugar;
 
-namespace AntC.DevHelper.CodeGenerate
+namespace AntC.CodeGenerate.Model
 {
-    public class DataBaseInfoModel
-    {
-        /// <summary>
-        /// 数据库名称
-        /// </summary>
-        public string DataBaseName { get; set; }
-
-        public IEnumerable<DbTableInfoModel> Tables { get; set; }
-    }
-
-    public class DbTableInfoModel
-    {
-        /// <summary>
-        /// 表名称
-        /// </summary>
-        public string TableName { get; set; }
-
-        /// <summary>
-        /// 注释
-        /// </summary>
-        public string Commont { get; set; }
-
-        public IEnumerable<DbColumnInfoModel> Columns { get; set; }
-    }
     public class DbColumnInfoModel
     {
         /// <summary>
@@ -66,8 +41,14 @@ namespace AntC.DevHelper.CodeGenerate
         /// </summary>
         public long DataLength { get; set; }
 
+        /// <summary>
+        /// decimal 精度整数部分长度
+        /// </summary>
         public long NumericPrecision { get; set; }
 
+        /// <summary>
+        /// decimal 精度小数部分长度
+        /// </summary>
         public long NumericScale { get; set; }
 
         /// <summary>

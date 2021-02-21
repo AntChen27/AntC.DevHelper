@@ -33,8 +33,8 @@ namespace AntC.DevHelper
                 var str = dbTableInfoModel.ToClassContentString("Benchint.Libra.KpiStatService.Kpi.Model", codeConverter, OrmFramework.SqlSugar | OrmFramework.EntityFramework);
                 //Console.WriteLine(str);
                 Console.WriteLine(Output.ToFile(str,
-                    $"{codeConverter.Convert(CodeType.ClassName, dbTableInfoModel.TableName)}.cs",
-                    @"F:\Work\Dev.Git\Libra.KpiStatService\Benchint.Libra.KpiStatService\Kpi\Model"));
+                    $"{codeConverter.Convert(dbTableInfoModel.TableName, CodeType.ClassName)}.cs",
+                    @"F:\Work\Kpi\Model"));
             }
 
             Console.WriteLine("完成导出");
