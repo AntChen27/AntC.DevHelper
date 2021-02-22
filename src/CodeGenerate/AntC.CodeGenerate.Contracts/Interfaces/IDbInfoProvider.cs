@@ -17,7 +17,7 @@ namespace AntC.CodeGenerate.Interfaces
         /// 获取数据库名称
         /// </summary>
         /// <returns></returns>
-        IEnumerable<DataBaseInfoModel> GetDataBases();
+        IEnumerable<DbInfoModel> GetDataBases();
 
         /// <summary>
         /// 获取数据表信息
@@ -32,5 +32,19 @@ namespace AntC.CodeGenerate.Interfaces
         /// <param name="tableName"></param>
         /// <returns></returns>
         IEnumerable<DbColumnInfoModel> GetColumns(string tableName);
+
+        /// <summary>
+        /// 获取数据表信息
+        /// </summary>
+        /// <param name="dbName">库名称</param>
+        /// <param name="tableName">表名称</param>
+        /// <returns></returns>
+        DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName);
+
+        /// <summary>
+        /// 获取数据库类型对应的代码字段类型
+        /// </summary>
+        /// <returns></returns>
+        string GetFiledTypeName(DbColumnInfoModel column);
     }
 }

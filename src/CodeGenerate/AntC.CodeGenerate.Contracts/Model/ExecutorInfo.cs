@@ -5,18 +5,18 @@ using System.Text;
 namespace AntC.CodeGenerate.Model
 {
     /// <summary>
-    /// 数据库信息
+    /// 执行器信息
     /// </summary>
-    public class DataBaseInfoModel
+    public class ExecutorInfo
     {
         /// <summary>
-        /// 数据库名称
+        /// 执行器名称
         /// </summary>
-        public string DataBaseName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        /// 表信息
+        /// 执行器描述
         /// </summary>
-        public IEnumerable<DbTableInfoModel> Tables { get; set; }
+        public string Desc { get; set; }
     }
 }

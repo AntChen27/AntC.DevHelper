@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CodeGenerate\AntC.CodeGenerate.Mysql\AntC.CodeGenerate.Mysql.csproj" />
-    <ProjectReference Include="..\..\src\CodeGenerate\AntC.CodeGenerate\AntC.CodeGenerate.csproj" />
   </ItemGroup>
 
 </Project>

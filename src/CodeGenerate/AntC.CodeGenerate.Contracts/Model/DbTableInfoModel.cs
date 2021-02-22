@@ -19,6 +19,11 @@ namespace AntC.CodeGenerate.Model
         /// </summary>
         public string Commont { get; set; }
 
+        /// <summary>
+        /// 数据库信息
+        /// </summary>
+        public DbInfoModel DbInfo { get; set; }
+
         public IEnumerable<DbColumnInfoModel> Columns { get; set; }
     }
 }

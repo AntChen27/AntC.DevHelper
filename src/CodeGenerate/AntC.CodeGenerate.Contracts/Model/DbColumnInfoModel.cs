@@ -52,52 +52,8 @@ namespace AntC.CodeGenerate.Model
         public long NumericScale { get; set; }
 
         /// <summary>
-        /// 获取数据库类型对应的代码字段类型
+        /// 数据表信息
         /// </summary>
-        /// <returns></returns>
-        public string GetFeildTypeName() =>
-            DataType.ToLower() switch
-            {
-                #region Mysql
-
-                "binary" => "byte[]",
-                "bit" => "bool",
-                "text" => "string",
-                "longtext" => "string",
-                "char" => "string",
-                "varchar" => "string",
-                "nvarchar" => "string",
-                "time" => nameof(TimeSpan),
-                "date" => nameof(DateTime),
-                "datetime" => nameof(DateTime),
-                "decimal" => "decimal",
-                "float" => "float",
-                "double" => "double",
-                "integer" => "int",
-                "int" => "int",
-                "smallint" => "int",
-                "tinyint" when DataTypeName == "tinyint(1)" => "bool",
-                //"tinyint" => "byte",
-                "tinyint" => "int",
-                "bigint" => "long",
-
-                #endregion
-                _ => DataType
-            };
-
-        //{
-        //    switch (DataType.ToLower())
-        //    {
-        //        case "decimal":
-        //                return "float";
-        //        case "float": return "float";
-        //        case "double": return "double";
-        //        case "intger": return "int";
-        //        case "int": return "int";
-        //        case "bigint": return "long";
-        //        default:
-        //            return dbDataType;
-        //    }
-        //}
+        public DbTableInfoModel DbTableInfo { get; set; }
     }
 }
