@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Model;
@@ -73,7 +74,7 @@ namespace AntC.CodeGenerate
                     CodeConverter = CodeConverter,
                     CodeGenerateTableInfo = tableInfo,
                     DbTableInfoModel = GetDbTableInfoModel(tableInfo),
-                    OutPutRootPath = codeGenerateInfo.OutPutRootPath,
+                    OutPutRootPath = string.IsNullOrEmpty(codeGenerateInfo.OutPutRootPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output") : codeGenerateInfo.OutPutRootPath,
                 };
                 foreach (var codeGenerateExecutor in _executors)
                 {

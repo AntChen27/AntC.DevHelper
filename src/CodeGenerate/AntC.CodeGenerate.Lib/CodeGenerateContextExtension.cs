@@ -9,7 +9,7 @@ namespace AntC.CodeGenerate
     {
         public static string GetNameSpace(this CodeGenerateContext context)
         {
-            return context.CodeConverter.Convert(context.CodeGenerateTableInfo.TableName, CodeType.Namespace);
+            return context.CodeConverter.Convert(context.CodeGenerateTableInfo.DbName, CodeType.Namespace);
         }
 
         public static string GetClassName(this CodeGenerateContext context)
