@@ -41,7 +41,10 @@ namespace AntC.CodeGenerate
         public IEnumerable<DbColumnInfoModel> GetColumns(string tableName) => DbInfoProvider.GetColumns(tableName);
 
         public DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName) => DbInfoProvider.GetTableInfoWithColumns(dbName, tableName);
+       
+        public void AddPropertyTypeConverter(IPropertyTypeConverter converter) => DbInfoProvider.AddPropertyTypeConverter(converter);
 
+        public void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters) => DbInfoProvider.AddPropertyTypeConverter(converters);
 
         /// <summary>
         /// 获取数据库类型对应的代码字段类型
@@ -73,7 +76,7 @@ namespace AntC.CodeGenerate
                     DbInfoProvider = this,
                     CodeConverter = CodeConverter,
                     CodeGenerateTableInfo = tableInfo,
-                    DbTableInfoModel = GetDbTableInfoModel(tableInfo),
+                    DbTableInfoModel = GetTableInfoWithColumns(tableInfo.DbName, tableInfo.TableName),
                     OutPutRootPath = string.IsNullOrEmpty(codeGenerateInfo.OutPutRootPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output") : codeGenerateInfo.OutPutRootPath,
                 };
                 foreach (var codeGenerateExecutor in _executors)
@@ -81,11 +84,6 @@ namespace AntC.CodeGenerate
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }
             }
-        }
-
-        private DbTableInfoModel GetDbTableInfoModel(CodeGenerateTableInfo tableInfo)
-        {
-            return GetTableInfoWithColumns(tableInfo.DbName, tableInfo.TableName);
         }
 
         public void AddCodeGenerateExecutor(ICodeGenerateExecutor executor)

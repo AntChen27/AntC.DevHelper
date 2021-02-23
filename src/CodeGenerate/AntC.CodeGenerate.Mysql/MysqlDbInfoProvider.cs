@@ -3,15 +3,14 @@ using AntC.CodeGenerate.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AntC.CodeGenerate.DbInfoProviders;
 using SqlSugar;
 
 namespace AntC.CodeGenerate.Mysql
 {
-    public class MysqlDbInfoProvider : IDbInfoProvider
+    public class MysqlDbInfoProvider : BaseDbInfoProvider
     {
-        public string DbConnectionString { get; set; }
-
-        public IEnumerable<DbInfoModel> GetDataBases()
+        public override IEnumerable<DbInfoModel> GetDataBases()
         {
             return GetDb()
                 .Queryable<MysqlSchemata>()
@@ -21,7 +20,7 @@ namespace AntC.CodeGenerate.Mysql
                 }).ToList();
         }
 
-        public IEnumerable<DbTableInfoModel> GetTables(string dbName)
+        public override IEnumerable<DbTableInfoModel> GetTables(string dbName)
         {
             return GetDb()
                 .Queryable<MysqlSchemaTable>()
@@ -33,7 +32,7 @@ namespace AntC.CodeGenerate.Mysql
                 }).ToList();
         }
 
-        public IEnumerable<DbColumnInfoModel> GetColumns(string tableName)
+        public override IEnumerable<DbColumnInfoModel> GetColumns(string tableName)
         {
             return GetDb()
                 .Queryable<MysqlSchemaColumns>()
@@ -52,7 +51,7 @@ namespace AntC.CodeGenerate.Mysql
                 }).ToList();
         }
 
-        public DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName)
+        public override DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName)
         {
             var db = GetDb();
 
@@ -89,38 +88,59 @@ namespace AntC.CodeGenerate.Mysql
                     Key = t.COLUMN_KEY == "PRI"
                 }).ToList();
 
+            foreach (var dbColumnInfoModel in dbTableInfoModel.Columns)
+            {
+                dbColumnInfoModel.DbTableInfo = dbTableInfoModel;
+            }
+            dbTableInfoModel.DbInfo.Tables = new List<DbTableInfoModel>()
+            {
+                dbTableInfoModel
+            };
+
             return dbTableInfoModel;
         }
 
-        /// <summary>
-        /// 获取数据库类型对应的代码字段类型
-        /// </summary>
-        /// <returns></returns>
-        public string GetFiledTypeName(DbColumnInfoModel column)
+        protected override string GetDefaultFiledTypeName(DbColumnInfoModel column)
         {
+            bool isUnsigned = column.DataTypeName.ToLower().Contains("unsigned");
+
             var filedTypeName = column.DataType.ToLower() switch
             {
                 #region Mysql
 
+                "image" => "byte[]",
+                "blob" => "byte[]",
+                "mediumblob" => "byte[]",
+                "longblob" => "byte[]",
                 "binary" => "byte[]",
+                "varbinary" => "byte[]",
+                "guid" => "Guid",
                 "bit" => "bool",
+                "bool" => "bool",
+                "boolean" => "bool",
                 "text" => "string",
                 "longtext" => "string",
                 "char" => "string",
                 "varchar" => "string",
                 "nvarchar" => "string",
                 "time" => nameof(TimeSpan),
+                "timestamp" => nameof(DateTime),
                 "date" => nameof(DateTime),
                 "datetime" => nameof(DateTime),
+                "smalldatetime" => nameof(DateTime),
+                "numeric" => "decimal",
+                "smallmoney" => "decimal",
+                "money" => "decimal",
                 "decimal" => "decimal",
                 "float" => "float",
                 "double" => "double",
                 "integer" => "int",
                 "int" => "int",
-                "smallint" => "int",
-                "tinyint" when column.DataTypeName == "tinyint(1)" => "bool",
-                //"tinyint" => "byte",
-                "tinyint" => "int",
+                "smallint" when isUnsigned => "ushort",
+                "smallint" => "short",
+                "tinyint" when isUnsigned => "byte",
+                "tinyint" => "sbyte",
+                "bigint" when isUnsigned => "ulong",
                 "bigint" => "long",
 
                 #endregion

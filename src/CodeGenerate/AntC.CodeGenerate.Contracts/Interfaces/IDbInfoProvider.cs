@@ -42,6 +42,18 @@ namespace AntC.CodeGenerate.Interfaces
         DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName);
 
         /// <summary>
+        /// 添加字段类型转换器
+        /// </summary>
+        /// <param name="converter"></param>
+        void AddPropertyTypeConverter(IPropertyTypeConverter converter);
+
+        /// <summary>
+        /// 添加字段类型转换器
+        /// </summary>
+        /// <param name="converters"></param>
+        void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters);
+
+        /// <summary>
         /// 获取数据库类型对应的代码字段类型
         /// </summary>
         /// <returns></returns>

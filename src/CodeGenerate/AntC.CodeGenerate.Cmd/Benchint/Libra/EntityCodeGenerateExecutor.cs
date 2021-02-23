@@ -2,35 +2,50 @@
 using AntC.CodeGenerate.Model;
 using System.Linq;
 using System.Text;
+using AntC.CodeGenerate.Extension;
 
 namespace AntC.CodeGenerate.Cmd.Benchint.Libra
 {
     public class EntityCodeGenerateExecutor : BaseCodeGenerateExecutor
     {
+        public bool UseAbpProperty { get; set; } = true;
+
         public override void ExecCodeGenerate(CodeGenerateContext context)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("using System;");
-
+            AppendUsingNamespace(context, sb);
             sb.AppendLine("");
             sb.AppendLine($"namespace {context.GetNameSpace()}");
             sb.AppendLine("{");
             sb.AppendLine($"    /// <summary>");
             sb.AppendLine($"    /// {GetClassCommont(context)}");
             sb.AppendLine($"    /// </summary>");
-            sb.AppendLine($"    public partial class {context.GetClassName()}");
+            sb.Append($"    public partial class {context.GetClassName()}");
+
+            if (UseAbpProperty)
+            {
+                // 添加继承类
+                var superClassName = context.GetAbpEntitySuperClass();
+                sb.Append($"{(string.IsNullOrWhiteSpace(superClassName) ? string.Empty : $" : {superClassName}")}");
+            }
+
+            sb.AppendLine();
             sb.AppendLine("    {");
 
             if (context.DbTableInfoModel.Columns != null && context.DbTableInfoModel.Columns.Any())
             {
-                int i = 0;
+                var i = 0;
                 foreach (var col in context.DbTableInfoModel.Columns)
                 {
-                    if (i != 0)
+                    if (!UseAbpProperty || !col.IsAbpProperty())
                     {
-                        sb.AppendLine("        ");
+                        if (i != 0)
+                        {
+                            sb.AppendLine("        ");
+                        }
+                        sb.Append(ToClassContentString(col, context));
                     }
-                    sb.Append(ToClassContentString(col, context));
                     i++;
                 }
             }
@@ -41,6 +56,14 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
             var result = sb.ToString();
 
             Output.ToFile(result, $"{context.GetClassFileName()}.cs", context.OutPutRootPath, Encoding.UTF8);
+        }
+
+        private void AppendUsingNamespace(CodeGenerateContext context, StringBuilder builder)
+        {
+            if (UseAbpProperty)
+            {
+                builder.AppendLine($"using {context.GetAbpEntitySuperClassNamespace()};");
+            }
         }
 
         /// <summary>
@@ -64,7 +87,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
         public string GetPropertyCommont(DbColumnInfoModel dbColumnInfo)
         {
             return string.IsNullOrWhiteSpace(dbColumnInfo.Commont)
-                ? dbColumnInfo.ColumnName
+                ? string.Empty
                 : dbColumnInfo.Commont.Replace("\r\n", "\r\n        /// ");
         }
 

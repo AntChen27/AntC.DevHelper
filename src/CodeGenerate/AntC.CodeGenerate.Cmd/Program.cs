@@ -5,6 +5,7 @@ using AntC.CodeGenerate.Mysql;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace AntC.CodeGenerate.Cmd
@@ -13,8 +14,8 @@ namespace AntC.CodeGenerate.Cmd
     {
         static void Main(string[] args)
         {
-            var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
-            //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
+            //var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
+            var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
             var dbName = "libra.kpidb";
             var tableNames = new List<string>() { "kpi_define_base", "kpi_define_ext" };
 
@@ -23,9 +24,13 @@ namespace AntC.CodeGenerate.Cmd
                 services
                     .AddTransient<Benchint.Libra.EntityCodeGenerateExecutor,
                        Benchint.Libra.EntityCodeGenerateExecutor>();
+                services
+                    .AddTransient<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter,
+                        Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>();
             });
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
             codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<Benchint.Libra.EntityCodeGenerateExecutor>());
+            codeGeneratorManager.AddPropertyTypeConverter(serviceProvider.GetService<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>());
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
 
@@ -34,6 +39,29 @@ namespace AntC.CodeGenerate.Cmd
                 //OutPutRootPath = AppDomain.CurrentDomain.BaseDirectory,
                 CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo() { DbName = dbName, TableName = x })
             });
+
+            var totalMemory = GC.GetTotalMemory(true);
+
+            Console.WriteLine($"完成代码创建,共使用内存{GetMemorySizeWithUnit(totalMemory)}...");
+        }
+
+        private static string GetMemorySizeWithUnit(decimal byteSize, int jz = 0)
+        {
+            if (byteSize / 1024 > 1024)
+            {
+                return GetMemorySizeWithUnit(byteSize / 1024, jz + 1);
+            }
+
+            var unit = jz switch
+            {
+                0 => "B",
+                1 => "KB",
+                2 => "MB",
+                3 => "GB",
+                4 => "TB",
+                5 => "PB",
+            };
+            return $"{Math.Round(byteSize / 1024, 2)}{unit}";
         }
 
         private static IServiceProvider Init(Action<IServiceCollection> action = null)
