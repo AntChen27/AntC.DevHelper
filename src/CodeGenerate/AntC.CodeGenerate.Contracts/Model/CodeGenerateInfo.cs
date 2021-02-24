@@ -15,6 +15,11 @@ namespace AntC.CodeGenerate.Model
         public string OutPutRootPath { get; set; }
 
         /// <summary>
+        /// 数据库名称
+        /// </summary>
+        public string DbName { get; set; }
+
+        /// <summary>
         /// 要创建的表信息
         /// </summary>
         public IEnumerable<CodeGenerateTableInfo> CodeGenerateTableInfos { get; set; }
@@ -25,11 +30,6 @@ namespace AntC.CodeGenerate.Model
     /// </summary>
     public class CodeGenerateTableInfo
     {
-        /// <summary>
-        /// 数据库名称
-        /// </summary>
-        public string DbName { get; set; }
-
         /// <summary>
         /// 注释
         /// </summary>

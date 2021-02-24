@@ -1,4 +1,5 @@
-﻿using AntC.CodeGenerate.Interfaces;
+﻿using System.Collections.Generic;
+using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate
@@ -6,7 +7,7 @@ namespace AntC.CodeGenerate
     /// <summary>
     /// 代码创建器上下文
     /// </summary>
-    public class CodeGenerateContext
+    public abstract class CodeGenerateContext
     {
         /// <summary>
         /// 输出根路径
@@ -24,6 +25,17 @@ namespace AntC.CodeGenerate
         public ICodeConverter CodeConverter { get; set; }
 
         /// <summary>
+        /// 要创建的库名称
+        /// </summary>
+        public string CodeGenerateDbName { get; set; }
+    }
+
+    /// <summary>
+    /// 代码创建器上下文 - 表
+    /// </summary>
+    public class CodeGenerateTableContext : CodeGenerateContext
+    {
+        /// <summary>
         /// 要创建的表信息
         /// </summary>
         public CodeGenerateTableInfo CodeGenerateTableInfo { get; set; }
@@ -32,5 +44,16 @@ namespace AntC.CodeGenerate
         /// 类表信息
         /// </summary>
         public ClassModel ClassInfo { get; set; }
+    }
+
+    /// <summary>
+    /// 代码创建器上下文 - 数据库
+    /// </summary>
+    public class CodeGenerateDbContext : CodeGenerateContext
+    {
+        /// <summary>
+        /// 类表信息
+        /// </summary>
+        public IEnumerable<ClassModel> ClassInfo { get; set; }
     }
 }

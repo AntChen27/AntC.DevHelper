@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors;
+using AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters;
+using AntC.CodeGenerate.Extension;
 
 namespace AntC.CodeGenerate.Cmd
 {
@@ -14,35 +17,27 @@ namespace AntC.CodeGenerate.Cmd
     {
         static void Main(string[] args)
         {
-            var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
-            //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
+            //var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
+            var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
             var dbName = "libra.kpidb";
             var tableNames = new List<string>() { "kpi_define_base", "kpi_define_ext" };
 
             var serviceProvider = Init(services =>
             {
-                services
-                    .AddTransient<Benchint.Libra.EntityCodeGenerateExecutor,
-                       Benchint.Libra.EntityCodeGenerateExecutor>();
-
-                services
-                    .AddTransient<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter,
-                        Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>();
-                services
-                    .AddTransient<Benchint.Libra.PropertyTypeConverters.IdTypeConverter,
-                        Benchint.Libra.PropertyTypeConverters.IdTypeConverter>();
             });
+
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
-            codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<Benchint.Libra.EntityCodeGenerateExecutor>());
-            codeGeneratorManager.AddPropertyTypeConverter(serviceProvider.GetService<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>());
-            codeGeneratorManager.AddPropertyTypeConverter(serviceProvider.GetService<Benchint.Libra.PropertyTypeConverters.IdTypeConverter>());
+            
+            codeGeneratorManager.AddCodeGenerateExecutor(typeof(Program).Assembly);
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Program).Assembly);
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
 
             codeGeneratorManager.ExecCodeGenerate(new CodeGenerateInfo()
             {
                 //OutPutRootPath = AppDomain.CurrentDomain.BaseDirectory,
-                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo() { DbName = dbName, TableName = x })
+                DbName = dbName,
+                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo() { TableName = x })
             });
 
             var totalMemory = GC.GetTotalMemory(true);
@@ -76,6 +71,9 @@ namespace AntC.CodeGenerate.Cmd
             //services.AddTransient<EntityCodeGenerateExecutor, EntityCodeGenerateExecutor>();
             services.AddTransient<MysqlDbInfoProvider, MysqlDbInfoProvider>();
             services.AddTransient<ICodeConverter, DefaultCodeConverter>();
+
+            services.UseCodeGenerateExecutor(typeof(Program).Assembly);
+            services.UsePropertyTypeConverter(typeof(Program).Assembly);
 
             action?.Invoke(services);
 

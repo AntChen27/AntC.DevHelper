@@ -1,17 +1,17 @@
-﻿using AntC.CodeGenerate.CodeGenerateExecutors;
-using AntC.CodeGenerate.Model;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Extension;
+using AntC.CodeGenerate.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
 {
-    public class EntityCodeGenerateExecutor : BaseCodeGenerateExecutor
+    public class EntityExecutor : BaseTableCodeGenerateExecutor
     {
         public bool UseAbpProperty { get; set; } = true;
         public bool UseAbpEntity { get; set; } = true;
 
-        public override void ExecCodeGenerate(CodeGenerateContext context)
+        public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("using System;");
@@ -60,14 +60,14 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
 
             var result = sb.ToString();
 
-            Output.ToFile(result, $"{context.GetClassFileName(context.ClassInfo.DbTableInfo)}.cs", context.OutPutRootPath, Encoding.UTF8);
+            Output.ToFile(result, $"Entities\\{context.ClassInfo.ClassFileName}.cs", context.OutPutRootPath, Encoding.UTF8);
         }
 
-        private void AppendUsingNamespace(CodeGenerateContext context, StringBuilder builder)
+        private void AppendUsingNamespace(CodeGenerateTableContext tableContext, StringBuilder builder)
         {
             if (UseAbpProperty)
             {
-                builder.AppendLine($"using {context.GetAbpEntitySuperClassNamespace()};");
+                builder.AppendLine($"using {tableContext.GetAbpEntitySuperClassNamespace()};");
             }
         }
 
@@ -75,9 +75,9 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
         /// 
         /// </summary>
         /// <param name="property"></param>
-        /// <param name="context"></param>
+        /// <param name="tableContext"></param>
         /// <returns></returns>
-        private string ToClassContentString(PropertyModel property, CodeGenerateContext context)
+        private string ToClassContentString(PropertyModel property, CodeGenerateTableContext tableContext)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"        /// <summary>");

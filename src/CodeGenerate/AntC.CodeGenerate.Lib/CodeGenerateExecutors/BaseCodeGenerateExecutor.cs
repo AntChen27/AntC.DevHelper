@@ -1,9 +1,8 @@
-﻿using AntC.CodeGenerate.Interfaces;
-using AntC.CodeGenerate.Model;
+﻿using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.CodeGenerateExecutors
 {
-    public abstract class BaseCodeGenerateExecutor : ICodeGenerateExecutor
+    public abstract class BaseCodeGenerateExecutor
     {
         protected ExecutorInfo DefaultExecutorInfo;
 
@@ -15,9 +14,7 @@ namespace AntC.CodeGenerate.CodeGenerateExecutors
                 Desc = ""
             };
         }
-        
-        public virtual ExecutorInfo ExecutorInfo => DefaultExecutorInfo;
 
-        public abstract void ExecCodeGenerate(CodeGenerateContext context);
+        public virtual ExecutorInfo ExecutorInfo => DefaultExecutorInfo;
     }
 }

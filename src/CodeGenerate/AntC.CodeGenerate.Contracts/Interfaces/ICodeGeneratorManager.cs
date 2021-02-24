@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Interfaces
@@ -17,17 +18,47 @@ namespace AntC.CodeGenerate.Interfaces
         /// <param name="codeGenerateInfo"></param>
         void ExecCodeGenerate(CodeGenerateInfo codeGenerateInfo);
 
+        #region AddCodeGenerateExecutor
+
+        /// <summary>
+        /// 添加程序集中所有的代码创建器
+        /// </summary>
+        /// <param name="assembly"></param>
+        void AddCodeGenerateExecutor(Assembly assembly);
+
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executor"></param>
-        void AddCodeGenerateExecutor(ICodeGenerateExecutor executor);
+        void AddCodeGenerateExecutor(ITableCodeGenerateExecutor executor);
 
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executors"></param>
-        void AddCodeGenerateExecutor(IEnumerable<ICodeGenerateExecutor> executors);
+        void AddCodeGenerateExecutor(IEnumerable<ITableCodeGenerateExecutor> executors);
+        
+        /// <summary>
+        /// 添加代码创建器
+        /// </summary>
+        /// <param name="executor"></param>
+        void AddCodeGenerateExecutor(IDbCodeGenerateExecutor executor);
+
+        /// <summary>
+        /// 添加代码创建器
+        /// </summary>
+        /// <param name="executors"></param>
+        void AddCodeGenerateExecutor(IEnumerable<IDbCodeGenerateExecutor> executors);
+
+        #endregion
+
+        #region AddPropertyTypeConverter
+
+        /// <summary>
+        /// 添加程序集中所有的字段类型转换器
+        /// </summary>
+        /// <param name="assembly"></param>
+        void AddPropertyTypeConverter(Assembly assembly);
 
         /// <summary>
         /// 添加字段类型转换器
@@ -40,6 +71,7 @@ namespace AntC.CodeGenerate.Interfaces
         /// </summary>
         /// <param name="converters"></param>
         void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters);
-
+        
+        #endregion
     }
 }

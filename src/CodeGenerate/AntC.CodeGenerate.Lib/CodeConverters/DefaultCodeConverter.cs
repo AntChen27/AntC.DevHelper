@@ -5,6 +5,8 @@ namespace AntC.CodeGenerate.CodeConverters
 {
     public class DefaultCodeConverter : ICodeConverter
     {
+        private const string SplitChar = "_.";
+
         public virtual string Convert(string value, CodeType type = CodeType.ClassName)
         {
             if (type == CodeType.ClassFileName
@@ -24,13 +26,13 @@ namespace AntC.CodeGenerate.CodeConverters
 
         private string FirstCharUpper(string value)
         {
-            return string.Join("", value.Split("_")
+            return string.Join("", value.Split(SplitChar.ToCharArray())
                 .Select(t => t.ToUpper().Substring(0, 1) + t.Substring(1)));
         }
 
         private string FirstCharLower(string value)
         {
-            return string.Join("", value.Split("_")
+            return string.Join("", value.Split(SplitChar.ToCharArray())
                 .Select(t => "_" + t.ToLower().Substring(0, 1) + t.Substring(1)));
         }
     }

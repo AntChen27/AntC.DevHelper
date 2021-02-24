@@ -3,6 +3,8 @@ using AntC.CodeGenerate.Model;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using AntC.CodeGenerate.Mysql.Model;
 
 namespace AntC.CodeGenerate.Mysql
 {
@@ -12,10 +14,7 @@ namespace AntC.CodeGenerate.Mysql
         {
             return GetDb()
                 .Queryable<MysqlSchemata>()
-                .Select(t => new DbInfoModel()
-                {
-                    DbName = t.SCHEMA_NAME,
-                }).ToList();
+                .Select(t => Map(t)).ToList();
         }
 
         public override IEnumerable<DbTableInfoModel> GetTables(string dbName)
@@ -23,11 +22,9 @@ namespace AntC.CodeGenerate.Mysql
             return GetDb()
                 .Queryable<MysqlSchemaTable>()
                 .Where(t => t.TABLE_SCHEMA == dbName)
-                .Select(t => new DbTableInfoModel()
-                {
-                    TableName = t.TABLE_NAME,
-                    Commont = t.TABLE_COMMENT,
-                }).ToList();
+                .ToList()
+                .Select(Map)
+                .ToList();
         }
 
         public override IEnumerable<DbColumnInfoModel> GetColumns(string tableName)
@@ -35,56 +32,32 @@ namespace AntC.CodeGenerate.Mysql
             return GetDb()
                 .Queryable<MysqlSchemaColumns>()
                 .Where(t => t.TABLE_NAME == tableName)
-                .Select(t => new DbColumnInfoModel()
-                {
-                    ColumnName = t.COLUMN_NAME,
-                    Commont = t.COLUMN_COMMENT,
-                    DataLength = t.CHARACTER_MAXIMUM_LENGTH,
-                    DataType = t.DATA_TYPE,
-                    DataTypeName = t.COLUMN_TYPE,
-                    Nullable = t.IS_NULLABLE == "YES",
-                    NumericPrecision = t.NUMERIC_PRECISION,
-                    NumericScale = t.NUMERIC_SCALE,
-                    Key = t.COLUMN_KEY == "PRI"
-                }).ToList();
+                .ToList()
+                .Select(Map)
+                .ToList();
         }
 
         public override DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName)
         {
             var db = GetDb();
 
-            var dbTableInfoModel = db
+            var dbTableInfoModel = Map(db
                 .Queryable<MysqlSchemaTable>()
                 .Where(t => t.TABLE_SCHEMA == dbName && t.TABLE_NAME == tableName)
-                .Select(t => new DbTableInfoModel()
-                {
-                    TableName = t.TABLE_NAME,
-                    Commont = t.TABLE_COMMENT,
-                }).First();
+                .First()
+                );
 
-            dbTableInfoModel.DbInfo = db
+            dbTableInfoModel.DbInfo = Map(db
                 .Queryable<MysqlSchemata>()
                 .Where(x => x.SCHEMA_NAME == dbName)
-                .Select(t => new DbInfoModel()
-                {
-                    DbName = t.SCHEMA_NAME,
-                }).First();
+                .First());
 
             dbTableInfoModel.Columns = db
                 .Queryable<MysqlSchemaColumns>()
                 .Where(t => t.TABLE_SCHEMA == dbName && t.TABLE_NAME == tableName)
-                .Select(t => new DbColumnInfoModel()
-                {
-                    ColumnName = t.COLUMN_NAME,
-                    Commont = t.COLUMN_COMMENT,
-                    DataLength = t.CHARACTER_MAXIMUM_LENGTH,
-                    DataType = t.DATA_TYPE,
-                    DataTypeName = t.COLUMN_TYPE,
-                    Nullable = t.IS_NULLABLE == "YES",
-                    NumericPrecision = t.NUMERIC_PRECISION,
-                    NumericScale = t.NUMERIC_SCALE,
-                    Key = t.COLUMN_KEY == "PRI"
-                }).ToList();
+                .ToList()
+                .Select(Map)
+                .ToList();
 
             foreach (var dbColumnInfoModel in dbTableInfoModel.Columns)
             {
@@ -153,6 +126,42 @@ namespace AntC.CodeGenerate.Mysql
 
             return filedTypeName;
         }
+        private DbInfoModel Map(MysqlSchemata t)
+        {
+            return new DbInfoModel()
+            {
+                DbName = t.SCHEMA_NAME,
+            };
+        }
+
+        private DbTableInfoModel Map(MysqlSchemaTable t)
+        {
+            return new DbTableInfoModel()
+            {
+                TableName = t.TABLE_NAME,
+                Commont = t.TABLE_COMMENT,
+            };
+        }
+
+        private DbColumnInfoModel Map(MysqlSchemaColumns t)
+        {
+            return new MysqlDbColumnInfoModel()
+            {
+                ColumnName = t.COLUMN_NAME,
+                Commont = t.COLUMN_COMMENT,
+                DataLength = t.CHARACTER_MAXIMUM_LENGTH,
+                DataType = t.DATA_TYPE,
+                DataTypeName = t.COLUMN_TYPE,
+                Nullable = t.IS_NULLABLE == "YES",
+                NumericPrecision = t.NUMERIC_PRECISION,
+                NumericScale = t.NUMERIC_SCALE,
+                Key = t.COLUMN_KEY == "PRI",
+                DefaultValue = t.COLUMN_DEFAULT,
+                CharacterSetName = t.CHARACTER_SET_NAME,
+                CollationName = t.COLLATION_NAME,
+            };
+        }
+
 
         //创建SqlSugarClient 
         public SqlSugarClient GetDb()

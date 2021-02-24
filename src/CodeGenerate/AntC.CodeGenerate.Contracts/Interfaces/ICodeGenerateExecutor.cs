@@ -5,10 +5,8 @@ using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Interfaces
 {
-    /// <summary>
-    /// 代码生成执行器
-    /// </summary>
-    public interface ICodeGenerateExecutor
+    public interface ICodeGenerateExecutor<TContext>
+    where TContext : CodeGenerateContext
     {
         /// <summary>
         /// 执行器信息
@@ -19,6 +17,20 @@ namespace AntC.CodeGenerate.Interfaces
         /// 执行代码生成
         /// </summary>
         /// <param name="context"></param>
-        void ExecCodeGenerate(CodeGenerateContext context);
+        void ExecCodeGenerate(TContext context);
+    }
+
+    /// <summary>
+    /// 代码生成执行器 - 针对数据库表的
+    /// </summary>
+    public interface ITableCodeGenerateExecutor : ICodeGenerateExecutor<CodeGenerateTableContext>
+    {
+    }
+
+    /// <summary>
+    /// 代码生成执行器 - 针对数据库的
+    /// </summary>
+    public interface IDbCodeGenerateExecutor : ICodeGenerateExecutor<CodeGenerateDbContext>
+    {
     }
 }

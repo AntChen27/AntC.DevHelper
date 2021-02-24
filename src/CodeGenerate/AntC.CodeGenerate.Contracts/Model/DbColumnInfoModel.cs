@@ -42,14 +42,19 @@ namespace AntC.CodeGenerate.Model
         public long DataLength { get; set; }
 
         /// <summary>
-        /// decimal 精度整数部分长度
+        /// 数字精度
         /// </summary>
         public long NumericPrecision { get; set; }
 
         /// <summary>
-        /// decimal 精度小数部分长度
+        /// 小数位数
         /// </summary>
         public long NumericScale { get; set; }
+
+        /// <summary>
+        /// 默认值
+        /// </summary>
+        public string DefaultValue { get; set; }
 
         /// <summary>
         /// 数据表信息

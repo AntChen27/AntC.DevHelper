@@ -16,7 +16,7 @@ namespace AntC.CodeGenerate
         /// <returns></returns>
         public static string GetNameSpace(this CodeGenerateContext context)
         {
-            return context.CodeConverter.Convert(context.CodeGenerateTableInfo.DbName, CodeType.Namespace);
+            return context.CodeConverter.Convert(context.CodeGenerateDbName, CodeType.Namespace);
         }
 
         /// <summary>
@@ -30,6 +30,16 @@ namespace AntC.CodeGenerate
         }
 
         /// <summary>
+        /// 获取类名称
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static string GetClassName(this CodeGenerateContext context, string name)
+        {
+            return context.CodeConverter.Convert(name, CodeType.ClassName);
+        }
+
+        /// <summary>
         /// 获取类文件名
         /// </summary>
         /// <param name="context"></param>
@@ -40,11 +50,21 @@ namespace AntC.CodeGenerate
         }
 
         /// <summary>
+        /// 获取类文件名
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static string GetClassFileName(this CodeGenerateContext context, string name)
+        {
+            return context.CodeConverter.Convert(name, CodeType.ClassFileName);
+        }
+
+        /// <summary>
         /// 获取主键类型
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetKeyTypeName(this CodeGenerateContext context)
+        public static string GetKeyTypeName(this CodeGenerateTableContext context)
         {
             var propertyModel = context.ClassInfo.Properties.FirstOrDefault(x => x.DbColumnInfo.Key);
             return propertyModel != null ? propertyModel.PropertyTypeName : string.Empty;
@@ -55,7 +75,7 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetAbpEntitySuperClass(this CodeGenerateContext context)
+        public static string GetAbpEntitySuperClass(this CodeGenerateTableContext context)
         {
             var superClassName = string.Empty;
             var keyTypeNameWithGeneric = context.GetKeyTypeName();
@@ -102,7 +122,7 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetAbpEntitySuperClassNamespace(this CodeGenerateContext context)
+        public static string GetAbpEntitySuperClassNamespace(this CodeGenerateTableContext context)
         {
             var @namespace = string.Empty;
 
