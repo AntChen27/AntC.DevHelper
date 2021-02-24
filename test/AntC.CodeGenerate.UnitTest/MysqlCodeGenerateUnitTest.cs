@@ -26,7 +26,7 @@ namespace AntC.CodeGenerate.UnitTest
             var serviceProvider = Init();
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
 
-            codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<EntityCodeGenerateExecutor>());
+            //codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<EntityCodeGenerateExecutor>());
 
             codeGeneratorManager.ExecCodeGenerate(new CodeGenerateInfo()
             {
@@ -39,7 +39,7 @@ namespace AntC.CodeGenerate.UnitTest
         {
             IServiceCollection services = new ServiceCollection();
             //×¢Èë
-            services.AddTransient<EntityCodeGenerateExecutor, EntityCodeGenerateExecutor>();
+            //services.AddTransient<EntityCodeGenerateExecutor, EntityCodeGenerateExecutor>();
             services.AddTransient<MysqlDbInfoProvider, MysqlDbInfoProvider>();
             services.AddTransient<ICodeConverter, DefaultCodeConverter>();
 

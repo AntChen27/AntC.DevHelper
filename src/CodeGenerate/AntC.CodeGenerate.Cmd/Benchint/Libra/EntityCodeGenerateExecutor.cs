@@ -9,6 +9,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
     public class EntityCodeGenerateExecutor : BaseCodeGenerateExecutor
     {
         public bool UseAbpProperty { get; set; } = true;
+        public bool UseAbpEntity { get; set; } = true;
 
         public override void ExecCodeGenerate(CodeGenerateContext context)
         {
@@ -19,11 +20,11 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
             sb.AppendLine($"namespace {context.GetNameSpace()}");
             sb.AppendLine("{");
             sb.AppendLine($"    /// <summary>");
-            sb.AppendLine($"    /// {GetClassCommont(context)}");
+            sb.AppendLine($"    /// {context.ClassInfo.Annotation}");
             sb.AppendLine($"    /// </summary>");
-            sb.Append($"    public partial class {context.GetClassName()}");
+            sb.Append($"    public partial class {context.ClassInfo.ClassName}");
 
-            if (UseAbpProperty)
+            if (UseAbpEntity)
             {
                 // 添加继承类
                 var superClassName = context.GetAbpEntitySuperClass();
@@ -33,19 +34,23 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
             sb.AppendLine();
             sb.AppendLine("    {");
 
-            if (context.DbTableInfoModel.Columns != null && context.DbTableInfoModel.Columns.Any())
+            if (context.ClassInfo.Properties != null && context.ClassInfo.Properties.Any())
             {
                 var i = 0;
-                foreach (var col in context.DbTableInfoModel.Columns)
+                foreach (var col in context.ClassInfo.Properties)
                 {
-                    if (!UseAbpProperty || !col.IsAbpProperty())
+                    if ((UseAbpProperty && col.DbColumnInfo.IsAbpProperty()) || (
+                            UseAbpEntity && col.DbColumnInfo.Key))
                     {
-                        if (i != 0)
-                        {
-                            sb.AppendLine("        ");
-                        }
-                        sb.Append(ToClassContentString(col, context));
+                        continue;
                     }
+
+                    if (i != 0)
+                    {
+                        sb.AppendLine("        ");
+                    }
+                    sb.Append(ToClassContentString(col, context));
+
                     i++;
                 }
             }
@@ -55,7 +60,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
 
             var result = sb.ToString();
 
-            Output.ToFile(result, $"{context.GetClassFileName()}.cs", context.OutPutRootPath, Encoding.UTF8);
+            Output.ToFile(result, $"{context.GetClassFileName(context.ClassInfo.DbTableInfo)}.cs", context.OutPutRootPath, Encoding.UTF8);
         }
 
         private void AppendUsingNamespace(CodeGenerateContext context, StringBuilder builder)
@@ -69,34 +74,19 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dbColumnInfo"></param>
+        /// <param name="property"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private string ToClassContentString(DbColumnInfoModel dbColumnInfo, CodeGenerateContext context)
+        private string ToClassContentString(PropertyModel property, CodeGenerateContext context)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"        /// <summary>");
-            sb.AppendLine($"        /// {GetPropertyCommont(dbColumnInfo)}");
+            sb.AppendLine($"        /// {property.Annotation}");
             sb.AppendLine($"        /// </summary>");
 
-            sb.AppendLine($"        public {context.DbInfoProvider.GetFiledTypeName(dbColumnInfo)} {context.CodeConverter.Convert(dbColumnInfo.ColumnName, CodeType.PerportyName)} {{ get; set; }}");
+            sb.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
 
             return sb.ToString();
-        }
-
-        public string GetPropertyCommont(DbColumnInfoModel dbColumnInfo)
-        {
-            return string.IsNullOrWhiteSpace(dbColumnInfo.Commont)
-                ? string.Empty
-                : dbColumnInfo.Commont.Replace("\r\n", "\r\n        /// ");
-        }
-
-        public string GetClassCommont(CodeGenerateContext context)
-        {
-            var dbTableInfo = context.DbTableInfoModel;
-            return (string.IsNullOrWhiteSpace(dbTableInfo.Commont)
-                ? dbTableInfo.TableName
-                : dbTableInfo.Commont.Replace("\r\n", "\r\n        /// "));
         }
     }
 }

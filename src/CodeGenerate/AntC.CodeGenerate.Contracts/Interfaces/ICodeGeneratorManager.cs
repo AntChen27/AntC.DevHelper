@@ -28,5 +28,18 @@ namespace AntC.CodeGenerate.Interfaces
         /// </summary>
         /// <param name="executors"></param>
         void AddCodeGenerateExecutor(IEnumerable<ICodeGenerateExecutor> executors);
+
+        /// <summary>
+        /// 添加字段类型转换器
+        /// </summary>
+        /// <param name="converter"></param>
+        void AddPropertyTypeConverter(IPropertyTypeConverter converter);
+
+        /// <summary>
+        /// 添加字段类型转换器
+        /// </summary>
+        /// <param name="converters"></param>
+        void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters);
+
     }
 }

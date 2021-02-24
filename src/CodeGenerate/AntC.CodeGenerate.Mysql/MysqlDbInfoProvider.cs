@@ -1,10 +1,8 @@
-﻿using AntC.CodeGenerate.Interfaces;
+﻿using AntC.CodeGenerate.DbInfoProviders;
 using AntC.CodeGenerate.Model;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using AntC.CodeGenerate.DbInfoProviders;
-using SqlSugar;
 
 namespace AntC.CodeGenerate.Mysql
 {

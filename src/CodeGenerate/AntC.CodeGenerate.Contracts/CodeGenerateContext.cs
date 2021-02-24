@@ -29,8 +29,8 @@ namespace AntC.CodeGenerate
         public CodeGenerateTableInfo CodeGenerateTableInfo { get; set; }
 
         /// <summary>
-        /// 数据库表信息
+        /// 类表信息
         /// </summary>
-        public DbTableInfoModel DbTableInfoModel { get; set; }
+        public ClassModel ClassInfo { get; set; }
     }
 }

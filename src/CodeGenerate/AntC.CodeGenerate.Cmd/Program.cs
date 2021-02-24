@@ -14,8 +14,8 @@ namespace AntC.CodeGenerate.Cmd
     {
         static void Main(string[] args)
         {
-            //var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
-            var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
+            var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
+            //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
             var dbName = "libra.kpidb";
             var tableNames = new List<string>() { "kpi_define_base", "kpi_define_ext" };
 
@@ -24,13 +24,18 @@ namespace AntC.CodeGenerate.Cmd
                 services
                     .AddTransient<Benchint.Libra.EntityCodeGenerateExecutor,
                        Benchint.Libra.EntityCodeGenerateExecutor>();
+
                 services
                     .AddTransient<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter,
                         Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>();
+                services
+                    .AddTransient<Benchint.Libra.PropertyTypeConverters.IdTypeConverter,
+                        Benchint.Libra.PropertyTypeConverters.IdTypeConverter>();
             });
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
             codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<Benchint.Libra.EntityCodeGenerateExecutor>());
             codeGeneratorManager.AddPropertyTypeConverter(serviceProvider.GetService<Benchint.Libra.PropertyTypeConverters.EnumTypeConverter>());
+            codeGeneratorManager.AddPropertyTypeConverter(serviceProvider.GetService<Benchint.Libra.PropertyTypeConverters.IdTypeConverter>());
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
 
@@ -47,7 +52,7 @@ namespace AntC.CodeGenerate.Cmd
 
         private static string GetMemorySizeWithUnit(decimal byteSize, int jz = 0)
         {
-            if (byteSize / 1024 > 1024)
+            if (byteSize > 1024)
             {
                 return GetMemorySizeWithUnit(byteSize / 1024, jz + 1);
             }
@@ -61,7 +66,7 @@ namespace AntC.CodeGenerate.Cmd
                 4 => "TB",
                 5 => "PB",
             };
-            return $"{Math.Round(byteSize / 1024, 2)}{unit}";
+            return $"{Math.Round(byteSize, 2)}{unit}";
         }
 
         private static IServiceProvider Init(Action<IServiceCollection> action = null)

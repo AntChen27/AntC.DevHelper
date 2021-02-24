@@ -10,15 +10,15 @@ namespace AntC.CodeGenerate.Interfaces
         /// <summary>
         /// 是否可以转换
         /// </summary>
-        /// <param name="columnInfo"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        bool CanConvert(DbColumnInfoModel columnInfo);
+        bool CanConvert(PropertyModel property);
 
         /// <summary>
         /// 转换
         /// </summary>
-        /// <param name="columnInfo"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        string Convert(DbColumnInfoModel columnInfo);
+        string Convert(PropertyModel property);
     }
 }

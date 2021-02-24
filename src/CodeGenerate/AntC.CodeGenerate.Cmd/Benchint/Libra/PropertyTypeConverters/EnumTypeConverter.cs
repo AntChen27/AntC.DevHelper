@@ -12,25 +12,26 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters
         private Dictionary<string, string> _enumMapping = new Dictionary<string, string>()
         {
             {"kpi_calc_cate","KpiCalcCate"},
-            {"stat_way","StatWay"},
-            {"run_stat","RunStat"},
-            {"stat_time_dimension","StatTimeDimension"},
+            {"stat_way","KpiStatWay"},
+            {"run_stat","KpiRunStat"},
+            {"stat_time_dimension","KpiStatTimeDimension"},
             {"enable","EnableStatus"},
-            {"db_type","DbType"},
+            {"db_type","KpiDbType"},
+            {"data_source","DataSource"},
         };
 
-        public bool CanConvert(DbColumnInfoModel columnInfo)
+        public bool CanConvert(PropertyModel property)
         {
-            if (_enumMapping.Keys.Any(x => x.Equals(columnInfo.ColumnName, StringComparison.CurrentCultureIgnoreCase)))
+            if (_enumMapping.Keys.Any(x => x.Equals(property.DbColumnInfo.ColumnName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 return true;
             }
             return false;
         }
 
-        public string Convert(DbColumnInfoModel columnInfo)
+        public string Convert(PropertyModel property)
         {
-            return _enumMapping[columnInfo.ColumnName.ToLower()];
+            return _enumMapping[property.DbColumnInfo.ColumnName.ToLower()];
         }
     }
 }

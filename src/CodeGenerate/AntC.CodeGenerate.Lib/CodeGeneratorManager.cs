@@ -19,6 +19,7 @@ namespace AntC.CodeGenerate
         /// 执行器
         /// </summary>
         private readonly List<ICodeGenerateExecutor> _executors;
+        protected List<IPropertyTypeConverter> _propertyTypeConverters = new List<IPropertyTypeConverter>();
 
         public string DbConnectionString
         {
@@ -41,16 +42,54 @@ namespace AntC.CodeGenerate
         public IEnumerable<DbColumnInfoModel> GetColumns(string tableName) => DbInfoProvider.GetColumns(tableName);
 
         public DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName) => DbInfoProvider.GetTableInfoWithColumns(dbName, tableName);
-       
-        public void AddPropertyTypeConverter(IPropertyTypeConverter converter) => DbInfoProvider.AddPropertyTypeConverter(converter);
-
-        public void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters) => DbInfoProvider.AddPropertyTypeConverter(converters);
 
         /// <summary>
         /// 获取数据库类型对应的代码字段类型
         /// </summary>
         /// <returns></returns>
-        public string GetFiledTypeName(DbColumnInfoModel column) => DbInfoProvider.GetFiledTypeName(column);
+        public string GetFiledTypeName(DbColumnInfoModel column)
+        {
+            var filedTypeName = DbInfoProvider.GetFiledTypeName(column);
+            if (!string.IsNullOrWhiteSpace(filedTypeName) &&
+                column.Nullable &&
+                !"string".Equals(filedTypeName, StringComparison.CurrentCultureIgnoreCase) &&
+                !filedTypeName.Trim().EndsWith("?"))
+            {
+                return $"{filedTypeName}?";
+            }
+
+            return filedTypeName;
+        }
+
+        public string GetFiledTypeName(PropertyModel property)
+        {
+            var filedTypeName = string.Empty;
+            bool isPropertyTypeConverted = false;
+            for (var i = _propertyTypeConverters.Count - 1; i >= 0; i--)
+            {
+                if (_propertyTypeConverters[i].CanConvert(property))
+                {
+                    filedTypeName = _propertyTypeConverters[i].Convert(property);
+                    isPropertyTypeConverted = true;
+                    break;
+                }
+            }
+
+            if (!isPropertyTypeConverted)
+            {
+                filedTypeName = DbInfoProvider.GetFiledTypeName(property.DbColumnInfo);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filedTypeName) &&
+                property.DbColumnInfo.Nullable &&
+                !"string".Equals(filedTypeName, StringComparison.CurrentCultureIgnoreCase) &&
+                !filedTypeName.Trim().EndsWith("?"))
+            {
+                return $"{filedTypeName}?";
+            }
+
+            return filedTypeName;
+        }
 
         #endregion
 
@@ -76,14 +115,39 @@ namespace AntC.CodeGenerate
                     DbInfoProvider = this,
                     CodeConverter = CodeConverter,
                     CodeGenerateTableInfo = tableInfo,
-                    DbTableInfoModel = GetTableInfoWithColumns(tableInfo.DbName, tableInfo.TableName),
                     OutPutRootPath = string.IsNullOrEmpty(codeGenerateInfo.OutPutRootPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output") : codeGenerateInfo.OutPutRootPath,
                 };
+                context.ClassInfo = GetClassModel(context);
                 foreach (var codeGenerateExecutor in _executors)
                 {
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }
             }
+        }
+
+        private ClassModel GetClassModel(CodeGenerateContext context)
+        {
+            var dbTableInfo = GetTableInfoWithColumns(context.CodeGenerateTableInfo.DbName, context.CodeGenerateTableInfo.TableName);
+            return new ClassModel()
+            {
+                DbTableInfo = dbTableInfo,
+                NameSpace = context.GetNameSpace(),
+                ClassName = context.GetClassName(dbTableInfo),
+                ClassFileName = context.GetClassFileName(dbTableInfo),
+                Annotation = dbTableInfo.Commont,
+                Properties = dbTableInfo.Columns.Select(x =>
+                {
+                    var propertyModel = new PropertyModel()
+                    {
+                        DbColumnInfo = x,
+                        //PropertyTypeName = GetFiledTypeName(x),
+                        Annotation = x.Commont,
+                        PropertyName = Convert(x.ColumnName, CodeType.PerportyName),
+                    };
+                    propertyModel.PropertyTypeName = GetFiledTypeName(propertyModel);
+                    return propertyModel;
+                }),
+            };
         }
 
         public void AddCodeGenerateExecutor(ICodeGenerateExecutor executor)
@@ -94,6 +158,16 @@ namespace AntC.CodeGenerate
         public void AddCodeGenerateExecutor(IEnumerable<ICodeGenerateExecutor> executors)
         {
             _executors.AddRange(executors);
+        }
+
+        public void AddPropertyTypeConverter(IPropertyTypeConverter converter)
+        {
+            _propertyTypeConverters.Add(converter);
+        }
+
+        public void AddPropertyTypeConverter(IEnumerable<IPropertyTypeConverter> converters)
+        {
+            _propertyTypeConverters.AddRange(converters);
         }
     }
 }

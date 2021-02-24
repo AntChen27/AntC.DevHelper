@@ -24,9 +24,9 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetClassName(this CodeGenerateContext context)
+        public static string GetClassName(this CodeGenerateContext context, DbTableInfoModel tableInfo)
         {
-            return context.CodeConverter.Convert(context.DbTableInfoModel.TableName, CodeType.ClassName);
+            return context.CodeConverter.Convert(tableInfo.TableName, CodeType.ClassName);
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetClassFileName(this CodeGenerateContext context)
+        public static string GetClassFileName(this CodeGenerateContext context, DbTableInfoModel tableInfo)
         {
-            return context.CodeConverter.Convert(context.DbTableInfoModel.TableName, CodeType.ClassFileName);
+            return context.CodeConverter.Convert(tableInfo.TableName, CodeType.ClassFileName);
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace AntC.CodeGenerate
         /// <returns></returns>
         public static string GetKeyTypeName(this CodeGenerateContext context)
         {
-            var dbColumnInfoModel = context.DbTableInfoModel.Columns.FirstOrDefault(x => x.Key);
-            return dbColumnInfoModel != null ? context.DbInfoProvider.GetFiledTypeName(dbColumnInfoModel) : string.Empty;
+            var propertyModel = context.ClassInfo.Properties.FirstOrDefault(x => x.DbColumnInfo.Key);
+            return propertyModel != null ? propertyModel.PropertyTypeName : string.Empty;
         }
 
         /// <summary>
@@ -65,30 +65,30 @@ namespace AntC.CodeGenerate
                 keyTypeNameWithGeneric = $"<{keyTypeNameWithGeneric}>";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpExtraPropertiesProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpConcurrencyStampProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpExtraPropertiesProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpConcurrencyStampProperty())
             )
             {
                 superClassName = $"AggregateRoot{keyTypeNameWithGeneric}";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpCreationTimeProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpCreatorIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpCreationTimeProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpCreatorIdProperty())
             )
             {
                 superClassName = $"CreationAuditedAggregateRoot{keyTypeNameWithGeneric}";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpLastModificationTimeProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpLastModifierIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpLastModificationTimeProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpLastModifierIdProperty())
             )
             {
                 superClassName = $"AuditedAggregateRoot{keyTypeNameWithGeneric}";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpIsDeletedProperty())
-            && context.DbTableInfoModel.Columns.Any(x => x.IsAbpDeletionTimeProperty())
-            && context.DbTableInfoModel.Columns.Any(x => x.IsAbpDeleterIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpIsDeletedProperty())
+            && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpDeletionTimeProperty())
+            && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpDeleterIdProperty())
             )
             {
                 superClassName = $"FullAuditedAggregateRoot{keyTypeNameWithGeneric}";
@@ -105,31 +105,31 @@ namespace AntC.CodeGenerate
         public static string GetAbpEntitySuperClassNamespace(this CodeGenerateContext context)
         {
             var @namespace = string.Empty;
-            
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpExtraPropertiesProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpConcurrencyStampProperty())
+
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpExtraPropertiesProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpConcurrencyStampProperty())
             )
             {
                 @namespace = $"Volo.Abp.Domain.Entities";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpCreationTimeProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpCreatorIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpCreationTimeProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpCreatorIdProperty())
             )
             {
                 @namespace = $"Volo.Abp.Domain.Entities.Auditing";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpLastModificationTimeProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpLastModifierIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpLastModificationTimeProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpLastModifierIdProperty())
             )
             {
                 @namespace = $"Volo.Abp.Domain.Entities.Auditing";
             }
 
-            if (context.DbTableInfoModel.Columns.Any(x => x.IsAbpIsDeletedProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpDeletionTimeProperty())
-                && context.DbTableInfoModel.Columns.Any(x => x.IsAbpDeleterIdProperty())
+            if (context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpIsDeletedProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpDeletionTimeProperty())
+                && context.ClassInfo.DbTableInfo.Columns.Any(x => x.IsAbpDeleterIdProperty())
             )
             {
                 @namespace = $"Volo.Abp.Domain.Entities.Auditing";
