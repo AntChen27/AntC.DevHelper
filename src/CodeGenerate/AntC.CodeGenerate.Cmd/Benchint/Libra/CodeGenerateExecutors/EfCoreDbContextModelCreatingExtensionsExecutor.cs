@@ -72,6 +72,10 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
             var i = 0;
             foreach (var property in clsInfo.Properties)
             {
+                if (property.DbColumnInfo.IsAbpProperty())
+                {
+                    continue;
+                }
                 AppendEntityField(builder, property);
                 if (i < clsInfo.Properties.Count() - 1)
                 {
