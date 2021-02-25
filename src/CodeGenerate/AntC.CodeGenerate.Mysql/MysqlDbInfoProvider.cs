@@ -14,7 +14,9 @@ namespace AntC.CodeGenerate.Mysql
         {
             return GetDb()
                 .Queryable<MysqlSchemata>()
-                .Select(t => Map(t)).ToList();
+                .ToList()
+                .Select(Map)
+                .ToList();
         }
 
         public override IEnumerable<DbTableInfoModel> GetTables(string dbName)
@@ -44,8 +46,7 @@ namespace AntC.CodeGenerate.Mysql
             var dbTableInfoModel = Map(db
                 .Queryable<MysqlSchemaTable>()
                 .Where(t => t.TABLE_SCHEMA == dbName && t.TABLE_NAME == tableName)
-                .First()
-                );
+                .First());
 
             dbTableInfoModel.DbInfo = Map(db
                 .Queryable<MysqlSchemata>()
@@ -161,8 +162,7 @@ namespace AntC.CodeGenerate.Mysql
                 CollationName = t.COLLATION_NAME,
             };
         }
-
-
+        
         //创建SqlSugarClient 
         public SqlSugarClient GetDb()
         {
