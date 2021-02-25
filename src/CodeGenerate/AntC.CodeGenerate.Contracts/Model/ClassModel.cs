@@ -29,5 +29,10 @@ namespace AntC.CodeGenerate.Model
         /// 命名空间名称
         /// </summary>
         public string NameSpace { get; set; }
+
+        /// <summary>
+        /// 分组名称
+        /// </summary>
+        public string GroupName { get; set; }
     }
 }

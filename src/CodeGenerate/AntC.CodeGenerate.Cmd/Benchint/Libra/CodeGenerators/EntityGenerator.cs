@@ -1,15 +1,22 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Text;
 using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Extension;
 using AntC.CodeGenerate.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 {
-    public class EntityExecutor : BaseTableCodeGenerateExecutor
+    public class EntityGenerator : BaseTableCodeGenerator
     {
         public bool UseAbpProperty { get; set; } = true;
         public bool UseAbpEntity { get; set; } = true;
+
+        public new GeneratorConfig GeneratorConfig = new GeneratorConfig()
+        {
+            FileRelativePath = "Entities",
+            FileEncoding = Encoding.UTF8,
+        };
 
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
@@ -60,7 +67,8 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
 
             var result = sb.ToString();
 
-            Output.ToFile(result, $"Entities\\{context.ClassInfo.ClassFileName}.cs", context.OutPutRootPath, Encoding.UTF8);
+            var outPutPath = Path.Combine("Entities", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
+            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
         private void AppendUsingNamespace(CodeGenerateTableContext tableContext, StringBuilder builder)

@@ -18,37 +18,37 @@ namespace AntC.CodeGenerate.Interfaces
         /// <param name="codeGenerateInfo"></param>
         void ExecCodeGenerate(CodeGenerateInfo codeGenerateInfo);
 
-        #region AddCodeGenerateExecutor
+        #region AddCodeGenerator
 
         /// <summary>
         /// 添加程序集中所有的代码创建器
         /// </summary>
         /// <param name="assembly"></param>
-        void AddCodeGenerateExecutor(Assembly assembly);
+        void AddCodeGenerator(Assembly assembly);
 
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executor"></param>
-        void AddCodeGenerateExecutor(ITableCodeGenerateExecutor executor);
+        void AddCodeGenerator(ITableCodeGenerator executor);
 
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executors"></param>
-        void AddCodeGenerateExecutor(IEnumerable<ITableCodeGenerateExecutor> executors);
+        void AddCodeGenerator(IEnumerable<ITableCodeGenerator> executors);
         
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executor"></param>
-        void AddCodeGenerateExecutor(IDbCodeGenerateExecutor executor);
+        void AddCodeGenerator(IDbCodeGenerator executor);
 
         /// <summary>
         /// 添加代码创建器
         /// </summary>
         /// <param name="executors"></param>
-        void AddCodeGenerateExecutor(IEnumerable<IDbCodeGenerateExecutor> executors);
+        void AddCodeGenerator(IEnumerable<IDbCodeGenerator> executors);
 
         #endregion
 

@@ -26,7 +26,7 @@ namespace AntC.CodeGenerate.UnitTest
             var serviceProvider = Init();
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
 
-            //codeGeneratorManager.AddCodeGenerateExecutor(serviceProvider.GetService<EntityCodeGenerateExecutor>());
+            //codeGeneratorManager.AddCodeGenerator(serviceProvider.GetService<EntityCodeGenerateExecutor>());
 
             codeGeneratorManager.ExecCodeGenerate(new CodeGenerateInfo()
             {

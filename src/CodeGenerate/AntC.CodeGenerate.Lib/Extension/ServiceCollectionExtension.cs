@@ -25,15 +25,15 @@ namespace AntC.CodeGenerate.Extension
         }
 
         /// <summary>
-        /// 注入 代码生成执行器<see cref="ITableCodeGenerateExecutor"/>
+        /// 注入 代码生成执行器<see cref="ITableCodeGenerator"/>
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
         public static IServiceCollection UseCodeGenerateExecutor(this IServiceCollection services, Assembly assembly)
         {
-            var targetTypeDb = typeof(IDbCodeGenerateExecutor);
-            var targetType = typeof(ITableCodeGenerateExecutor);
+            var targetTypeDb = typeof(IDbCodeGenerator);
+            var targetType = typeof(ITableCodeGenerator);
             assembly
                .GetTypes()
                .Where(x => x.GetInterface(targetType.Name) != null || x.GetInterface(targetTypeDb.Name) != null)

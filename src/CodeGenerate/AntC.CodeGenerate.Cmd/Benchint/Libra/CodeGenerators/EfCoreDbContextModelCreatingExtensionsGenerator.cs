@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using AntC.CodeGenerate.CodeGenerateExecutors;
@@ -6,13 +7,17 @@ using AntC.CodeGenerate.Extension;
 using AntC.CodeGenerate.Model;
 using AntC.CodeGenerate.Mysql.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 {
-    public class EfCoreDbContextModelCreatingExtensionsExecutor : BaseDbCodeGenerateExecutor
+    public class EfCoreDbContextModelCreatingExtensionsGenerator : BaseDbCodeGenerator
     {
         public override void ExecCodeGenerate(CodeGenerateDbContext context)
         {
             var className = context.GetClassName(context.CodeGenerateDbName);
+            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            {
+                className = className.Substring(0, className.Length - 2);
+            }
 
             var builder = new StringBuilder();
             builder.AppendLine("using Microsoft.EntityFrameworkCore;");
@@ -26,38 +31,90 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
             builder.AppendLine();
             builder.AppendLine("    {");
 
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射");
-            builder.AppendLine($"        /// </summary>");
-            builder.AppendLine($"        /// <param name=\"builder\"></param>");
-            builder.AppendLine($"        public static void Configure{className}(this ModelBuilder builder)");
-            builder.AppendLine($"        {{");
+            //AppendEntityOneByOne(builder, context);
+            AppendEntityByGroup(builder, context);
 
-            if (context.ClassInfo != null && context.ClassInfo.Any())
-            {
-                var i = 0;
-                foreach (var clsInfo in context.ClassInfo)
-                {
-                    if (i != 0)
-                    {
-                        builder.AppendLine("            ");
-                    }
-
-                    AppendEntityMap(builder, clsInfo);
-
-                    i++;
-                }
-            }
-
-            builder.AppendLine("        }");
             builder.AppendLine("    }");
             builder.AppendLine("}");
 
             var result = builder.ToString();
 
-            Output.ToFile(result,
-                $"EfCoreDbContext\\{context.GetClassFileName(context.CodeGenerateDbName)}DbContextModelCreatingExtensions.cs",
-                context.OutPutRootPath, Encoding.UTF8);
+            var outPutPath = Path.Combine("EfCoreDbContext", $"{className}DbContextModelCreatingExtensions.cs");
+            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
+        }
+
+        private void AppendEntityOneByOne(StringBuilder builder, CodeGenerateDbContext context)
+        {
+            builder.AppendLine($"        /// <summary>");
+            builder.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射");
+            builder.AppendLine($"        /// </summary>");
+            builder.AppendLine($"        /// <param name=\"builder\"></param>");
+            builder.AppendLine($"        public static void Configure{context.GetClassName(context.CodeGenerateDbName)}(this ModelBuilder builder)");
+            builder.AppendLine($"        {{");
+
+            var i = 0;
+            foreach (var clsInfo in context.ClassInfo.OrderBy(x => x.ClassName))
+            {
+                if (i != 0)
+                {
+                    builder.AppendLine("            ");
+                }
+
+                AppendEntityMap(builder, clsInfo);
+
+                i++;
+            }
+
+            builder.AppendLine("        }");
+        }
+
+        private void AppendEntityByGroup(StringBuilder builder, CodeGenerateDbContext context)
+        {
+            var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
+            var className = context.GetClassName(context.CodeGenerateDbName);
+
+            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            {
+                className = className.Substring(0, className.Length - 2);
+            }
+
+            builder.AppendLine($"        /// <summary>");
+            builder.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射");
+            builder.AppendLine($"        /// </summary>");
+            builder.AppendLine($"        /// <param name=\"builder\"></param>");
+            builder.AppendLine($"        public static void Configure{className}(this ModelBuilder builder)");
+            builder.AppendLine($"        {{");
+
+            foreach (var group in groupInfo)
+            {
+                builder.AppendLine($"            builder.Configure{className}{group.Key}();");
+            }
+
+            builder.AppendLine("        }");
+
+            foreach (var group in groupInfo)
+            {
+                builder.AppendLine("        ");
+                builder.AppendLine($"        /// <summary>");
+                builder.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key} 数据库EFCore关系映射");
+                builder.AppendLine($"        /// </summary>");
+                builder.AppendLine($"        /// <param name=\"builder\"></param>");
+                builder.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder builder)");
+                builder.AppendLine($"        {{");
+
+                var i = 0;
+                foreach (var clsInfo in group.OrderBy(x => x.ClassName))
+                {
+                    if (i != 0)
+                    {
+                        builder.AppendLine("            ");
+                    }
+                    AppendEntityMap(builder, clsInfo);
+                    i++;
+                }
+
+                builder.AppendLine("        }");
+            }
         }
 
         private void AppendEntityMap(StringBuilder builder, ClassModel clsInfo)
@@ -76,12 +133,11 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors
                 {
                     continue;
                 }
-                AppendEntityField(builder, property);
-                if (i < clsInfo.Properties.Count() - 1)
+                if (i != 0)
                 {
                     builder.AppendLine($"                ");
                 }
-
+                AppendEntityField(builder, property);
                 i++;
             }
 

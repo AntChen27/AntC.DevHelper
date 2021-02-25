@@ -2,7 +2,7 @@
 
 namespace AntC.CodeGenerate.CodeGenerateExecutors
 {
-    public abstract class BaseTableCodeGenerateExecutor : BaseCodeGenerateExecutor, ITableCodeGenerateExecutor
+    public abstract class BaseTableCodeGenerator : BaseCodeGenerator, ITableCodeGenerator
     {
         public abstract void ExecCodeGenerate(CodeGenerateTableContext context);
     }

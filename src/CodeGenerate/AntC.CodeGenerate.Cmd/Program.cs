@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerateExecutors;
 using AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters;
 using AntC.CodeGenerate.Extension;
 
@@ -17,8 +16,8 @@ namespace AntC.CodeGenerate.Cmd
     {
         static void Main(string[] args)
         {
-            var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
-            //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
+            //var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
+            var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
             var dbName = "libra.kpidb";
             var tableNames = new List<string>() { "kpi_define_base", "kpi_define_ext" };
 
@@ -27,22 +26,49 @@ namespace AntC.CodeGenerate.Cmd
             });
 
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
-            
-            codeGeneratorManager.AddCodeGenerateExecutor(typeof(Program).Assembly);
+
+            codeGeneratorManager.AddCodeGenerator(typeof(Program).Assembly);
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Program).Assembly);
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
-
-            codeGeneratorManager.ExecCodeGenerate(new CodeGenerateInfo()
+            var codeGenerateInfo = new CodeGenerateInfo()
             {
                 //OutPutRootPath = AppDomain.CurrentDomain.BaseDirectory,
                 DbName = dbName,
-                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo() { TableName = x })
-            });
+                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo()
+                {
+                    TableName = x,
+                    GroupName = GetGroupName(x)
+                })
+            };
+            codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
 
             var totalMemory = GC.GetTotalMemory(true);
 
             Console.WriteLine($"完成代码创建,共使用内存{GetMemorySizeWithUnit(totalMemory)}...");
+
+            //Process p = new Process();
+            //p.StartInfo.FileName = "explorer.exe";
+            //p.StartInfo.Arguments = codeGenerateInfo.OutPutRootPath;
+            //p.Start();
+        }
+
+        private static string GetGroupName(string tableName)
+        {
+            if (tableName.StartsWith("kpi_stat"))
+            {
+                return "Stat";
+            }
+            if (tableName.StartsWith("kpi_run"))
+            {
+                return "Run";
+            }
+            if (tableName.StartsWith("kpi_define"))
+            {
+                return "Define";
+            }
+
+            return "Basic";
         }
 
         private static string GetMemorySizeWithUnit(decimal byteSize, int jz = 0)

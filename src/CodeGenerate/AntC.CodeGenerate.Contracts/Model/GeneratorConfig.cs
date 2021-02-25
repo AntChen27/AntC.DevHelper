@@ -5,18 +5,18 @@ using System.Text;
 namespace AntC.CodeGenerate.Model
 {
     /// <summary>
-    /// 执行器信息
+    /// 执行器配置
     /// </summary>
-    public class ExecutorInfo
+    public class GeneratorConfig
     {
         /// <summary>
-        /// 执行器名称
+        /// 文件保存相对路径
         /// </summary>
-        public string Name { get; set; }
+        public string FileRelativePath { get; set; }
 
         /// <summary>
-        /// 执行器描述
+        /// 文件保存编码
         /// </summary>
-        public string Desc { get; set; }
+        public Encoding FileEncoding { get; set; } = Encoding.UTF8;
     }
 }

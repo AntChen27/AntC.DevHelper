@@ -39,5 +39,10 @@ namespace AntC.CodeGenerate.Model
         /// 表名称
         /// </summary>
         public string TableName { get; set; }
+
+        /// <summary>
+        /// 分组名称
+        /// </summary>
+        public string GroupName { get; set; }
     }
 }
