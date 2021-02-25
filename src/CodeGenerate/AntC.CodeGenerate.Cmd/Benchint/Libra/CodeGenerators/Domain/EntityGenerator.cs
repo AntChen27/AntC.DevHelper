@@ -5,7 +5,7 @@ using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Extension;
 using AntC.CodeGenerate.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Domain
 {
     public class EntityGenerator : BaseTableCodeGenerator
     {
@@ -20,26 +20,26 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("using System;");
-            AppendUsingNamespace(context, sb);
-            sb.AppendLine("");
-            sb.AppendLine($"namespace {context.GetNameSpace()}");
-            sb.AppendLine("{");
-            sb.AppendLine($"    /// <summary>");
-            sb.AppendLine($"    /// {context.ClassInfo.Annotation}");
-            sb.AppendLine($"    /// </summary>");
-            sb.Append($"    public partial class {context.ClassInfo.ClassName}");
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("using System;");
+            AppendUsingNamespace(context, builder);
+            builder.AppendLine("");
+            builder.AppendLine($"namespace {context.GetNameSpace()}");
+            builder.AppendLine("{");
+            builder.AppendLine($"    /// <summary>");
+            builder.AppendLine($"    /// {context.ClassInfo.Annotation}");
+            builder.AppendLine($"    /// </summary>");
+            builder.Append($"    public partial class {context.ClassInfo.ClassName}");
 
             if (UseAbpEntity)
             {
                 // 添加继承类
                 var superClassName = context.GetAbpEntitySuperClass();
-                sb.Append($"{(string.IsNullOrWhiteSpace(superClassName) ? string.Empty : $" : {superClassName}")}");
+                builder.Append($"{(string.IsNullOrWhiteSpace(superClassName) ? string.Empty : $" : {superClassName}")}");
             }
 
-            sb.AppendLine();
-            sb.AppendLine("    {");
+            builder.AppendLine();
+            builder.AppendLine("    {");
 
             if (context.ClassInfo.Properties != null && context.ClassInfo.Properties.Any())
             {
@@ -54,20 +54,20 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 
                     if (i != 0)
                     {
-                        sb.AppendLine("        ");
+                        builder.AppendLine("        ");
                     }
-                    sb.Append(ToClassContentString(col, context));
+                    builder.Append(ToClassContentString(col, context));
 
                     i++;
                 }
             }
 
-            sb.AppendLine("    }");
-            sb.AppendLine("}");
+            builder.AppendLine("    }");
+            builder.AppendLine("}");
 
-            var result = sb.ToString();
+            var result = builder.ToString();
 
-            var outPutPath = Path.Combine("Entities", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
+            var outPutPath = Path.Combine("Domain", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
@@ -87,14 +87,14 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
         /// <returns></returns>
         private string ToClassContentString(PropertyModel property, CodeGenerateTableContext tableContext)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"        /// <summary>");
-            sb.AppendLine($"        /// {property.Annotation}");
-            sb.AppendLine($"        /// </summary>");
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine($"        /// <summary>");
+            builder.AppendLine($"        /// {property.Annotation}");
+            builder.AppendLine($"        /// </summary>");
 
-            sb.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
+            builder.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
 
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

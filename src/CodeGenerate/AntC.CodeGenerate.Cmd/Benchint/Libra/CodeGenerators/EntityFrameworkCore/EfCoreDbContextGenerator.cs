@@ -5,7 +5,7 @@ using System.Text;
 using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore
 {
     public class EfCoreDbContextGenerator : BaseDbCodeGenerator
     {
@@ -40,7 +40,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 
             var result = builder.ToString();
 
-            var outPutPath = Path.Combine("EfCoreDbContext", $"{className}DbContext.cs");
+            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContext.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 

@@ -21,11 +21,11 @@ namespace AntC.CodeGenerate
         /// <summary>
         /// 执行器 -- 库
         /// </summary>
-        private readonly List<IDbCodeGenerator> _dbCodeGenerateExecutors;
+        private readonly List<IDbCodeGenerator> _dbCodeGenerators;
         /// <summary>
         /// 执行器 -- 表
         /// </summary>
-        private readonly List<ITableCodeGenerator> _tableCodeGenerateExecutors;
+        private readonly List<ITableCodeGenerator> _tableCodeGenerators;
 
         protected List<IPropertyTypeConverter> _propertyTypeConverters = new List<IPropertyTypeConverter>();
 
@@ -38,8 +38,8 @@ namespace AntC.CodeGenerate
         public CodeGeneratorManager(IDbInfoProvider dbInfoProvider)
         {
             DbInfoProvider = dbInfoProvider;
-            _tableCodeGenerateExecutors = new List<ITableCodeGenerator>();
-            _dbCodeGenerateExecutors = new List<IDbCodeGenerator>();
+            _tableCodeGenerators = new List<ITableCodeGenerator>();
+            _dbCodeGenerators = new List<IDbCodeGenerator>();
         }
 
         #region DbInfoProvider
@@ -133,7 +133,7 @@ namespace AntC.CodeGenerate
         /// <param name="codeGenerateInfo"></param>
         private void ExecDbCodeGenerate(CodeGenerateInfo codeGenerateInfo, [NotNull] ICollection<ClassModel> classModels)
         {
-            if (!_dbCodeGenerateExecutors.Any())
+            if (!_dbCodeGenerators.Any())
             {
                 return;
             }
@@ -141,6 +141,7 @@ namespace AntC.CodeGenerate
             var context = new CodeGenerateDbContext()
             {
                 DbInfoProvider = this,
+                CodeGeneratorContainer = this,
                 CodeConverter = CodeConverter,
                 CodeGenerateDbName = codeGenerateInfo.DbName,
                 OutPutRootPath = Path.Combine(codeGenerateInfo.OutPutRootPath, codeGenerateInfo.DbName),
@@ -156,7 +157,7 @@ namespace AntC.CodeGenerate
 
             context.ClassInfo = classModels;
 
-            foreach (var codeGenerateExecutor in _dbCodeGenerateExecutors)
+            foreach (var codeGenerateExecutor in _dbCodeGenerators)
             {
                 codeGenerateExecutor.ExecCodeGenerate(context);
             }
@@ -168,7 +169,7 @@ namespace AntC.CodeGenerate
         /// <param name="codeGenerateInfo"></param>
         private void ExecTableCodeGenerate(CodeGenerateInfo codeGenerateInfo, [NotNull] ICollection<ClassModel> classModels)
         {
-            if (!_tableCodeGenerateExecutors.Any())
+            if (!_tableCodeGenerators.Any())
             {
                 return;
             }
@@ -178,6 +179,7 @@ namespace AntC.CodeGenerate
                 var context = new CodeGenerateTableContext()
                 {
                     DbInfoProvider = this,
+                    CodeGeneratorContainer = this,
                     CodeConverter = CodeConverter,
                     CodeGenerateDbName = codeGenerateInfo.DbName,
                     CodeGenerateTableInfo = tableInfo,
@@ -185,7 +187,7 @@ namespace AntC.CodeGenerate
                 };
                 context.ClassInfo = GetClassModel(context, tableInfo);
                 classModels.Add(context.ClassInfo);
-                foreach (var codeGenerateExecutor in _tableCodeGenerateExecutors)
+                foreach (var codeGenerateExecutor in _tableCodeGenerators)
                 {
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }
@@ -228,33 +230,39 @@ namespace AntC.CodeGenerate
                 .GetTypes()
                 .Where(x => x.GetInterface(targetType.Name) != null)
                 .Select(x => (ITableCodeGenerator)ServiceProvider.GetService(x));
-            _tableCodeGenerateExecutors.AddRange(instances);
+            _tableCodeGenerators.AddRange(instances);
 
             var instanceDbs = assembly
                 .GetTypes()
                 .Where(x => x.GetInterface(targetTypeDb.Name) != null)
                 .Select(x => (IDbCodeGenerator)ServiceProvider.GetService(x));
-            _dbCodeGenerateExecutors.AddRange(instanceDbs);
+            _dbCodeGenerators.AddRange(instanceDbs);
         }
 
         public void AddCodeGenerator(ITableCodeGenerator executor)
         {
-            _tableCodeGenerateExecutors.Add(executor);
+            _tableCodeGenerators.Add(executor);
         }
 
         public void AddCodeGenerator(IEnumerable<ITableCodeGenerator> executors)
         {
-            _tableCodeGenerateExecutors.AddRange(executors);
+            _tableCodeGenerators.AddRange(executors);
         }
 
         public void AddCodeGenerator(IDbCodeGenerator executor)
         {
-            _dbCodeGenerateExecutors.Add(executor);
+            _dbCodeGenerators.Add(executor);
         }
 
         public void AddCodeGenerator(IEnumerable<IDbCodeGenerator> executors)
         {
-            _dbCodeGenerateExecutors.AddRange(executors);
+            _dbCodeGenerators.AddRange(executors);
+        }
+
+        public bool ContainsCodeGenerator(Type type)
+        {
+            return _dbCodeGenerators.Any(x => x.GetType() == type)
+               || _tableCodeGenerators.Any(x => x.GetType() == type);
         }
 
         #endregion

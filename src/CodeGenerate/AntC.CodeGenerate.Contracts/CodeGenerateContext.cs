@@ -28,6 +28,11 @@ namespace AntC.CodeGenerate
         /// 要创建的库名称
         /// </summary>
         public string CodeGenerateDbName { get; set; }
+
+        /// <summary>
+        /// 代码创建器容器
+        /// </summary>
+        public IReadOnlyCodeGeneratorContainer CodeGeneratorContainer { get; set; }
     }
 
     /// <summary>

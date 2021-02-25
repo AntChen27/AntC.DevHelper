@@ -7,7 +7,7 @@ using AntC.CodeGenerate.Extension;
 using AntC.CodeGenerate.Model;
 using AntC.CodeGenerate.Mysql.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
+namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore
 {
     public class EfCoreDbContextModelCreatingExtensionsGenerator : BaseDbCodeGenerator
     {
@@ -39,7 +39,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators
 
             var result = builder.ToString();
 
-            var outPutPath = Path.Combine("EfCoreDbContext", $"{className}DbContextModelCreatingExtensions.cs");
+            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContextModelCreatingExtensions.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
