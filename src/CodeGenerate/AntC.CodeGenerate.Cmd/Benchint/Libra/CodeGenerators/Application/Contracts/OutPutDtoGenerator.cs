@@ -25,7 +25,18 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
             builder.AppendLine($"    /// <summary>");
             builder.AppendLine($"    /// {context.ClassInfo.Annotation} 数据传输对象");
             builder.AppendLine($"    /// </summary>");
-            builder.AppendLine($"    public class {context.ClassInfo.ClassName}Dto : EntityDto");
+            builder.Append($"    public class {context.ClassInfo.ClassName}Dto : EntityDto");
+
+            if (context.ClassInfo.Properties != null)
+            {
+                var key = context.ClassInfo.Properties.FirstOrDefault(x => x.DbColumnInfo.Key);
+                if (key != null)
+                {
+                    builder.Append($"<{key.PropertyTypeName}>");
+                }
+            }
+
+            builder.AppendLine();
             // todo 需要根据情况进行实体继承类的判断
             builder.AppendLine("    {");
             if (context.ClassInfo.Properties != null && context.ClassInfo.Properties.Any())
@@ -54,7 +65,11 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
 
             var result = builder.ToString();
 
-            var outPutPath = Path.Combine("Application.Contracts", context.ClassInfo.GroupName ?? String.Empty, $"{context.ClassInfo.ClassName}Dto.cs");
+            var outPutPath = Path.Combine("Application.Contracts",
+                context.ClassInfo.GroupName ?? String.Empty,
+                "Dto",
+                 context.ClassInfo.ClassName,
+                $"{context.ClassInfo.ClassName}Dto.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
@@ -76,7 +91,9 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
                 builder.AppendLine($"        [Required(ErrorMessage = \"{property.Annotation} 不能为空\")]");
             }
 
-            if (EnableAttribute && "string".Equals(property.PropertyTypeName, StringComparison.CurrentCultureIgnoreCase))
+            if (EnableAttribute &&
+                "string".Equals(property.PropertyTypeName, StringComparison.CurrentCultureIgnoreCase)
+                && property.DbColumnInfo.DataLength <= int.MaxValue)
             {
                 builder.AppendLine($"        [StringLength({property.DbColumnInfo.DataLength}, ErrorMessage = \"{property.Annotation} 不能超过{property.DbColumnInfo.DataLength}位的长度\")]");
             }

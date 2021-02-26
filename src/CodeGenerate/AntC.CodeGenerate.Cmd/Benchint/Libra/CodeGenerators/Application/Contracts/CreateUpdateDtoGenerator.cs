@@ -48,13 +48,17 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
                     i++;
                 }
             }
-            
+
             builder.AppendLine("    }");
             builder.AppendLine("}");
 
             var result = builder.ToString();
 
-            var outPutPath = Path.Combine("Application.Contracts", context.ClassInfo.GroupName ?? String.Empty, $"CreateUpdate{context.ClassInfo.ClassName}Dto.cs");
+            var outPutPath = Path.Combine("Application.Contracts",
+                context.ClassInfo.GroupName ?? String.Empty,
+                "Dto",
+                context.ClassInfo.ClassName,
+                $"CreateUpdate{context.ClassInfo.ClassName}Dto.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
@@ -76,7 +80,9 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
                 builder.AppendLine($"        [Required(ErrorMessage = \"{property.Annotation} 不能为空\")]");
             }
 
-            if (EnableAttribute && "string".Equals(property.PropertyTypeName, StringComparison.CurrentCultureIgnoreCase))
+            if (EnableAttribute &&
+                "string".Equals(property.PropertyTypeName, StringComparison.CurrentCultureIgnoreCase)
+                && property.DbColumnInfo.DataLength <= int.MaxValue)
             {
                 builder.AppendLine($"        [StringLength({property.DbColumnInfo.DataLength}, ErrorMessage = \"{property.Annotation} 不能超过{property.DbColumnInfo.DataLength}位的长度\")]");
             }

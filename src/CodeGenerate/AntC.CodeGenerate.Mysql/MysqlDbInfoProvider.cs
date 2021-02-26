@@ -182,6 +182,7 @@ namespace AntC.CodeGenerate.Mysql
                 //Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
                 //Console.WriteLine();
             };
+            db.Open();
             return db;
         }
     }

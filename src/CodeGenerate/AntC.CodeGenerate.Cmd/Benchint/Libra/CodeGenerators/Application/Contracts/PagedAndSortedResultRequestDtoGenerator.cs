@@ -13,7 +13,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("using System.ComponentModel.DataAnnotations;");
+            builder.AppendLine("using System;");
             builder.AppendLine("using Volo.Abp.Application.Dtos;");
             builder.AppendLine("");
             builder.AppendLine($"namespace {context.GetNameSpace()}");
@@ -38,7 +38,11 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
 
             var result = builder.ToString();
 
-            var outPutPath = Path.Combine("Application.Contracts", context.ClassInfo.GroupName ?? String.Empty, $"{context.ClassInfo.ClassName}PagedAndSortedResultRequestDto.cs");
+            var outPutPath = Path.Combine("Application.Contracts",
+                context.ClassInfo.GroupName ?? String.Empty,
+                "Dto",
+                 context.ClassInfo.ClassName,
+                $"{context.ClassInfo.ClassName}PagedAndSortedResultRequestDto.cs");
             Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 

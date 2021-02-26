@@ -13,11 +13,11 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters
         {
             {"kpi_calc_cate","KpiCalcCate"},
             {"stat_way","KpiStatWay"},
-            {"run_stat","KpiRunStat"},
+            {"run_stat","KpiStatRunStatus"},
             {"stat_time_dimension","KpiStatTimeDimension"},
             {"enable","EnableStatus"},
             {"db_type","KpiDbType"},
-            {"data_source","DataSource"},
+            {"data_source","KpiStatDataSource"},
         };
 
         public bool CanConvert(PropertyModel property)
