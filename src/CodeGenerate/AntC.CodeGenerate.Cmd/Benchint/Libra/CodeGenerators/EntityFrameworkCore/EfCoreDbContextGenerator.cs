@@ -10,26 +10,31 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
 {
     public class EfCoreDbContextGenerator : BaseDbCodeGenerator
     {
-        public override void ExecCodeGenerate(CodeGenerateDbContext context)
+        private string _className;
+
+        public override void PreExecCodeGenerate(CodeGenerateDbContext context)
         {
-            var className = context.GetClassName(context.CodeGenerateDbName);
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            _className = context.GetClassName(context.CodeGenerateDbName);
+            if (_className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
             {
-                className = className.Substring(0, className.Length - 2);
+                _className = _className.Substring(0, _className.Length - 2);
             }
 
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContext.cs");
+            var outPutPath = Path.Combine("EntityFrameworkCore", $"{_className}DbContext.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateDbContext context)
+        {
             context.AppendLine("using System;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
             context.AppendLine("{");
             context.AppendLine($"    /// <summary>");
-            context.AppendLine($"    /// {className}");
+            context.AppendLine($"    /// {_className}");
             context.AppendLine($"    /// </summary>");
-            context.AppendLine($"    [ConnectionStringName(\"{className}\")]");
-            context.Append($"    public partial class {className}DbContext : AbpDbContext<{className}DbContext>");
+            context.AppendLine($"    [ConnectionStringName(\"{context.CodeGenerateDbName}\")]");
+            context.Append($"    public partial class {_className}DbContext : AbpDbContext<{_className}DbContext>");
 
             context.AppendLine();
             context.AppendLine("    {");
@@ -63,12 +68,6 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
         private void AppendByGroup(CodeGenerateDbContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
-            var className = context.GetClassName(context.CodeGenerateDbName);
-
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
-            {
-                className = className.Substring(0, className.Length - 2);
-            }
 
             var groupIndex = 0;
             foreach (var group in groupInfo)

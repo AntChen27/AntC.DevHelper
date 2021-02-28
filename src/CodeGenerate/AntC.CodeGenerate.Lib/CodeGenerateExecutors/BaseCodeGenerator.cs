@@ -5,7 +5,8 @@ using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.CodeGenerateExecutors
 {
-    public abstract class BaseCodeGenerator
+    public abstract class BaseCodeGenerator<TContext> : ICodeGenerator<TContext>
+        where TContext : CodeGenerateContext
     {
         protected GeneratorInfo DefaultGeneratorInfo;
 
@@ -24,6 +25,25 @@ namespace AntC.CodeGenerate.CodeGenerateExecutors
         /// 代码创建器参数
         /// </summary>
         public virtual GeneratorConfig GeneratorConfig { get; } = new GeneratorConfig();
+
+        public virtual void ExecCodeGenerate(TContext context)
+        {
+            PreExecCodeGenerate(context);
+            ExecutingCodeGenerate(context);
+            ExecutedCodeGenerate(context);
+        }
+
+        public virtual void PreExecCodeGenerate(TContext context)
+        {
+
+        }
+
+        public abstract void ExecutingCodeGenerate(TContext context);
+
+        public virtual void ExecutedCodeGenerate(TContext context)
+        {
+
+        }
 
         protected virtual void SetRelativePath(CodeGenerateContext context, string fileRelativePath)
         {

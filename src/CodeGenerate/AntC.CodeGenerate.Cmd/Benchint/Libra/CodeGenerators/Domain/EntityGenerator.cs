@@ -18,11 +18,14 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Domain
             FileEncoding = Encoding.UTF8,
         };
 
-        public override void ExecCodeGenerate(CodeGenerateTableContext context)
+        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
         {
             var outPutPath = Path.Combine("Domain", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        {
             context.AppendLine("using System;");
             AppendUsingNamespace(context);
             context.AppendLine("");

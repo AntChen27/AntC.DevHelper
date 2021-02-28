@@ -1,21 +1,23 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contracts;
+﻿using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contracts;
 using AntC.CodeGenerate.CodeGenerateExecutors;
-using AntC.CodeGenerate.Extension;
-using AntC.CodeGenerate.Model;
+using System;
+using System.IO;
 
 namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application
 {
     public class AutoMapperProfileGenerator : BaseTableCodeGenerator
     {
-        public override void ExecCodeGenerate(CodeGenerateTableContext context)
+        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
         {
-            var outPutPath = Path.Combine("Application", context.ClassInfo.GroupName ?? String.Empty, $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs");
+            var outPutPath = Path.Combine("Application",
+                context.ClassInfo.GroupName ?? string.Empty,
+                "Mapper",
+                $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        {
             context.AppendLine("using AutoMapper;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");

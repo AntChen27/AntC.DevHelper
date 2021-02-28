@@ -14,15 +14,18 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
         public bool UseAbpDto { get; set; } = true;
         public bool EnableAttribute { get; set; } = true;
 
-        public override void ExecCodeGenerate(CodeGenerateTableContext context)
+        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
         {
             var outPutPath = Path.Combine("Application.Contracts",
-                context.ClassInfo.GroupName ?? String.Empty,
+                context.ClassInfo.GroupName ?? string.Empty,
                 "Dto",
                 context.ClassInfo.ClassName,
                 $"CreateUpdate{context.ClassInfo.ClassName}Dto.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        {
             context.AppendLine("using System.ComponentModel.DataAnnotations;");
             context.AppendLine("using Volo.Abp.Application.Dtos;");
             context.AppendLine("");

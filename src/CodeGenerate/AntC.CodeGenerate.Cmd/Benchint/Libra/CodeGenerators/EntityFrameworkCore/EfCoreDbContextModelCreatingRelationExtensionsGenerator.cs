@@ -11,17 +11,22 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
 {
     public class EfCoreDbContextModelCreatingRelationExtensionsGenerator : BaseDbCodeGenerator
     {
-        public override void ExecCodeGenerate(CodeGenerateDbContext context)
+        private string _className;
+        public override void PreExecCodeGenerate(CodeGenerateDbContext context)
         {
-            var className = context.GetClassName(context.CodeGenerateDbName);
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            _className = context.GetClassName(context.CodeGenerateDbName);
+            if (_className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
             {
-                className = className.Substring(0, className.Length - 2);
+                _className = _className.Substring(0, _className.Length - 2);
             }
 
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContextModelCreatingRelationExtensions.cs");
+            var outPutPath = Path.Combine("EntityFrameworkCore",
+                $"{_className}DbContextModelCreatingRelationExtensions.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateDbContext context)
+        {
             var builder = context.CodeWriter;
             builder.AppendLine("using Microsoft.EntityFrameworkCore;");
             builder.AppendLine("");
@@ -30,7 +35,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             builder.AppendLine($"    /// <summary>");
             builder.AppendLine($"    /// {context.CodeGenerateDbName} 库关系映射扩展类 - 表间关系");
             builder.AppendLine($"    /// </summary>");
-            builder.Append($"    public static class {className}DbContextModelCreatingRelationExtensions");
+            builder.Append($"    public static class {_className}DbContextModelCreatingRelationExtensions");
             builder.AppendLine();
             builder.AppendLine("    {");
 
@@ -69,23 +74,17 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
         private void AppendEntityByGroup(CodeGenerateDbContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
-            var className = context.GetClassName(context.CodeGenerateDbName);
-
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
-            {
-                className = className.Substring(0, className.Length - 2);
-            }
 
             context.AppendLine($"        /// <summary>");
             context.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射 - 表间关系");
             context.AppendLine($"        /// </summary>");
             context.AppendLine($"        /// <param name=\"context\"></param>");
-            context.AppendLine($"        public static void Configure{className}(this ModelBuilder context)");
+            context.AppendLine($"        public static void Configure{_className}(this ModelBuilder context)");
             context.AppendLine($"        {{");
 
             foreach (var group in groupInfo)
             {
-                context.AppendLine($"            context.Configure{className}{group.Key}();");
+                context.AppendLine($"            context.Configure{_className}{group.Key}();");
             }
 
             context.AppendLine("        }");
@@ -97,7 +96,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
                 context.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key}  数据库EFCore关系映射 - 表间关系");
                 context.AppendLine($"        /// </summary>");
                 context.AppendLine($"        /// <param name=\"context\"></param>");
-                context.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder context)");
+                context.AppendLine($"        public static void Configure{_className}{group.Key}(this ModelBuilder context)");
                 context.AppendLine($"        {{");
 
                 var i = 0;

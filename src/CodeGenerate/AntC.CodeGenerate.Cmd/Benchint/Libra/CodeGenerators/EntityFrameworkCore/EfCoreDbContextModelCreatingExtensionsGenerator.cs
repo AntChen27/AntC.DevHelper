@@ -12,17 +12,22 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
 {
     public class EfCoreDbContextModelCreatingExtensionsGenerator : BaseDbCodeGenerator
     {
-        public override void ExecCodeGenerate(CodeGenerateDbContext context)
+        private string _className;
+
+        public override void PreExecCodeGenerate(CodeGenerateDbContext context)
         {
-            var className = context.GetClassName(context.CodeGenerateDbName);
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            _className = context.GetClassName(context.CodeGenerateDbName);
+            if (_className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
             {
-                className = className.Substring(0, className.Length - 2);
+                _className = _className.Substring(0, _className.Length - 2);
             }
 
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContextModelCreatingExtensions.cs");
+            var outPutPath = Path.Combine("EntityFrameworkCore", $"{_className}DbContextModelCreatingExtensions.cs");
             SetRelativePath(context, outPutPath);
+        }
 
+        public override void ExecutingCodeGenerate(CodeGenerateDbContext context)
+        {
             context.AppendLine("using Microsoft.EntityFrameworkCore;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
@@ -30,7 +35,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             context.AppendLine($"    /// <summary>");
             context.AppendLine($"    /// {context.CodeGenerateDbName} 库关系映射扩展类");
             context.AppendLine($"    /// </summary>");
-            context.Append($"    public static class {className}DbContextModelCreatingExtensions");
+            context.Append($"    public static class {_className}DbContextModelCreatingExtensions");
             context.AppendLine();
             context.AppendLine("    {");
 
@@ -69,23 +74,17 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
         private void AppendEntityByGroup(CodeGenerateDbContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
-            var className = context.GetClassName(context.CodeGenerateDbName);
-
-            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
-            {
-                className = className.Substring(0, className.Length - 2);
-            }
 
             context.AppendLine($"        /// <summary>");
             context.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射");
             context.AppendLine($"        /// </summary>");
             context.AppendLine($"        /// <param name=\"context\"></param>");
-            context.AppendLine($"        public static void Configure{className}(this ModelBuilder context)");
+            context.AppendLine($"        public static void Configure{_className}(this ModelBuilder context)");
             context.AppendLine($"        {{");
 
             foreach (var group in groupInfo)
             {
-                context.AppendLine($"            context.Configure{className}{group.Key}();");
+                context.AppendLine($"            context.Configure{_className}{group.Key}();");
             }
 
             context.AppendLine("        }");
@@ -97,7 +96,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
                 context.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key} 数据库EFCore关系映射");
                 context.AppendLine($"        /// </summary>");
                 context.AppendLine($"        /// <param name=\"context\"></param>");
-                context.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder context)");
+                context.AppendLine($"        public static void Configure{_className}{group.Key}(this ModelBuilder context)");
                 context.AppendLine($"        {{");
 
                 var i = 0;
@@ -158,7 +157,7 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             // todo 添加索引写入
         }
 
-        private void AppendEntityField(ICodeWriter writer, PropertyModel property)
+        private void AppendEntityField(ICodeWriter builder, PropertyModel property)
         {
             if (property.DbColumnInfo == null)
             {
@@ -166,43 +165,43 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             }
 
 
-            writer.Append($"                entity.Property(e => e.{property.PropertyName})");
+            builder.Append($"                entity.Property(e => e.{property.PropertyName})");
             if (!property.DbColumnInfo.Nullable)
             {
-                writer.AppendLine();
-                writer.Append($"                    .IsRequired()");
+                builder.AppendLine();
+                builder.Append($"                    .IsRequired()");
             }
-            writer.AppendLine();
-            writer.Append($"                    .HasColumnName(\"{property.DbColumnInfo.ColumnName}\")");
-            writer.AppendLine();
-            writer.Append($"                    .HasColumnType(\"{property.DbColumnInfo.DataTypeName}\")");
+            builder.AppendLine();
+            builder.Append($"                    .HasColumnName(\"{property.DbColumnInfo.ColumnName}\")");
+            builder.AppendLine();
+            builder.Append($"                    .HasColumnType(\"{property.DbColumnInfo.DataTypeName}\")");
 
             if (!string.IsNullOrEmpty(property.DbColumnInfo.DefaultValue))
             {
-                writer.AppendLine();
-                writer.Append($"                    .HasDefaultValueSql(\"'{property.DbColumnInfo.DefaultValue}'\")");
+                builder.AppendLine();
+                builder.Append($"                    .HasDefaultValueSql(\"'{property.DbColumnInfo.DefaultValue}'\")");
             }
             if (!string.IsNullOrEmpty(property.DbColumnInfo.Commont))
             {
-                writer.AppendLine();
-                writer.Append($"                    .HasComment(\"{property.DbColumnInfo.Commont}\")");
+                builder.AppendLine();
+                builder.Append($"                    .HasComment(\"{property.DbColumnInfo.Commont}\")");
             }
             if (property.DbColumnInfo is MysqlDbColumnInfoModel mysqlDbColumnInfo)
             {
                 if (!string.IsNullOrEmpty(mysqlDbColumnInfo.CharacterSetName))
                 {
-                    writer.AppendLine();
-                    writer.Append($"                    .HasCharSet(\"{mysqlDbColumnInfo.CharacterSetName}\")");
+                    builder.AppendLine();
+                    builder.Append($"                    .HasCharSet(\"{mysqlDbColumnInfo.CharacterSetName}\")");
                 }
 
                 if (!string.IsNullOrEmpty(mysqlDbColumnInfo.CollationName))
                 {
-                    writer.AppendLine();
-                    writer.Append($"                    .HasCollation(\"{mysqlDbColumnInfo.CollationName}\")");
+                    builder.AppendLine();
+                    builder.Append($"                    .HasCollation(\"{mysqlDbColumnInfo.CollationName}\")");
                 }
             }
 
-            writer.AppendLine(";");
+            builder.AppendLine(";");
         }
     }
 }
