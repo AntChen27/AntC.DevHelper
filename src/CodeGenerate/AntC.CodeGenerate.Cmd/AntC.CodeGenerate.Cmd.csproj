@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AntC.CodeGenerate.Contracts\AntC.CodeGenerate.Contracts.csproj" />
-    <ProjectReference Include="..\AntC.CodeGenerate.Mysql\AntC.CodeGenerate.Mysql.csproj" />
+    <ProjectReference Include="..\Impl\AntC.CodeGenerate.Impl.Benchint\AntC.CodeGenerate.Impl.Benchint.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@ using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore;
 using AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters;
 using AntC.CodeGenerate.CodeWriters;
 using AntC.CodeGenerate.Extension;
+using AntC.CodeGenerate.Impl.Benchint;
 
 namespace AntC.CodeGenerate.Cmd
 {
@@ -26,15 +27,12 @@ namespace AntC.CodeGenerate.Cmd
 
             var serviceProvider = Init(services =>
             {
+                services.UseBenchintCodeGenerateImpl();
+
             });
 
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
-
-            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextGenerator());
-            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextModelCreatingExtensionsGenerator());
-            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextModelCreatingRelationExtensionsGenerator());
-            codeGeneratorManager.AddCodeGenerator(typeof(Program).Assembly);
-            codeGeneratorManager.AddPropertyTypeConverter(typeof(Program).Assembly);
+            codeGeneratorManager.UseBenchintCodeGenerateImpl();
             codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
@@ -110,8 +108,6 @@ namespace AntC.CodeGenerate.Cmd
             services.AddTransient<MysqlDbInfoProvider, MysqlDbInfoProvider>();
             services.AddTransient<ICodeConverter, DefaultCodeConverter>();
 
-            services.UseCodeGenerateExecutor(typeof(Program).Assembly);
-            services.UsePropertyTypeConverter(typeof(Program).Assembly);
             services.UseCodeWriter(typeof(CodeFileWriter).Assembly);
 
             action?.Invoke(services);
