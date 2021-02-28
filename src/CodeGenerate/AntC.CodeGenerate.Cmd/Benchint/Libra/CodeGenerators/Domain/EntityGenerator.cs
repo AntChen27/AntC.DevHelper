@@ -20,26 +20,28 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Domain
 
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("using System;");
-            AppendUsingNamespace(context, builder);
-            builder.AppendLine("");
-            builder.AppendLine($"namespace {context.GetNameSpace()}");
-            builder.AppendLine("{");
-            builder.AppendLine($"    /// <summary>");
-            builder.AppendLine($"    /// {context.ClassInfo.Annotation}");
-            builder.AppendLine($"    /// </summary>");
-            builder.Append($"    public partial class {context.ClassInfo.ClassName}");
+            var outPutPath = Path.Combine("Domain", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
+            SetRelativePath(context, outPutPath);
+
+            context.AppendLine("using System;");
+            AppendUsingNamespace(context);
+            context.AppendLine("");
+            context.AppendLine($"namespace {context.GetNameSpace()}");
+            context.AppendLine("{");
+            context.AppendLine($"    /// <summary>");
+            context.AppendLine($"    /// {context.ClassInfo.Annotation}");
+            context.AppendLine($"    /// </summary>");
+            context.Append($"    public partial class {context.ClassInfo.ClassName}");
 
             if (UseAbpEntity)
             {
                 // 添加继承类
                 var superClassName = context.GetAbpEntitySuperClass();
-                builder.Append($"{(string.IsNullOrWhiteSpace(superClassName) ? string.Empty : $" : {superClassName}")}");
+                context.Append($"{(string.IsNullOrWhiteSpace(superClassName) ? string.Empty : $" : {superClassName}")}");
             }
 
-            builder.AppendLine();
-            builder.AppendLine("    {");
+            context.AppendLine();
+            context.AppendLine("    {");
 
             if (context.ClassInfo.Properties != null && context.ClassInfo.Properties.Any())
             {
@@ -54,28 +56,23 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Domain
 
                     if (i != 0)
                     {
-                        builder.AppendLine("        ");
+                        context.AppendLine("        ");
                     }
-                    builder.Append(ToClassContentString(col, context));
+                    AppendClassContentString(col, context);
 
                     i++;
                 }
             }
 
-            builder.AppendLine("    }");
-            builder.AppendLine("}");
-
-            var result = builder.ToString();
-
-            var outPutPath = Path.Combine("Domain", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
-            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
+            context.AppendLine("    }");
+            context.AppendLine("}");
         }
 
-        private void AppendUsingNamespace(CodeGenerateTableContext tableContext, StringBuilder builder)
+        private void AppendUsingNamespace(CodeGenerateTableContext context)
         {
             if (UseAbpProperty)
             {
-                builder.AppendLine($"using {tableContext.GetAbpEntitySuperClassNamespace()};");
+                context.AppendLine($"using {context.GetAbpEntitySuperClassNamespace()};");
             }
         }
 
@@ -83,18 +80,15 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Domain
         /// 
         /// </summary>
         /// <param name="property"></param>
-        /// <param name="tableContext"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        private string ToClassContentString(PropertyModel property, CodeGenerateTableContext tableContext)
+        private void AppendClassContentString(PropertyModel property, CodeGenerateTableContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {property.Annotation}");
-            builder.AppendLine($"        /// </summary>");
+            context.AppendLine($"        /// <summary>");
+            context.AppendLine($"        /// {property.Annotation}");
+            context.AppendLine($"        /// </summary>");
 
-            builder.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
-
-            return builder.ToString();
+            context.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
         }
     }
 }

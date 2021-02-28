@@ -13,43 +13,40 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application
     {
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("using AutoMapper;");
-            builder.AppendLine("");
-            builder.AppendLine($"namespace {context.GetNameSpace()}");
-            builder.AppendLine("{");
-            builder.AppendLine($"    /// <summary>");
-            builder.AppendLine($"    /// {context.ClassInfo.Annotation} AutoMapper映射配置");
-            builder.AppendLine($"    /// </summary>");
-            builder.AppendLine($"    public class {context.ClassInfo.ClassName}ApplicationAutoMapperProfile : Profile");
-            builder.AppendLine("    {");
-            builder.AppendLine($"        public {context.ClassInfo.ClassName}ApplicationAutoMapperProfile()");
-            builder.AppendLine("        {");
+            var outPutPath = Path.Combine("Application", context.ClassInfo.GroupName ?? String.Empty, $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs");
+            SetRelativePath(context, outPutPath);
+
+            context.AppendLine("using AutoMapper;");
+            context.AppendLine("");
+            context.AppendLine($"namespace {context.GetNameSpace()}");
+            context.AppendLine("{");
+            context.AppendLine($"    /// <summary>");
+            context.AppendLine($"    /// {context.ClassInfo.Annotation} AutoMapper映射配置");
+            context.AppendLine($"    /// </summary>");
+            context.AppendLine($"    public class {context.ClassInfo.ClassName}ApplicationAutoMapperProfile : Profile");
+            context.AppendLine("    {");
+            context.AppendLine($"        public {context.ClassInfo.ClassName}ApplicationAutoMapperProfile()");
+            context.AppendLine("        {");
 
             if (context.CodeGeneratorContainer.ContainsCodeGenerator(typeof(CreateUpdateDtoGenerator)))
             {
-                builder.AppendLine(
+                context.AppendLine(
                     $"            CreateMap<CreateUpdate{context.ClassInfo.ClassName}Dto, {context.ClassInfo.ClassName}>();");
-                builder.AppendLine(
+                context.AppendLine(
                     $"            CreateMap<{context.ClassInfo.ClassName}, CreateUpdate{context.ClassInfo.ClassName}Dto>();");
             }
 
             if (context.CodeGeneratorContainer.ContainsCodeGenerator(typeof(OutPutDtoGenerator)))
             {
-                builder.AppendLine(
+                context.AppendLine(
                     $"            CreateMap<{context.ClassInfo.ClassName}Dto, {context.ClassInfo.ClassName}>();");
-                builder.AppendLine(
+                context.AppendLine(
                     $"            CreateMap<{context.ClassInfo.ClassName}, {context.ClassInfo.ClassName}Dto>();");
             }
 
-            builder.AppendLine("        }");
-            builder.AppendLine("    }");
-            builder.AppendLine("}");
-
-            var result = builder.ToString();
-
-            var outPutPath = Path.Combine("Application", context.ClassInfo.GroupName ?? String.Empty, $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs");
-            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
+            context.AppendLine("        }");
+            context.AppendLine("    }");
+            context.AppendLine("}");
         }
     }
 }

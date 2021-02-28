@@ -17,5 +17,11 @@ namespace AntC.CodeGenerate.Interfaces
         /// </summary>
         /// <param name="codeGenerateInfo"></param>
         void ExecCodeGenerate(CodeGenerateInfo codeGenerateInfo);
+
+        /// <summary>
+        /// 设置代码输出器类型
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        void SetCodeWriterType<T>() where T : ICodeWriter;
     }
 }

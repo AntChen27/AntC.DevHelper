@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AntC.CodeGenerate
 {
@@ -17,6 +18,8 @@ namespace AntC.CodeGenerate
         public ICodeConverter CodeConverter { get; set; }
 
         public IServiceProvider ServiceProvider { get; set; }
+
+        private Type _codeWriterType;
 
         /// <summary>
         /// 执行器 -- 库
@@ -116,6 +119,10 @@ namespace AntC.CodeGenerate
         {
             Check.NotNull(codeGenerateInfo, nameof(codeGenerateInfo));
             Check.NotNullOrEmpty<CodeGenerateTableInfo>(codeGenerateInfo.CodeGenerateTableInfos.ToList(), $"{nameof(codeGenerateInfo)}.{nameof(codeGenerateInfo.CodeGenerateTableInfos)}");
+            if (this._codeWriterType == null)
+            {
+                throw new Exception($"please call method {nameof(SetCodeWriterType)}() first.");
+            }
 
             codeGenerateInfo.OutPutRootPath = string.IsNullOrEmpty(codeGenerateInfo.OutPutRootPath)
                 ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output")
@@ -125,6 +132,11 @@ namespace AntC.CodeGenerate
 
             ExecTableCodeGenerate(codeGenerateInfo, classModels);
             ExecDbCodeGenerate(codeGenerateInfo, classModels);
+        }
+
+        public void SetCodeWriterType<T>() where T : ICodeWriter
+        {
+            this._codeWriterType = typeof(T);
         }
 
         /// <summary>
@@ -138,7 +150,7 @@ namespace AntC.CodeGenerate
                 return;
             }
 
-            var context = new CodeGenerateDbContext()
+            using var context = new CodeGenerateDbContext()
             {
                 DbInfoProvider = this,
                 CodeGeneratorContainer = this,
@@ -159,6 +171,8 @@ namespace AntC.CodeGenerate
 
             foreach (var codeGenerateExecutor in _dbCodeGenerators)
             {
+                using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
+                context.CodeWriter = codeWriter;
                 codeGenerateExecutor.ExecCodeGenerate(context);
             }
         }
@@ -176,7 +190,7 @@ namespace AntC.CodeGenerate
 
             foreach (var tableInfo in codeGenerateInfo.CodeGenerateTableInfos)
             {
-                var context = new CodeGenerateTableContext()
+                using var context = new CodeGenerateTableContext()
                 {
                     DbInfoProvider = this,
                     CodeGeneratorContainer = this,
@@ -189,9 +203,19 @@ namespace AntC.CodeGenerate
                 classModels.Add(context.ClassInfo);
                 foreach (var codeGenerateExecutor in _tableCodeGenerators)
                 {
+                    using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
+                    context.CodeWriter = codeWriter;
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }
             }
+        }
+
+        private object CreateNewInstance(Type type)
+        {
+            return ServiceProvider.GetService(type);
+            //var typeConstructor = type.GetConstructors().OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
+            //var parameterInfos = typeConstructor.GetParameters().Select(x => ServiceProvider.GetService(x.ParameterType)).ToArray();
+            //return Activator.CreateInstance(type, parameterInfos);
         }
 
         private ClassModel GetClassModel(CodeGenerateContext context, CodeGenerateTableInfo tableInfo)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Extension;
+using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore
@@ -13,13 +14,15 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
         public override void ExecCodeGenerate(CodeGenerateDbContext context)
         {
             var className = context.GetClassName(context.CodeGenerateDbName);
-
             if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
             {
                 className = className.Substring(0, className.Length - 2);
             }
 
-            var builder = new StringBuilder();
+            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContextModelCreatingRelationExtensions.cs");
+            SetRelativePath(context, outPutPath);
+
+            var builder = context.CodeWriter;
             builder.AppendLine("using Microsoft.EntityFrameworkCore;");
             builder.AppendLine("");
             builder.AppendLine($"namespace {context.GetNameSpace()}");
@@ -31,44 +34,39 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             builder.AppendLine();
             builder.AppendLine("    {");
 
-            //AppendEntityOneByOne(builder, context);
-            AppendEntityByGroup(builder, context);
+            //AppendEntityOneByOne(context);
+            AppendEntityByGroup(context);
 
             builder.AppendLine("    }");
             builder.AppendLine("}");
-
-            var result = builder.ToString();
-
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContextModelCreatingRelationExtensions.cs");
-            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
         }
 
-        private void AppendEntityOneByOne(StringBuilder builder, CodeGenerateDbContext context)
+        private void AppendEntityOneByOne(CodeGenerateDbContext context)
         {
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射 - 表间关系");
-            builder.AppendLine($"        /// </summary>");
-            builder.AppendLine($"        /// <param name=\"builder\"></param>");
-            builder.AppendLine($"        public static void Configure{context.GetClassName(context.CodeGenerateDbName)}(this ModelBuilder builder)");
-            builder.AppendLine($"        {{");
+            context.AppendLine($"        /// <summary>");
+            context.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射 - 表间关系");
+            context.AppendLine($"        /// </summary>");
+            context.AppendLine($"        /// <param name=\"context\"></param>");
+            context.AppendLine($"        public static void Configure{context.GetClassName(context.CodeGenerateDbName)}(this ModelBuilder context)");
+            context.AppendLine($"        {{");
 
             var i = 0;
             foreach (var clsInfo in context.ClassInfo.OrderBy(x => x.ClassName))
             {
                 if (i != 0)
                 {
-                    builder.AppendLine("            ");
+                    context.AppendLine("            ");
                 }
 
-                AppendEntityMap(builder, clsInfo);
+                AppendEntityMap(context, clsInfo);
 
                 i++;
             }
 
-            builder.AppendLine("        }");
+            context.AppendLine("        }");
         }
 
-        private void AppendEntityByGroup(StringBuilder builder, CodeGenerateDbContext context)
+        private void AppendEntityByGroup(CodeGenerateDbContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
             var className = context.GetClassName(context.CodeGenerateDbName);
@@ -78,48 +76,48 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
                 className = className.Substring(0, className.Length - 2);
             }
 
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射 - 表间关系");
-            builder.AppendLine($"        /// </summary>");
-            builder.AppendLine($"        /// <param name=\"builder\"></param>");
-            builder.AppendLine($"        public static void Configure{className}(this ModelBuilder builder)");
-            builder.AppendLine($"        {{");
+            context.AppendLine($"        /// <summary>");
+            context.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射 - 表间关系");
+            context.AppendLine($"        /// </summary>");
+            context.AppendLine($"        /// <param name=\"context\"></param>");
+            context.AppendLine($"        public static void Configure{className}(this ModelBuilder context)");
+            context.AppendLine($"        {{");
 
             foreach (var group in groupInfo)
             {
-                builder.AppendLine($"            builder.Configure{className}{group.Key}();");
+                context.AppendLine($"            context.Configure{className}{group.Key}();");
             }
 
-            builder.AppendLine("        }");
+            context.AppendLine("        }");
 
             foreach (var group in groupInfo)
             {
-                builder.AppendLine("        ");
-                builder.AppendLine($"        /// <summary>");
-                builder.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key}  数据库EFCore关系映射 - 表间关系");
-                builder.AppendLine($"        /// </summary>");
-                builder.AppendLine($"        /// <param name=\"builder\"></param>");
-                builder.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder builder)");
-                builder.AppendLine($"        {{");
+                context.AppendLine("        ");
+                context.AppendLine($"        /// <summary>");
+                context.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key}  数据库EFCore关系映射 - 表间关系");
+                context.AppendLine($"        /// </summary>");
+                context.AppendLine($"        /// <param name=\"context\"></param>");
+                context.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder context)");
+                context.AppendLine($"        {{");
 
                 var i = 0;
                 foreach (var clsInfo in group.OrderBy(x => x.ClassName))
                 {
                     if (i != 0)
                     {
-                        builder.AppendLine("            ");
+                        context.AppendLine("            ");
                     }
-                    AppendEntityMap(builder, clsInfo);
+                    AppendEntityMap(context, clsInfo);
                     i++;
                 }
 
-                builder.AppendLine("        }");
+                context.AppendLine("        }");
             }
         }
 
-        private void AppendEntityMap(StringBuilder builder, ClassModel clsInfo)
+        private void AppendEntityMap(ICodeWriter builder, ClassModel clsInfo)
         {
-            builder.AppendLine($"            builder.Entity<{clsInfo.ClassName}>(entity =>");
+            builder.AppendLine($"            context.Entity<{clsInfo.ClassName}>(entity =>");
             builder.AppendLine($"            {{");
 
             if (clsInfo.Properties.Any(x => x.DbColumnInfo.IsAbpProperty()))

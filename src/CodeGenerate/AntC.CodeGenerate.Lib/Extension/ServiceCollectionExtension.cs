@@ -42,5 +42,23 @@ namespace AntC.CodeGenerate.Extension
 
             return services;
         }
+
+        /// <summary>
+        /// 注入 代码输出器<see cref="ICodeWriter"/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IServiceCollection UseCodeWriter(this IServiceCollection services, Assembly assembly)
+        {
+            var targetType = typeof(ICodeWriter);
+            assembly
+                .GetTypes()
+                .Where(x => x.GetInterface(targetType.Name) != null)
+                .ToList()
+                .ForEach(x => { services.AddTransient(x); });
+
+            return services;
+        }
     }
 }

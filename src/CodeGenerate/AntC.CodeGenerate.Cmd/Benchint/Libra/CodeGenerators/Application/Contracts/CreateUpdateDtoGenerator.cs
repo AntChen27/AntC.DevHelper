@@ -16,18 +16,24 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
 
         public override void ExecCodeGenerate(CodeGenerateTableContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("using System.ComponentModel.DataAnnotations;");
-            builder.AppendLine("using Volo.Abp.Application.Dtos;");
-            builder.AppendLine("");
-            builder.AppendLine($"namespace {context.GetNameSpace()}");
-            builder.AppendLine("{");
-            builder.AppendLine($"    /// <summary>");
-            builder.AppendLine($"    /// 新增/删除 {context.ClassInfo.Annotation} 数据传输对象");
-            builder.AppendLine($"    /// </summary>");
-            builder.AppendLine($"    public class CreateUpdate{context.ClassInfo.ClassName}Dto : EntityDto");
+            var outPutPath = Path.Combine("Application.Contracts",
+                context.ClassInfo.GroupName ?? String.Empty,
+                "Dto",
+                context.ClassInfo.ClassName,
+                $"CreateUpdate{context.ClassInfo.ClassName}Dto.cs");
+            SetRelativePath(context, outPutPath);
+
+            context.AppendLine("using System.ComponentModel.DataAnnotations;");
+            context.AppendLine("using Volo.Abp.Application.Dtos;");
+            context.AppendLine("");
+            context.AppendLine($"namespace {context.GetNameSpace()}");
+            context.AppendLine("{");
+            context.AppendLine($"    /// <summary>");
+            context.AppendLine($"    /// 新增/删除 {context.ClassInfo.Annotation} 数据传输对象");
+            context.AppendLine($"    /// </summary>");
+            context.AppendLine($"    public class CreateUpdate{context.ClassInfo.ClassName}Dto : EntityDto");
             // todo 需要根据情况进行实体继承类的判断
-            builder.AppendLine("    {");
+            context.AppendLine("    {");
             if (context.ClassInfo.Properties != null && context.ClassInfo.Properties.Any())
             {
                 var i = 0;
@@ -41,55 +47,43 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application.Contra
 
                     if (i != 0)
                     {
-                        builder.AppendLine("        ");
+                        context.AppendLine("        ");
                     }
-                    builder.Append(ToClassContentString(col, context));
+                    AppendClassContentString(col, context);
 
                     i++;
                 }
             }
 
-            builder.AppendLine("    }");
-            builder.AppendLine("}");
-
-            var result = builder.ToString();
-
-            var outPutPath = Path.Combine("Application.Contracts",
-                context.ClassInfo.GroupName ?? String.Empty,
-                "Dto",
-                context.ClassInfo.ClassName,
-                $"CreateUpdate{context.ClassInfo.ClassName}Dto.cs");
-            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
+            context.AppendLine("    }");
+            context.AppendLine("}");
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="property"></param>
-        /// <param name="tableContext"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        private string ToClassContentString(PropertyModel property, CodeGenerateTableContext tableContext)
+        private void AppendClassContentString(PropertyModel property, CodeGenerateTableContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {property.Annotation}");
-            builder.AppendLine($"        /// </summary>");
+            context.AppendLine($"        /// <summary>");
+            context.AppendLine($"        /// {property.Annotation}");
+            context.AppendLine($"        /// </summary>");
 
             if (EnableAttribute && !property.DbColumnInfo.Nullable)
             {
-                builder.AppendLine($"        [Required(ErrorMessage = \"{property.Annotation} 不能为空\")]");
+                context.AppendLine($"        [Required(ErrorMessage = \"{property.Annotation} 不能为空\")]");
             }
 
             if (EnableAttribute &&
                 "string".Equals(property.PropertyTypeName, StringComparison.CurrentCultureIgnoreCase)
                 && property.DbColumnInfo.DataLength <= int.MaxValue)
             {
-                builder.AppendLine($"        [StringLength({property.DbColumnInfo.DataLength}, ErrorMessage = \"{property.Annotation} 不能超过{property.DbColumnInfo.DataLength}位的长度\")]");
+                context.AppendLine($"        [StringLength({property.DbColumnInfo.DataLength}, ErrorMessage = \"{property.Annotation} 不能超过{property.DbColumnInfo.DataLength}位的长度\")]");
             }
 
-            builder.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
-
-            return builder.ToString();
+            context.AppendLine($"        public {property.PropertyTypeName} {property.PropertyName} {{ get; set; }}");
         }
     }
 }

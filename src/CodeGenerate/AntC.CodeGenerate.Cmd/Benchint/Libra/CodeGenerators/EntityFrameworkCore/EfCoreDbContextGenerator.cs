@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using AntC.CodeGenerate.CodeGenerateExecutors;
+using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore
@@ -17,35 +18,31 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
                 className = className.Substring(0, className.Length - 2);
             }
 
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("using System;");
-            AppendUsingNamespace(context, builder);
-            builder.AppendLine("");
-            builder.AppendLine($"namespace {context.GetNameSpace()}");
-            builder.AppendLine("{");
-            builder.AppendLine($"    /// <summary>");
-            builder.AppendLine($"    /// {className}");
-            builder.AppendLine($"    /// </summary>");
-            builder.AppendLine($"    [ConnectionStringName(\"{className}\")]");
-            builder.Append($"    public partial class {className}DbContext : AbpDbContext<{className}DbContext>");
-
-            builder.AppendLine();
-            builder.AppendLine("    {");
-
-            //AppendOneByOne(builder, context);
-            AppendByGroup(builder, context);
-
-            builder.AppendLine("    }");
-            builder.AppendLine("}");
-
-            var result = builder.ToString();
-
             var outPutPath = Path.Combine("EntityFrameworkCore", $"{className}DbContext.cs");
-            Output.ToFile(result, outPutPath, context.OutPutRootPath, Encoding.UTF8);
+            SetRelativePath(context, outPutPath);
+
+            context.AppendLine("using System;");
+            context.AppendLine("");
+            context.AppendLine($"namespace {context.GetNameSpace()}");
+            context.AppendLine("{");
+            context.AppendLine($"    /// <summary>");
+            context.AppendLine($"    /// {className}");
+            context.AppendLine($"    /// </summary>");
+            context.AppendLine($"    [ConnectionStringName(\"{className}\")]");
+            context.Append($"    public partial class {className}DbContext : AbpDbContext<{className}DbContext>");
+
+            context.AppendLine();
+            context.AppendLine("    {");
+
+            //AppendOneByOne(context);
+            AppendByGroup(context);
+
+            context.AppendLine("    }");
+            context.AppendLine("}");
         }
 
 
-        private void AppendOneByOne(StringBuilder builder, CodeGenerateDbContext context)
+        private void AppendOneByOne(CodeGenerateDbContext context)
         {
             if (context.ClassInfo != null && context.ClassInfo.Any())
             {
@@ -54,16 +51,16 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
                 {
                     if (i != 0)
                     {
-                        builder.AppendLine("        ");
+                        context.AppendLine("        ");
                     }
-                    AppendDbSet(builder, clsInfo);
+                    AppendDbSet(context, clsInfo);
 
                     i++;
                 }
             }
         }
 
-        private void AppendByGroup(StringBuilder builder, CodeGenerateDbContext context)
+        private void AppendByGroup(CodeGenerateDbContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
             var className = context.GetClassName(context.CodeGenerateDbName);
@@ -78,39 +75,33 @@ namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCor
             {
                 if (groupIndex != 0)
                 {
-                    builder.AppendLine("        ");
+                    context.AppendLine("        ");
                 }
 
-                builder.AppendLine($"        #region {group.Key}");
-                builder.AppendLine("        ");
+                context.AppendLine($"        #region {group.Key}");
+                context.AppendLine("        ");
                 var i = 0;
                 foreach (var clsInfo in group.OrderBy(x => x.ClassName))
                 {
                     if (i != 0)
                     {
-                        builder.AppendLine("        ");
+                        context.AppendLine("        ");
                     }
-                    AppendDbSet(builder, clsInfo);
+                    AppendDbSet(context, clsInfo);
                     i++;
                 }
-                builder.AppendLine("        ");
-                builder.AppendLine("        #endregion");
+                context.AppendLine("        ");
+                context.AppendLine("        #endregion");
                 groupIndex++;
             }
         }
 
-        private void AppendDbSet(StringBuilder builder, ClassModel clsInfo)
+        private void AppendDbSet(ICodeWriter writer, ClassModel clsInfo)
         {
-            builder.AppendLine($"        /// <summary>");
-            builder.AppendLine($"        /// {clsInfo.Annotation}");
-            builder.AppendLine($"        /// </summary>");
-            builder.AppendLine($"        public virtual DbSet<{clsInfo.ClassName}> {clsInfo.ClassName} {{ get; set; }}");
-        }
-
-
-        private void AppendUsingNamespace(CodeGenerateDbContext tableContext, StringBuilder builder)
-        {
-
+            writer.AppendLine($"        /// <summary>");
+            writer.AppendLine($"        /// {clsInfo.Annotation}");
+            writer.AppendLine($"        /// </summary>");
+            writer.AppendLine($"        public virtual DbSet<{clsInfo.ClassName}> {clsInfo.ClassName} {{ get; set; }}");
         }
     }
 }

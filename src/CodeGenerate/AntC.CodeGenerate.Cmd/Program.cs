@@ -7,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.EntityFrameworkCore;
 using AntC.CodeGenerate.Cmd.Benchint.Libra.PropertyTypeConverters;
+using AntC.CodeGenerate.CodeWriters;
 using AntC.CodeGenerate.Extension;
 
 namespace AntC.CodeGenerate.Cmd
@@ -27,8 +30,12 @@ namespace AntC.CodeGenerate.Cmd
 
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
 
+            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextGenerator());
+            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextModelCreatingExtensionsGenerator());
+            //codeGeneratorManager.AddCodeGenerator(new EfCoreDbContextModelCreatingRelationExtensionsGenerator());
             codeGeneratorManager.AddCodeGenerator(typeof(Program).Assembly);
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Program).Assembly);
+            codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
             tableNames.Remove("seed");
@@ -43,11 +50,14 @@ namespace AntC.CodeGenerate.Cmd
                     GroupName = GetGroupName(x)
                 })
             };
-            codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
+            stopwatch.Stop();
             var totalMemory = GC.GetTotalMemory(true);
 
-            Console.WriteLine($"完成代码创建,共使用内存{GetMemorySizeWithUnit(totalMemory)}...");
+            Console.WriteLine($"完成代码创建,共使用内存{GetMemorySizeWithUnit(totalMemory)},共耗时{stopwatch.ElapsedMilliseconds}ms...");
 
             //Process p = new Process();
             //p.StartInfo.FileName = "explorer.exe";
@@ -102,6 +112,7 @@ namespace AntC.CodeGenerate.Cmd
 
             services.UseCodeGenerateExecutor(typeof(Program).Assembly);
             services.UsePropertyTypeConverter(typeof(Program).Assembly);
+            services.UseCodeWriter(typeof(CodeFileWriter).Assembly);
 
             action?.Invoke(services);
 

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Model;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace AntC.CodeGenerate.UnitTest
 {
@@ -17,22 +18,32 @@ namespace AntC.CodeGenerate.UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            //string dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
-            string dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
-            string dbName = "libra.kpidb";
-            //string[] tableNames = new string[] { "kpi_define" };
-            string[] tableNames = new string[] { "kpi_define_base", "kpi_define_ext" };
+            var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
+            //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
+            var dbName = "libra.kpidb";
+            var tableNames = new List<string>() { "kpi_define_base", "kpi_define_ext" };
 
             var serviceProvider = Init();
+
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
 
-            //codeGeneratorManager.AddCodeGenerator(serviceProvider.GetService<EntityCodeGenerateExecutor>());
+            codeGeneratorManager.AddCodeGenerator(typeof(Program).Assembly);
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Program).Assembly);
 
-            codeGeneratorManager.ExecCodeGenerate(new CodeGenerateInfo()
+            tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();
+            tableNames.Remove("seed");
+
+            var codeGenerateInfo = new CodeGenerateInfo()
             {
                 //OutPutRootPath = AppDomain.CurrentDomain.BaseDirectory,
-                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo() { DbName = dbName, TableName = x })
-            });
+                DbName = dbName,
+                CodeGenerateTableInfos = tableNames.Select(x => new CodeGenerateTableInfo()
+                {
+                    TableName = x,
+                    GroupName = ""
+                })
+            };
+            codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
         }
 
         private IServiceProvider Init()
