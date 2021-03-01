@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace AntC.CodeGenerate.Model
@@ -7,6 +8,7 @@ namespace AntC.CodeGenerate.Model
     /// <summary>
     /// 数据库信息
     /// </summary>
+    [DebuggerDisplay("DbName={DbName}")]
     public class DbInfoModel
     {
         /// <summary>
@@ -18,5 +20,10 @@ namespace AntC.CodeGenerate.Model
         /// 表信息
         /// </summary>
         public IEnumerable<DbTableInfoModel> Tables { get; set; }
+
+        public override string ToString()
+        {
+            return DbName;
+        }
     }
 }

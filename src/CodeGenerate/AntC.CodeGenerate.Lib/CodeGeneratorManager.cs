@@ -236,7 +236,7 @@ namespace AntC.CodeGenerate
                         DbColumnInfo = x,
                         //PropertyTypeName = GetFiledTypeName(x),
                         Annotation = x.Commont,
-                        PropertyName = Convert(x.ColumnName, CodeType.PerportyName),
+                        PropertyName = Convert(x.ColumnName, CodeType.PropertyName),
                     };
                     propertyModel.PropertyTypeName = GetFiledTypeName(propertyModel);
                     return propertyModel;

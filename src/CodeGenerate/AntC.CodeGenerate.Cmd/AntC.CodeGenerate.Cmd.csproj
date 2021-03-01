@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AntC.CodeGenerate.Contracts\AntC.CodeGenerate.Contracts.csproj" />
-    <ProjectReference Include="..\Impl\AntC.CodeGenerate.Impl.Benchint\AntC.CodeGenerate.Impl.Benchint.csproj" />
+    <ProjectReference Include="..\Plugins\AntC.CodeGenerate.Plugin.Benchint\AntC.CodeGenerate.Plugin.Benchint.csproj" />
   </ItemGroup>
 
 </Project>

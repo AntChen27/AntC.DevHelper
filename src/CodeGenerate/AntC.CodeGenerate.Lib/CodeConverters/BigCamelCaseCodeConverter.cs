@@ -21,7 +21,7 @@ namespace AntC.CodeGenerate.CodeConverters
             if (type == CodeType.Namespace
                 || type == CodeType.ClassName
                 || type == CodeType.MethodName
-                || type == CodeType.PerportyName)
+                || type == CodeType.PropertyName)
             {
                 return PieceString(value);
             }

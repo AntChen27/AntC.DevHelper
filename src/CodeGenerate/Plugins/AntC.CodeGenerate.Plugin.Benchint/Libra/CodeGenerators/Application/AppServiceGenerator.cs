@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using AntC.CodeGenerate.CodeGenerateExecutors;
 using AntC.CodeGenerate.Model;
 
-namespace AntC.CodeGenerate.Cmd.Benchint.Libra.CodeGenerators.Application
+namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application
 {
     public class AppServiceGenerator : BaseTableCodeGenerator
     {

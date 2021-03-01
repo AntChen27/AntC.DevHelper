@@ -20,7 +20,7 @@
         /// <summary>
         /// 属性名
         /// </summary>
-        PerportyName,
+        PropertyName,
         /// <summary>
         /// 字段名
         /// </summary>

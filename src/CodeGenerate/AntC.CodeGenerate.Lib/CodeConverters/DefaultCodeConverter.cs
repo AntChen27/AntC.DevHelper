@@ -12,7 +12,7 @@ namespace AntC.CodeGenerate.CodeConverters
             if (type == CodeType.ClassFileName
                 || type == CodeType.Namespace
                 || type == CodeType.ClassName
-                || type == CodeType.PerportyName
+                || type == CodeType.PropertyName
                 || type == CodeType.MethodName)
             {
                 return FirstCharUpper(value);
