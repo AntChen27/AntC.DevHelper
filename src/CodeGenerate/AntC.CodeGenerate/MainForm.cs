@@ -111,6 +111,11 @@ namespace AntC.CodeGenerate
                 return;
             }
 
+            if (checkBoxClearDir.Checked)
+            {
+                ClearDir(new DirectoryInfo(textBoxOutputFolder.Text));
+            }
+
             var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
             // todo 添加模板选择
             codeGeneratorManager.UseBenchintCodeGenerateImpl();
@@ -153,8 +158,10 @@ namespace AntC.CodeGenerate
             //{
             //    fileInfo.Delete();
             //}
-
-            directory.Delete(true);
+            if (directory != null && directory.Exists)
+            {
+                directory.Delete(true);
+            }
         }
     }
 }

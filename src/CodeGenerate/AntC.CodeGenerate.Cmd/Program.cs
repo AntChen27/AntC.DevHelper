@@ -54,10 +54,10 @@ namespace AntC.CodeGenerate.Cmd
 
             Console.WriteLine($"完成代码创建,共使用内存{GetMemorySizeWithUnit(totalMemory)},共耗时{stopwatch.ElapsedMilliseconds}ms...");
 
-            //Process p = new Process();
-            //p.StartInfo.FileName = "explorer.exe";
-            //p.StartInfo.Arguments = codeGenerateInfo.OutPutRootPath;
-            //p.Start();
+            Process p = new Process();
+            p.StartInfo.FileName = "explorer.exe";
+            p.StartInfo.Arguments = codeGenerateInfo.OutPutRootPath;
+            p.Start();
         }
 
         private static string GetGroupName(string tableName)
