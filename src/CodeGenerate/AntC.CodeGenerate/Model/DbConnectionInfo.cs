@@ -39,6 +39,11 @@ namespace AntC.CodeGenerate.Model
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// 数据库表分组信息
+        /// </summary>
+        public Dictionary<string, IEnumerable<TableGroupInfo>> TableGroups { get; set; }
+
         public override string ToString()
         {
             return Name;

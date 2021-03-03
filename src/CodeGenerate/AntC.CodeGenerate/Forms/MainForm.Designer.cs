@@ -1,5 +1,5 @@
 ﻿
-namespace AntC.CodeGenerate
+namespace AntC.CodeGenerate.Forms
 {
     partial class MainForm
     {
@@ -47,6 +47,7 @@ namespace AntC.CodeGenerate
             this.checkedListBoxTables = new System.Windows.Forms.CheckedListBox();
             this.checkedListBoxTemplate = new System.Windows.Forms.CheckedListBox();
             this.checkBoxClearDir = new System.Windows.Forms.CheckBox();
+            this.buttonGroupEdit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -214,11 +215,23 @@ namespace AntC.CodeGenerate
             this.checkBoxClearDir.Text = "运行前清空目录";
             this.checkBoxClearDir.UseVisualStyleBackColor = true;
             // 
+            // buttonGroupEdit
+            // 
+            this.buttonGroupEdit.Enabled = false;
+            this.buttonGroupEdit.Location = new System.Drawing.Point(288, 13);
+            this.buttonGroupEdit.Name = "buttonGroupEdit";
+            this.buttonGroupEdit.Size = new System.Drawing.Size(103, 23);
+            this.buttonGroupEdit.TabIndex = 19;
+            this.buttonGroupEdit.Text = "表分组信息编辑";
+            this.buttonGroupEdit.UseVisualStyleBackColor = true;
+            this.buttonGroupEdit.Click += new System.EventHandler(this.buttonGroupEdit_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(808, 488);
+            this.Controls.Add(this.buttonGroupEdit);
             this.Controls.Add(this.checkBoxClearDir);
             this.Controls.Add(this.checkedListBoxTemplate);
             this.Controls.Add(this.checkedListBoxTables);
@@ -266,6 +279,7 @@ namespace AntC.CodeGenerate
         private System.Windows.Forms.CheckedListBox checkedListBoxTemplate;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBoxClearDir;
+        private System.Windows.Forms.Button buttonGroupEdit;
     }
 }
 

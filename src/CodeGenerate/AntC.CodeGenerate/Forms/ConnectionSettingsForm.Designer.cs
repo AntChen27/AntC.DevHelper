@@ -1,5 +1,5 @@
 ﻿
-namespace AntC.CodeGenerate
+namespace AntC.CodeGenerate.Forms
 {
     partial class ConnectionSettingsForm
     {
