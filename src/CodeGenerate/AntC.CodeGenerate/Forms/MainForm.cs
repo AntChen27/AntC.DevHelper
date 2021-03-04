@@ -62,6 +62,7 @@ namespace AntC.CodeGenerate.Forms
         private void comboBoxDbNames_SelectedValueChanged(object sender, EventArgs e)
         {
             _selectedDb = comboBoxDbNames.SelectedItem as DbInfoModel;
+            _tableGroupInfo = _dbConnectionInfo.TableGroups.ContainsKey(_selectedDb.DbName) ? _dbConnectionInfo.TableGroups[_selectedDb.DbName] : new List<TableGroupInfo>();
             _selectedTables.Clear();
             checkedListBoxTables.Items.Clear();
             checkedListBoxTables.ClearSelected();
@@ -72,13 +73,25 @@ namespace AntC.CodeGenerate.Forms
             }
 
             buttonGroupEdit.Enabled = true;
-            //checkedListBoxTables.ClearSelected();
             var tables = _dbInfoProvider.GetTables(_selectedDb.DbName).ToList();
-            //checkedListBoxTables.DisplayMember = nameof(DbTableInfoModel.TableName);
-            //checkedListBoxTables.ValueMember = nameof(DbTableInfoModel.TableName);
             checkedListBoxTables.Items.AddRange(tables.ToArray());
 
-            checkBoxSelectAllTables.Checked = false;
+            var isCheckAll = true;
+            if (_dbConnectionInfo.SelectTables != null
+                && _dbConnectionInfo.SelectTables.ContainsKey(_selectedDb.DbName)
+                && _dbConnectionInfo.SelectTables[_selectedDb.DbName] != null
+                && _dbConnectionInfo.SelectTables[_selectedDb.DbName].Count > 0)
+            {
+                for (var i = 0; i < checkedListBoxTables.Items.Count; i++)
+                {
+                    var isChecked = _dbConnectionInfo.SelectTables[_selectedDb.DbName]
+                        .Contains(((DbTableInfoModel)checkedListBoxTables.Items[i]).TableName);
+                    isCheckAll &= isChecked;
+                    checkedListBoxTables.SetItemChecked(i, isChecked);
+                }
+            }
+
+            checkBoxSelectAllTables.Checked = isCheckAll;
         }
 
         private void checkBoxSelectAllTables_CheckedChanged(object sender, EventArgs e)
@@ -124,6 +137,20 @@ namespace AntC.CodeGenerate.Forms
                 ClearDir(new DirectoryInfo(textBoxOutputFolder.Text));
             }
 
+            if (_dbConnectionInfo.SelectTables == null)
+            {
+                _dbConnectionInfo.SelectTables = new Dictionary<string, List<string>>();
+            }
+
+            if (!_dbConnectionInfo.SelectTables.ContainsKey(_selectedDb.DbName))
+            {
+                _dbConnectionInfo.SelectTables.Add(_selectedDb.DbName, _selectedTables);
+            }
+            else
+            {
+                _dbConnectionInfo.SelectTables[_selectedDb.DbName] = _selectedTables;
+            }
+
             var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
             // todo 添加模板选择
             codeGeneratorManager.UseBenchintCodeGenerateImpl();
@@ -136,8 +163,7 @@ namespace AntC.CodeGenerate.Forms
                 CodeGenerateTableInfos = _selectedTables.Select(x => new CodeGenerateTableInfo()
                 {
                     TableName = x,
-                    //GroupName = GetGroupName(x)
-                    // todo 添加分组功能
+                    GroupName = GetGroupName(x)
                 })
             };
 
@@ -157,15 +183,6 @@ namespace AntC.CodeGenerate.Forms
 
         private void ClearDir(DirectoryInfo directory)
         {
-            //foreach (var directoryInfo in directory.GetDirectories())
-            //{
-            //    ClearDir(directoryInfo);
-            //}
-
-            //foreach (var fileInfo in directory.GetFiles())
-            //{
-            //    fileInfo.Delete();
-            //}
             if (directory != null && directory.Exists)
             {
                 directory.Delete(true);
@@ -175,15 +192,8 @@ namespace AntC.CodeGenerate.Forms
         private void buttonGroupEdit_Click(object sender, EventArgs e)
         {
             var tableNames = Enumerable.Cast<DbTableInfoModel>(checkedListBoxTables.Items).Select(x => x.TableName);
-            _tableGroupForm.SetData(new TableGroupingInfo()
+            var tableGroupingInfo = new TableGroupingInfo()
             {
-                GroupNames = new List<string>()
-                {
-                    "Stat",
-                    "Run",
-                    "Define",
-                    "Basic",
-                },
                 TableNames = tableNames,
                 AlreadyGroupTable = tableNames
                     .Select(x => new TableGroupInfo()
@@ -191,7 +201,23 @@ namespace AntC.CodeGenerate.Forms
                         TableName = x,
                         GroupName = GetGroupName(x)
                     }).ToList()
-            });
+            };
+            if (_tableGroupInfo == null)
+            {
+                tableGroupingInfo.GroupNames = new List<string>();
+                tableGroupingInfo.AlreadyGroupTable = new List<TableGroupInfo>();
+            }
+            else
+            {
+                tableGroupingInfo.GroupNames = _tableGroupInfo.Select(x => x.GroupName).Distinct().OrderBy(x => x).ToList();
+                tableGroupingInfo.AlreadyGroupTable = _tableGroupInfo.Select(x => new TableGroupInfo()
+                {
+                    GroupName = x.GroupName,
+                    TableName = x.TableName,
+                }).ToList();
+            }
+
+            _tableGroupForm.SetData(tableGroupingInfo);
             if (DialogResult.OK == _tableGroupForm.ShowDialog())
             {
                 _tableGroupInfo = _tableGroupForm.GetTableGroupData();
@@ -203,7 +229,7 @@ namespace AntC.CodeGenerate.Forms
         {
             if (_dbConnectionInfo.TableGroups == null)
             {
-                _dbConnectionInfo.TableGroups = new Dictionary<string, IEnumerable<TableGroupInfo>>();
+                _dbConnectionInfo.TableGroups = new Dictionary<string, List<TableGroupInfo>>();
             }
             _dbConnectionInfo.TableGroups.Remove(_selectedDb.DbName);
             _dbConnectionInfo.TableGroups.Add(_selectedDb.DbName, _tableGroupInfo);
@@ -211,20 +237,7 @@ namespace AntC.CodeGenerate.Forms
 
         private string GetGroupName(string tableName)
         {
-            if (tableName.StartsWith("kpi_stat"))
-            {
-                return "Stat";
-            }
-            if (tableName.StartsWith("kpi_run"))
-            {
-                return "Run";
-            }
-            if (tableName.StartsWith("kpi_define"))
-            {
-                return "Define";
-            }
-
-            return "Basic";
+            return _tableGroupInfo.FirstOrDefault(x => x.TableName == tableName)?.GroupName ?? string.Empty;
         }
     }
 }

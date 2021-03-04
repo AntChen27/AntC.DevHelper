@@ -42,7 +42,12 @@ namespace AntC.CodeGenerate.Model
         /// <summary>
         /// 数据库表分组信息
         /// </summary>
-        public Dictionary<string, IEnumerable<TableGroupInfo>> TableGroups { get; set; }
+        public Dictionary<string, List<TableGroupInfo>> TableGroups { get; set; }
+
+        /// <summary>
+        /// 数据库选中的表信息
+        /// </summary>
+        public Dictionary<string, List<string>> SelectTables { get; set; }
 
         public override string ToString()
         {
@@ -63,6 +68,8 @@ namespace AntC.CodeGenerate.Model
                 case DbType.Oracle:
                     // todo 添加不同数据库类型的默认数据库
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return $"server={Host};port={Port};database={dbName};User ID={Username};Password={Password};";

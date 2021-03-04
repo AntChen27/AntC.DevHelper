@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using AntC.CodeGenerate.Model;
 using Newtonsoft.Json;
@@ -9,19 +10,39 @@ namespace AntC.CodeGenerate.Converts
 {
     public class TableGroupInfoConvert : JsonConverter
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return null;
-        }
-
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(TableGroupInfo);
         }
 
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            TableGroupInfo tableGroupInfo = null;
+
+            do
+            {
+                if (reader.TokenType == JsonToken.StartObject)
+                {
+                    tableGroupInfo = new TableGroupInfo();
+                }
+                else if (reader.TokenType == JsonToken.PropertyName)
+                {
+                    tableGroupInfo.TableName = reader.Value?.ToString();
+                }
+                else if (reader.TokenType == JsonToken.String)
+                {
+                    tableGroupInfo.GroupName = reader.Value?.ToString();
+                }
+                else if (reader.TokenType == JsonToken.EndObject)
+                {
+                    return tableGroupInfo;
+                }
+            } while (reader.Read());
+            return tableGroupInfo;
+        }
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            //base.WriteJson(writer, value, serializer);
             if (value == null)
             {
                 writer.WriteNull();
@@ -29,8 +50,11 @@ namespace AntC.CodeGenerate.Converts
             else
             {
                 var tableGroupInfo = (TableGroupInfo)value;
-                var formatter = $"{{\"{tableGroupInfo.TableName}\":\"{tableGroupInfo.GroupName}\"}}";
-                writer.WriteValue(formatter);
+
+                writer.WriteStartObject();
+                writer.WritePropertyName(tableGroupInfo.TableName);
+                writer.WriteValue(tableGroupInfo.GroupName);
+                writer.WriteEndObject();
             }
         }
     }
