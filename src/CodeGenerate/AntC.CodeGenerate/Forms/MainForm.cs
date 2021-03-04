@@ -132,9 +132,11 @@ namespace AntC.CodeGenerate.Forms
                 return;
             }
 
+            var outputDir = Path.Combine(textBoxOutputFolder.Text, _selectedDb.DbName);
+
             if (checkBoxClearDir.Checked)
             {
-                ClearDir(new DirectoryInfo(textBoxOutputFolder.Text));
+                ClearDir(new DirectoryInfo(outputDir));
             }
 
             if (_dbConnectionInfo.SelectTables == null)
@@ -158,7 +160,7 @@ namespace AntC.CodeGenerate.Forms
 
             var codeGenerateInfo = new CodeGenerateInfo()
             {
-                OutPutRootPath = textBoxOutputFolder.Text,
+                OutPutRootPath = outputDir,
                 DbName = _selectedDb.DbName,
                 CodeGenerateTableInfos = _selectedTables.Select(x => new CodeGenerateTableInfo()
                 {
@@ -176,7 +178,7 @@ namespace AntC.CodeGenerate.Forms
             {
                 Process p = new Process();
                 p.StartInfo.FileName = "explorer.exe";
-                p.StartInfo.Arguments = codeGenerateInfo.OutPutRootPath;
+                p.StartInfo.Arguments = textBoxOutputFolder.Text;
                 p.Start();
             }
         }

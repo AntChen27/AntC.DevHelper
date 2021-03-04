@@ -156,7 +156,7 @@ namespace AntC.CodeGenerate
                 CodeGeneratorContainer = this,
                 CodeConverter = CodeConverter,
                 CodeGenerateDbName = codeGenerateInfo.DbName,
-                OutPutRootPath = Path.Combine(codeGenerateInfo.OutPutRootPath, codeGenerateInfo.DbName),
+                OutPutRootPath = codeGenerateInfo.OutPutRootPath,
             };
 
             if (classModels == null || (classModels.Count == 0 && codeGenerateInfo.CodeGenerateTableInfos.Any()))
@@ -197,7 +197,7 @@ namespace AntC.CodeGenerate
                     CodeConverter = CodeConverter,
                     CodeGenerateDbName = codeGenerateInfo.DbName,
                     CodeGenerateTableInfo = tableInfo,
-                    OutPutRootPath = Path.Combine(codeGenerateInfo.OutPutRootPath, codeGenerateInfo.DbName),
+                    OutPutRootPath = codeGenerateInfo.OutPutRootPath,
                 };
                 context.ClassInfo = GetClassModel(context, tableInfo);
                 classModels.Add(context.ClassInfo);
