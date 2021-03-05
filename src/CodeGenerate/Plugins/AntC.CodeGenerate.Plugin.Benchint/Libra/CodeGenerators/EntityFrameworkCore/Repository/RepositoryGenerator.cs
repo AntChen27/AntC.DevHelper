@@ -26,8 +26,8 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
         public void EfCoreCodeGenerate(CodeGenerateTableContext context)
         {
             context.AppendLine("using System;");
-            context.AppendLine("using Volo.Abp.Domain.Repositories.EntityFrameworkCore");
-            context.AppendLine("using Volo.Abp.EntityFrameworkCore");
+            context.AppendLine("using Volo.Abp.Domain.Repositories.EntityFrameworkCore;");
+            context.AppendLine("using Volo.Abp.EntityFrameworkCore;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
             context.AppendLine("{");

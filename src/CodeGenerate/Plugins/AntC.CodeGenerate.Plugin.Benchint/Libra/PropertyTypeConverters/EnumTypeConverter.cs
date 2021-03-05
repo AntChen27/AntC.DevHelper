@@ -25,11 +25,20 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.PropertyTypeConverters
             {
                 return true;
             }
+
+            if (property.DbColumnInfo.DataType.Contains("tinyint") && property.PropertyName == "sbyte")
+            {
+                return true;
+            }
             return false;
         }
 
         public string Convert(PropertyModel property)
         {
+            if (property.DbColumnInfo.DataType.Contains("tinyint") && property.PropertyName == "sbyte")
+            {
+                return "int";
+            }
             return _enumMapping[property.DbColumnInfo.ColumnName.ToLower()];
         }
     }

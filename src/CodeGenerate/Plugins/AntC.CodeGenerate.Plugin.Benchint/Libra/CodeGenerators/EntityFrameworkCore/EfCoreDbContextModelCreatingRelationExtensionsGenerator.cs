@@ -51,7 +51,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             context.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射 - 表间关系");
             context.AppendLine($"        /// </summary>");
             context.AppendLine($"        /// <param name=\"context\"></param>");
-            context.AppendLine($"        public static void Configure{context.GetClassName(context.CodeGenerateDbName)}(this ModelBuilder context)");
+            context.AppendLine($"        public static void Configure{context.GetClassName(context.CodeGenerateDbName)}Relation(this ModelBuilder context)");
             context.AppendLine($"        {{");
 
             var i = 0;
@@ -83,7 +83,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
 
             foreach (var group in groupInfo)
             {
-                context.AppendLine($"            context.Configure{_className}{group.Key}();");
+                context.AppendLine($"            context.Configure{_className}{group.Key}Relation();");
             }
 
             context.AppendLine("        }");
@@ -95,7 +95,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
                 context.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key}  数据库EFCore关系映射 - 表间关系");
                 context.AppendLine($"        /// </summary>");
                 context.AppendLine($"        /// <param name=\"context\"></param>");
-                context.AppendLine($"        public static void Configure{_className}{group.Key}(this ModelBuilder context)");
+                context.AppendLine($"        public static void Configure{_className}{group.Key}Relation(this ModelBuilder context)");
                 context.AppendLine($"        {{");
 
                 var i = 0;

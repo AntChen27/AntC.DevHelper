@@ -25,6 +25,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application.Con
 
         public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
         {
+            context.AppendLine("using System;");
             context.AppendLine("using System.ComponentModel.DataAnnotations;");
             context.AppendLine("using Volo.Abp.Application.Dtos;");
             context.AppendLine("");
