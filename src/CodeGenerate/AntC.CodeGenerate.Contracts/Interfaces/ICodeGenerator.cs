@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AntC.CodeGenerate.Model;
+﻿using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Interfaces
 {
-    public interface ICodeGenerator<TContext>
+    public interface ICodeGenerator<in TContext>
     where TContext : CodeGenerateContext
     {
         /// <summary>
@@ -29,14 +26,14 @@ namespace AntC.CodeGenerate.Interfaces
     /// <summary>
     /// 代码生成执行器 - 针对数据库表的
     /// </summary>
-    public interface ITableCodeGenerator : ICodeGenerator<CodeGenerateTableContext>
+    public interface ITableCodeGenerator : ICodeGenerator<TableCodeGenerateContext>
     {
     }
 
     /// <summary>
     /// 代码生成执行器 - 针对数据库的
     /// </summary>
-    public interface IDbCodeGenerator : ICodeGenerator<CodeGenerateDbContext>
+    public interface IDbCodeGenerator : ICodeGenerator<DbCodeGenerateContext>
     {
     }
 }

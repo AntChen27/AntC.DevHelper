@@ -64,7 +64,7 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetKeyTypeName(this CodeGenerateTableContext context)
+        public static string GetKeyTypeName(this TableCodeGenerateContext context)
         {
             var propertyModel = context.ClassInfo.Properties.FirstOrDefault(x => x.DbColumnInfo.Key);
             return propertyModel != null ? propertyModel.PropertyTypeName : string.Empty;
@@ -75,7 +75,7 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetAbpEntitySuperClass(this CodeGenerateTableContext context)
+        public static string GetAbpEntitySuperClass(this TableCodeGenerateContext context)
         {
             var superClassName = string.Empty;
             var keyTypeNameWithGeneric = context.GetKeyTypeName();
@@ -122,7 +122,7 @@ namespace AntC.CodeGenerate
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetAbpEntitySuperClassNamespace(this CodeGenerateTableContext context)
+        public static string GetAbpEntitySuperClassNamespace(this TableCodeGenerateContext context)
         {
             var @namespace = string.Empty;
 

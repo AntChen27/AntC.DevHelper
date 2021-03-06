@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AntC.CodeGenerate.Extension;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
 
 namespace AntC.CodeGenerate.Model
 {
@@ -17,6 +13,11 @@ namespace AntC.CodeGenerate.Model
             {
                 plugin.LoadPlugin(service);
             });
+        }
+
+        public static IEnumerable<IPlugin> GetPlugins()
+        {
+            return plugins;
         }
     }
 }

@@ -11,22 +11,23 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
 {
     public class EfCoreDbContextModelCreatingExtensionsGenerator : BaseDbCodeGenerator
     {
-        private string _className;
-
-        public override void PreExecCodeGenerate(CodeGenerateDbContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            _className = context.GetClassName(context.CodeGenerateDbName);
-            if (_className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
-            {
-                _className = _className.Substring(0, _className.Length - 2);
-            }
+            Name = "Libra.EfCore.Entity.Mapping",
+            Desc = "此模板生成EfCore的实体映射关系代码",
+        };
 
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{_className}DbContextModelCreatingExtensions.cs");
-            SetRelativePath(context, outPutPath);
+        protected override GeneratorConfig GetDefaultConfig(DbCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("EntityFrameworkCore", $"{GetClassName(context)}DbContextModelCreatingExtensions.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateDbContext context)
+        public override void ExecutingCodeGenerate(DbCodeGenerateContext context)
         {
+            var className = GetClassName(context);
             context.AppendLine("using Microsoft.EntityFrameworkCore;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
@@ -34,7 +35,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             context.AppendLine($"    /// <summary>");
             context.AppendLine($"    /// {context.CodeGenerateDbName} 库关系映射扩展类");
             context.AppendLine($"    /// </summary>");
-            context.Append($"    public static class {_className}DbContextModelCreatingExtensions");
+            context.Append($"    public static class {className}DbContextModelCreatingExtensions");
             context.AppendLine();
             context.AppendLine("    {");
 
@@ -45,7 +46,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             context.AppendLine("}");
         }
 
-        private void AppendEntityOneByOne(CodeGenerateDbContext context)
+        private void AppendEntityOneByOne(DbCodeGenerateContext context)
         {
             context.AppendLine($"        /// <summary>");
             context.AppendLine($"        /// {context.CodeGenerateDbName} 数据库EFCore关系映射");
@@ -70,20 +71,21 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             context.AppendLine("        }");
         }
 
-        private void AppendEntityByGroup(CodeGenerateDbContext context)
+        private void AppendEntityByGroup(DbCodeGenerateContext context)
         {
+            var className = context.GetClassName(context.CodeGenerateDbName);
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
 
             context.AppendLine($"        /// <summary>");
             context.AppendLine($"        /// {context.CodeGenerateDbName}  数据库EFCore关系映射");
             context.AppendLine($"        /// </summary>");
             context.AppendLine($"        /// <param name=\"context\"></param>");
-            context.AppendLine($"        public static void Configure{_className}(this ModelBuilder context)");
+            context.AppendLine($"        public static void Configure{className}(this ModelBuilder context)");
             context.AppendLine($"        {{");
 
             foreach (var group in groupInfo)
             {
-                context.AppendLine($"            context.Configure{_className}{group.Key}();");
+                context.AppendLine($"            context.Configure{className}{group.Key}();");
             }
 
             context.AppendLine("        }");
@@ -95,7 +97,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
                 context.AppendLine($"        /// {context.CodeGenerateDbName} {group.Key} 数据库EFCore关系映射");
                 context.AppendLine($"        /// </summary>");
                 context.AppendLine($"        /// <param name=\"context\"></param>");
-                context.AppendLine($"        public static void Configure{_className}{group.Key}(this ModelBuilder context)");
+                context.AppendLine($"        public static void Configure{className}{group.Key}(this ModelBuilder context)");
                 context.AppendLine($"        {{");
 
                 var i = 0;
@@ -201,6 +203,17 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             }
 
             builder.AppendLine(";");
+        }
+
+        private string GetClassName(DbCodeGenerateContext context)
+        {
+            var className = context.GetClassName(context.CodeGenerateDbName);
+            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            {
+                className = className.Substring(0, className.Length - 2);
+            }
+
+            return className;
         }
     }
 }

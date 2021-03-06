@@ -8,17 +8,25 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application.Con
 {
     public class PagedAndSortedResultRequestDtoGenerator : BaseTableCodeGenerator
     {
-        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            var outPutPath = Path.Combine("Application.Contracts",
-                context.ClassInfo.GroupName ?? string.Empty,
-                "Dto",
-                context.ClassInfo.ClassName,
-                $"{context.ClassInfo.ClassName}PagedAndSortedResultRequestDto.cs");
-            SetRelativePath(context, outPutPath);
+            Name = "Libra.Dto.PagedAndSortedResultRequest",
+            Desc = "此模板生成基于Abp的用于接口分页查询的数据传输对象"
+        };
+
+        protected override GeneratorConfig GetDefaultConfig(TableCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("Application.Contracts",
+                    context.ClassInfo.GroupName ?? string.Empty,
+                    "Dto",
+                    context.ClassInfo.ClassName,
+                    $"{context.ClassInfo.ClassName}PagedAndSortedResultRequestDto.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        public override void ExecutingCodeGenerate(TableCodeGenerateContext context)
         {
             context.AppendLine("using System;");
             context.AppendLine("using Volo.Abp.Application.Dtos;");

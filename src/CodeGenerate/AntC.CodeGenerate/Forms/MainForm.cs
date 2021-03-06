@@ -16,7 +16,6 @@ namespace AntC.CodeGenerate.Forms
     {
         private IDbInfoProvider _mysqlDbInfoProvider = new MysqlDbInfoProvider();
 
-
         private DbInfoModel _selectedDb;
         private List<string> _selectedTables = new List<string>();
         private List<TableGroupInfo> _tableGroupInfo = new List<TableGroupInfo>();
@@ -45,6 +44,7 @@ namespace AntC.CodeGenerate.Forms
             comboBoxDbConnection.DataSource = _dbConnectionInfos;
 
             PluginManager.AddPlugin(new Plugin.Benchint.Plugin());
+            RefreshCheckedListBoxTemplate();
         }
 
         private void comboBoxDbConnection_SelectedValueChanged(object sender, EventArgs e)
@@ -155,7 +155,8 @@ namespace AntC.CodeGenerate.Forms
 
             var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
             // todo 添加模板选择
-            codeGeneratorManager.UseBenchintCodeGenerateImpl();
+            codeGeneratorManager.AddBenchintCodeGenerateImpl();
+            //codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
             codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             var codeGenerateInfo = new CodeGenerateInfo()
@@ -240,6 +241,103 @@ namespace AntC.CodeGenerate.Forms
         private string GetGroupName(string tableName)
         {
             return _tableGroupInfo.FirstOrDefault(x => x.TableName == tableName)?.GroupName ?? string.Empty;
+        }
+
+        #region 模板操作
+
+        private CodeGeneratorInfo GetSelectedTemplate()
+        {
+            return (CodeGeneratorInfo)checkedListBoxTemplate.SelectedItem;
+        }
+
+        private IEnumerable<CodeGeneratorInfo> GetSelectedTemplates()
+        {
+            return Enumerable.Cast<CodeGeneratorInfo>(checkedListBoxTemplate.Items)
+                .Where((t, i) => checkedListBoxTemplate.GetItemChecked(i))
+                .Select(t => t);
+        }
+
+        private void RefreshCheckedListBoxTemplate()
+        {
+            List<CodeGeneratorInfo> codeGenerators = PluginManager.GetPlugins().SelectMany(x =>
+            {
+                List<CodeGeneratorInfo> generators = new List<CodeGeneratorInfo>();
+
+                var dbGenerators = x.GetDbCodeGenerators().Select(c =>
+                {
+                    var generator = (IDbCodeGenerator)ServiceManager.ServiceProvider.GetService(c);
+                    var codeGeneratorInfo = new CodeGeneratorInfo()
+                    {
+                        DbGenerator = generator,
+                        CodeGeneratorType = c
+                    };
+                    codeGeneratorInfo.GeneratorInfo = codeGeneratorInfo.DbGenerator?.GeneratorInfo;
+                    return codeGeneratorInfo;
+                });
+                var tableGenerators =
+                    x.GetTableCodeGenerators().Select(c =>
+                    {
+                        var generator = (ITableCodeGenerator)ServiceManager.ServiceProvider.GetService(c);
+                        var codeGeneratorInfo = new CodeGeneratorInfo()
+                        {
+                            TableGenerator = generator,
+                            CodeGeneratorType = c
+                        };
+                        codeGeneratorInfo.GeneratorInfo = codeGeneratorInfo.TableGenerator?.GeneratorInfo;
+                        return codeGeneratorInfo;
+                    });
+                generators.AddRange(dbGenerators);
+                generators.AddRange(tableGenerators);
+                return generators;
+            }).OrderBy(x => x.ToString()).ToList();
+
+            checkedListBoxTemplate.Items.Clear();
+            checkedListBoxTemplate.ClearSelected();
+            checkedListBoxTemplate.Items.AddRange(codeGenerators.ToArray());
+        }
+
+        private void checkedListBoxTemplate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var codeGeneratorInfo = GetSelectedTemplate();
+            if (codeGeneratorInfo == null)
+            {
+                codeGeneratorInfo = GetSelectedTemplates().FirstOrDefault();
+            }
+
+            if (codeGeneratorInfo == null)
+            {
+                textBoxGeneratorDesc.Text = string.Empty;
+                return;
+            }
+            textBoxGeneratorDesc.Text = codeGeneratorInfo.GeneratorInfo?.Desc ?? "无描述";
+        }
+
+        #endregion
+    }
+
+    public class CodeGeneratorInfo
+    {
+        public ICodeGenerator<TableCodeGenerateContext> TableGenerator { get; set; }
+
+        public ICodeGenerator<DbCodeGenerateContext> DbGenerator { get; set; }
+
+        public GeneratorInfo GeneratorInfo { get; set; }
+
+        public Type CodeGeneratorType { get; set; }
+
+        public override string ToString()
+        {
+            if (this.GeneratorInfo == null)
+            {
+                if (this.CodeGeneratorType == null)
+                {
+                    return base.ToString();
+                }
+
+                return CodeGeneratorType.FullName;
+            }
+
+            return GeneratorInfo?.Name ?? base.ToString();
         }
     }
 }

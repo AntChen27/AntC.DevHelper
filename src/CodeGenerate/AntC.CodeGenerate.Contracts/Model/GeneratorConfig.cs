@@ -12,7 +12,7 @@ namespace AntC.CodeGenerate.Model
         /// <summary>
         /// 文件保存相对路径
         /// </summary>
-        public string FileRelativePath { get; set; }
+        public string FileRelativePath { get; set; } = string.Empty;
 
         /// <summary>
         /// 文件保存编码

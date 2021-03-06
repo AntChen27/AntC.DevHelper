@@ -24,7 +24,12 @@ namespace AntC.CodeGenerate.CodeGenerateExecutors
         /// <summary>
         /// 代码创建器参数
         /// </summary>
-        public virtual GeneratorConfig GeneratorConfig { get; } = new GeneratorConfig();
+        public virtual GeneratorConfig GeneratorConfig { get; set; }
+
+        protected virtual GeneratorConfig GetDefaultConfig(TContext context)
+        {
+            return new GeneratorConfig();
+        }
 
         public virtual void ExecCodeGenerate(TContext context)
         {
@@ -35,7 +40,9 @@ namespace AntC.CodeGenerate.CodeGenerateExecutors
 
         public virtual void PreExecCodeGenerate(TContext context)
         {
-
+            var generatorConfig = GeneratorConfig ?? GetDefaultConfig(context);
+            var outPutPath = Path.Combine(context.OutPutRootPath, generatorConfig.FileRelativePath.Replace('\\', '/').TrimStart('/'));
+            SetOutPutFilePath(context.CodeWriter as ICodeFileWriter, outPutPath);
         }
 
         public abstract void ExecutingCodeGenerate(TContext context);
@@ -45,13 +52,7 @@ namespace AntC.CodeGenerate.CodeGenerateExecutors
 
         }
 
-        protected virtual void SetRelativePath(CodeGenerateContext context, string fileRelativePath)
-        {
-            var outPutPath = Path.Combine(context.OutPutRootPath, fileRelativePath.Replace('\\', '/').TrimStart('/'));
-            SetOutPutFilePath(context.CodeWriter as ICodeFileWriter, outPutPath);
-        }
-
-        protected virtual void SetOutPutFilePath(ICodeFileWriter codeFileWriter, string filePath)
+        private void SetOutPutFilePath(ICodeFileWriter codeFileWriter, string filePath)
         {
             if (codeFileWriter != null)
             {

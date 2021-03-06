@@ -29,7 +29,7 @@ namespace AntC.CodeGenerate.Cmd
             });
 
             var codeGeneratorManager = InitGeneratorManager(serviceProvider, dbConnectionString);
-            codeGeneratorManager.UseBenchintCodeGenerateImpl();
+            codeGeneratorManager.AddBenchintCodeGenerateImpl();
             codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             tableNames = codeGeneratorManager.GetTables(dbName).Select(x => x.TableName).ToList();

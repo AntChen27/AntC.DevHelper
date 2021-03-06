@@ -7,33 +7,40 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application
 {
     public class AppServiceGenerator : BaseTableCodeGenerator
     {
-        private string _className;
-        private string _baseClassName = "BenchintCrudAppService";
+        private string _baseClassName = "CrudAppService";
 
-        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            _className = GetClassName(context);
-            var outPutPath = Path.Combine("Application",
-                context.ClassInfo.GroupName ?? string.Empty,
-                $"{_className}.cs");
-            SetRelativePath(context, outPutPath);
+            Name = "Libra.Application",
+            Desc = "此模板生成基于Abp的CrudAppService应用服务实现类"
+        };
+
+        protected override GeneratorConfig GetDefaultConfig(TableCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("Application",
+                    context.ClassInfo.GroupName ?? string.Empty,
+                    $"{GetClassName(context)}.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        public override void ExecutingCodeGenerate(TableCodeGenerateContext context)
         {
+            var className = GetClassName(context);
             context.AppendLine("using Benchint.Abp.Application.Services;");
             context.AppendLine("using System;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
             context.AppendLine("{");
             context.AppendLine($"    /// <summary>");
-            context.AppendLine($"    /// {context.ClassInfo.Annotation} 应用服务契约接口");
+            context.AppendLine($"    /// {context.ClassInfo.Annotation} 应用服务实现");
             context.AppendLine($"    /// </summary>");
 
             var key = context.ClassInfo.Properties?.FirstOrDefault(x => x.DbColumnInfo.Key);
-            context.AppendLine($"    public class {_className} : {_baseClassName}{GetBaseClassGenericParameter(context, key)}, I{context.ClassInfo.ClassName}AppService");
+            context.AppendLine($"    public class {className} : {_baseClassName}{GetBaseClassGenericParameter(context, key)}, I{context.ClassInfo.ClassName}AppService");
             context.AppendLine("    {");
-            context.AppendLine($"        public {_className}(I{context.ClassInfo.ClassName}Repository repository) : base(repository)");
+            context.AppendLine($"        public {className}(I{context.ClassInfo.ClassName}Repository repository) : base(repository)");
             context.AppendLine("        {");
             context.AppendLine("        }");
             context.AppendLine("    }");
@@ -45,7 +52,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private string GetBaseClassGenericParameter(CodeGenerateTableContext context, PropertyModel key)
+        private string GetBaseClassGenericParameter(TableCodeGenerateContext context, PropertyModel key)
         {
             if (key == null)
             {
@@ -65,7 +72,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application
             return string.Empty;
         }
 
-        public string GetClassName(CodeGenerateTableContext context)
+        public string GetClassName(TableCodeGenerateContext context)
         {
             return $"{context.ClassInfo.ClassName}AppService";
         }

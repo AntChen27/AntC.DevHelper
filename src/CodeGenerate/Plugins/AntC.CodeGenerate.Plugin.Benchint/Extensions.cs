@@ -6,7 +6,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint
 {
     public static class Extensions
     {
-        public static void UseBenchintCodeGenerateImpl(this ICodeGeneratorManager codeGeneratorManager)
+        public static void AddBenchintCodeGenerateImpl(this ICodeGeneratorManager codeGeneratorManager)
         {
             codeGeneratorManager.AddCodeGenerator(typeof(Extensions).Assembly);
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Extensions).Assembly);
@@ -16,7 +16,6 @@ namespace AntC.CodeGenerate.Plugin.Benchint
         /// 注入 代码生成执行器<see cref="ITableCodeGenerator"/>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="assembly"></param>
         /// <returns></returns>
         public static IServiceCollection UseBenchintCodeGenerateImpl(this IServiceCollection services)
         {

@@ -150,7 +150,7 @@ namespace AntC.CodeGenerate
                 return;
             }
 
-            using var context = new CodeGenerateDbContext()
+            using var context = new DbCodeGenerateContext()
             {
                 DbInfoProvider = this,
                 CodeGeneratorContainer = this,
@@ -190,7 +190,7 @@ namespace AntC.CodeGenerate
 
             foreach (var tableInfo in codeGenerateInfo.CodeGenerateTableInfos)
             {
-                using var context = new CodeGenerateTableContext()
+                using var context = new TableCodeGenerateContext()
                 {
                     DbInfoProvider = this,
                     CodeGeneratorContainer = this,

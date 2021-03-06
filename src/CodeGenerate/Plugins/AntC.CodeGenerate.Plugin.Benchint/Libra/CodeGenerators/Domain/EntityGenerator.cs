@@ -12,19 +12,23 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Domain
         public bool UseAbpProperty { get; set; } = true;
         public bool UseAbpEntity { get; set; } = true;
 
-        public new GeneratorConfig GeneratorConfig = new GeneratorConfig()
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            FileRelativePath = "Entities",
-            FileEncoding = Encoding.UTF8,
+            Name = "Libra.Entity",
+            Desc = "此模板生成数据库实体"
         };
 
-        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
+        protected override GeneratorConfig GetDefaultConfig(TableCodeGenerateContext context)
         {
-            var outPutPath = Path.Combine("Domain", context.ClassInfo.GroupName ?? string.Empty, $"{context.ClassInfo.ClassFileName}.cs");
-            SetRelativePath(context, outPutPath);
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("Domain", 
+                    context.ClassInfo.GroupName ?? string.Empty, 
+                    $"{context.ClassInfo.ClassFileName}.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        public override void ExecutingCodeGenerate(TableCodeGenerateContext context)
         {
             context.AppendLine("using System;");
             AppendUsingNamespace(context);
@@ -71,7 +75,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Domain
             context.AppendLine("}");
         }
 
-        private void AppendUsingNamespace(CodeGenerateTableContext context)
+        private void AppendUsingNamespace(TableCodeGenerateContext context)
         {
             if (UseAbpProperty)
             {
@@ -85,7 +89,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Domain
         /// <param name="property"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private void AppendClassContentString(PropertyModel property, CodeGenerateTableContext context)
+        private void AppendClassContentString(PropertyModel property, TableCodeGenerateContext context)
         {
             context.AppendLine($"        /// <summary>");
             context.AppendLine($"        /// {property.Annotation}");

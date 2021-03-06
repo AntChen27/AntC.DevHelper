@@ -62,7 +62,7 @@ namespace AntC.CodeGenerate
     /// <summary>
     /// 代码创建器上下文 - 表
     /// </summary>
-    public class CodeGenerateTableContext : CodeGenerateContext
+    public class TableCodeGenerateContext : CodeGenerateContext
     {
         /// <summary>
         /// 要创建的表信息
@@ -78,7 +78,7 @@ namespace AntC.CodeGenerate
     /// <summary>
     /// 代码创建器上下文 - 数据库
     /// </summary>
-    public class CodeGenerateDbContext : CodeGenerateContext
+    public class DbCodeGenerateContext : CodeGenerateContext
     {
         /// <summary>
         /// 类表信息

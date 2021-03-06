@@ -18,14 +18,20 @@ namespace AntC.CodeGenerate
             return services;
         }
 
-        public IEnumerable<Type> GetCodeGenerators()
+        public IEnumerable<Type> GetTableCodeGenerators()
         {
-            var targetTypeDb = typeof(IDbCodeGenerator);
             var targetType = typeof(ITableCodeGenerator);
             return GetType().Assembly
                  .GetTypes()
-                 .Where(x => x.GetInterface(targetType.Name) != null || x.GetInterface(targetTypeDb.Name) != null)
-                 .ToList();
+                 .Where(x => x.GetInterface(targetType.Name) != null);
+        }
+
+        public IEnumerable<Type> GetDbCodeGenerators()
+        {
+            var targetType = typeof(IDbCodeGenerator);
+            return GetType().Assembly
+                .GetTypes()
+                .Where(x => x.GetInterface(targetType.Name) != null);
         }
     }
 }

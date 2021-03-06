@@ -6,7 +6,47 @@
     "Port": 3310,
     "Username": "root",
     "Password": "123456",
-    "TableGroups": null
+    "TableGroups": {
+      "libra.kpidb": [
+        { "kpi_category": "Basic" },
+        { "kpi_data_dimension": "Basic" },
+        { "kpi_data_source": "Basic" },
+        { "kpi_define": "Define" },
+        { "kpi_define_calc_rule_history": "Define" },
+        { "kpi_define_data_dimension": "Define" },
+        { "kpi_run_log": "Run" },
+        { "kpi_run_record": "Run" },
+        { "kpi_stat_daily": "Stat" },
+        { "kpi_stat_monthly": "Stat" },
+        { "kpi_stat_quarterly": "Stat" },
+        { "kpi_stat_realtime": "Stat" },
+        { "kpi_stat_semiannual": "Stat" },
+        { "kpi_stat_weekly": "Stat" },
+        { "kpi_stat_yearly": "Stat" },
+        { "kpi_type": "Basic" },
+        { "seed": "Basic" }
+      ]
+    },
+    "SelectTables": {
+      "libra.kpidb": [
+        "kpi_category",
+        "kpi_data_dimension",
+        "kpi_data_source",
+        "kpi_define",
+        "kpi_define_calc_rule_history",
+        "kpi_define_data_dimension",
+        "kpi_run_log",
+        "kpi_run_record",
+        "kpi_stat_daily",
+        "kpi_stat_monthly",
+        "kpi_stat_quarterly",
+        "kpi_stat_realtime",
+        "kpi_stat_semiannual",
+        "kpi_stat_weekly",
+        "kpi_stat_yearly",
+        "kpi_type"
+      ]
+    }
   },
   {
     "Name": "10.4.1.248_3309",
@@ -15,6 +55,7 @@
     "Port": 3309,
     "Username": "root",
     "Password": "123456",
-    "TableGroups": null
+    "TableGroups": null,
+    "SelectTables": null
   }
 ]

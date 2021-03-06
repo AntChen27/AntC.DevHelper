@@ -1,29 +1,39 @@
 ﻿using System.IO;
 using System.Linq;
 using AntC.CodeGenerate.CodeGenerateExecutors;
+using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFrameworkCore.Repository
 {
-    public class AppServiceGenerator : BaseTableCodeGenerator
+    public class RepositoryGenerator : BaseTableCodeGenerator
     {
-        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            var outPutPath = Path.Combine("EntityFrameworkCore", "Repositories",
-                context.ClassInfo.GroupName ?? string.Empty, $"{GetClassName(context)}.cs");
-            SetRelativePath(context, outPutPath);
+            Name = "Libra.EfCore.Repository",
+            Desc = "此模板生成EfCore的仓储实现",
+        };
+
+        protected override GeneratorConfig GetDefaultConfig(TableCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("EntityFrameworkCore", "Repositories",
+                    context.ClassInfo.GroupName ?? string.Empty,
+                    $"{GetClassName(context)}.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        public override void ExecutingCodeGenerate(TableCodeGenerateContext context)
         {
             EfCoreCodeGenerate(context);
         }
 
-        public string GetClassName(CodeGenerateTableContext context)
+        public string GetClassName(TableCodeGenerateContext context)
         {
             return $"{context.ClassInfo.ClassName}Repository";
         }
 
-        public void EfCoreCodeGenerate(CodeGenerateTableContext context)
+        public void EfCoreCodeGenerate(TableCodeGenerateContext context)
         {
             context.AppendLine("using System;");
             context.AppendLine("using Volo.Abp.Domain.Repositories.EntityFrameworkCore;");

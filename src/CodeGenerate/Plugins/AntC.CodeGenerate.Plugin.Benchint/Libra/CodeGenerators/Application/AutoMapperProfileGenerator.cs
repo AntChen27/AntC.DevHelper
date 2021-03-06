@@ -1,21 +1,30 @@
 ﻿using System.IO;
 using AntC.CodeGenerate.CodeGenerateExecutors;
+using AntC.CodeGenerate.Model;
 using AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application.Contracts;
 
 namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Application
 {
     public class AutoMapperProfileGenerator : BaseTableCodeGenerator
     {
-        public override void PreExecCodeGenerate(CodeGenerateTableContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            var outPutPath = Path.Combine("Application",
-                context.ClassInfo.GroupName ?? string.Empty,
-                "Mapper",
-                $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs");
-            SetRelativePath(context, outPutPath);
+            Name = "Libra.Application.AutoMapper",
+            Desc = "此模板生成AutoMapper映射配置"
+        };
+
+        protected override GeneratorConfig GetDefaultConfig(TableCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("Application",
+                    context.ClassInfo.GroupName ?? string.Empty,
+                    "Mapper",
+                    $"{context.ClassInfo.ClassName}ApplicationAutoMapperProfile.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateTableContext context)
+        public override void ExecutingCodeGenerate(TableCodeGenerateContext context)
         {
             context.AppendLine("using AutoMapper;");
             context.AppendLine("");

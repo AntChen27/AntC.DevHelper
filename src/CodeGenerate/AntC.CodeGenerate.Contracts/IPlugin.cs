@@ -17,6 +17,8 @@ namespace AntC.CodeGenerate
         /// <returns></returns>
         IServiceCollection LoadPlugin(IServiceCollection services);
 
-        IEnumerable<Type> GetCodeGenerators();
+        IEnumerable<Type> GetTableCodeGenerators();
+
+        IEnumerable<Type> GetDbCodeGenerators();
     }
 }

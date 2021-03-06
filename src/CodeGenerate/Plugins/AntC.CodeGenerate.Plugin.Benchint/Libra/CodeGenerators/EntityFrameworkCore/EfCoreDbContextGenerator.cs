@@ -9,31 +9,33 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
 {
     public class EfCoreDbContextGenerator : BaseDbCodeGenerator
     {
-        private string _className;
-
-        public override void PreExecCodeGenerate(CodeGenerateDbContext context)
+        public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            _className = context.GetClassName(context.CodeGenerateDbName);
-            if (_className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
-            {
-                _className = _className.Substring(0, _className.Length - 2);
-            }
+            Name = "Libra.EfCore.DbContext",
+            Desc = "此模板生成EfCore的仓储实现",
+        };
 
-            var outPutPath = Path.Combine("EntityFrameworkCore", $"{_className}DbContext.cs");
-            SetRelativePath(context, outPutPath);
+        protected override GeneratorConfig GetDefaultConfig(DbCodeGenerateContext context)
+        {
+            return new GeneratorConfig()
+            {
+                FileRelativePath = Path.Combine("EntityFrameworkCore", 
+                    $"{GetClassName(context)}DbContext.cs")
+            };
         }
 
-        public override void ExecutingCodeGenerate(CodeGenerateDbContext context)
+        public override void ExecutingCodeGenerate(DbCodeGenerateContext context)
         {
+            var className = GetClassName(context);
             context.AppendLine("using System;");
             context.AppendLine("");
             context.AppendLine($"namespace {context.GetNameSpace()}");
             context.AppendLine("{");
             context.AppendLine($"    /// <summary>");
-            context.AppendLine($"    /// {_className}");
+            context.AppendLine($"    /// {className}");
             context.AppendLine($"    /// </summary>");
             context.AppendLine($"    [ConnectionStringName(\"{context.CodeGenerateDbName}\")]");
-            context.Append($"    public partial class {_className}DbContext : AbpDbContext<{_className}DbContext>");
+            context.Append($"    public partial class {className}DbContext : AbpDbContext<{className}DbContext>");
 
             context.AppendLine();
             context.AppendLine("    {");
@@ -46,7 +48,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
         }
 
 
-        private void AppendOneByOne(CodeGenerateDbContext context)
+        private void AppendOneByOne(DbCodeGenerateContext context)
         {
             if (context.ClassInfo != null && context.ClassInfo.Any())
             {
@@ -64,7 +66,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             }
         }
 
-        private void AppendByGroup(CodeGenerateDbContext context)
+        private void AppendByGroup(DbCodeGenerateContext context)
         {
             var groupInfo = context.ClassInfo.GroupBy(x => x.GroupName).ToList();
 
@@ -100,6 +102,17 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.EntityFramework
             writer.AppendLine($"        /// {clsInfo.Annotation}");
             writer.AppendLine($"        /// </summary>");
             writer.AppendLine($"        public virtual DbSet<{clsInfo.ClassName}> {clsInfo.ClassName} {{ get; set; }}");
+        }
+
+        private string GetClassName(DbCodeGenerateContext context)
+        {
+            var className = context.GetClassName(context.CodeGenerateDbName);
+            if (className.EndsWith("db", StringComparison.CurrentCultureIgnoreCase))
+            {
+                className = className.Substring(0, className.Length - 2);
+            }
+
+            return className;
         }
     }
 }

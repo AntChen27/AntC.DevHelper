@@ -26,16 +26,17 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.PropertyTypeConverters
                 return true;
             }
 
-            if (property.DbColumnInfo.DataType.Contains("tinyint") && property.PropertyName == "sbyte")
+            if (property.DbColumnInfo.DataType.Contains("tinyint"))
             {
                 return true;
             }
+
             return false;
         }
 
         public string Convert(PropertyModel property)
         {
-            if (property.DbColumnInfo.DataType.Contains("tinyint") && property.PropertyName == "sbyte")
+            if (property.DbColumnInfo.DataType.Contains("tinyint"))
             {
                 return "int";
             }
