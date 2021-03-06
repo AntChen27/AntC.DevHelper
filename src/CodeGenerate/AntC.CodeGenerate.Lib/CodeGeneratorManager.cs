@@ -18,6 +18,7 @@ namespace AntC.CodeGenerate
         public ICodeConverter CodeConverter { get; set; }
 
         public IServiceProvider ServiceProvider { get; set; }
+        public event Action<ICodeWriter> OnCodeWriterCreated;
 
         private Type _codeWriterType;
 
@@ -172,6 +173,7 @@ namespace AntC.CodeGenerate
             foreach (var codeGenerateExecutor in _dbCodeGenerators)
             {
                 using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
+                OnCodeWriterCreated(codeWriter);
                 context.CodeWriter = codeWriter;
                 codeGenerateExecutor.ExecCodeGenerate(context);
             }
@@ -204,6 +206,7 @@ namespace AntC.CodeGenerate
                 foreach (var codeGenerateExecutor in _tableCodeGenerators)
                 {
                     using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
+                    OnCodeWriterCreated(codeWriter);
                     context.CodeWriter = codeWriter;
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }

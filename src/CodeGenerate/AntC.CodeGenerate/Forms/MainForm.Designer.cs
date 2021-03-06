@@ -50,6 +50,7 @@ namespace AntC.CodeGenerate.Forms
             this.buttonGroupEdit = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.textBoxGeneratorDesc = new System.Windows.Forms.TextBox();
+            this.checkBoxSelectAllTemplate = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -74,10 +75,11 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkBoxOnFinishedOpenDir
             // 
+            this.checkBoxOnFinishedOpenDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxOnFinishedOpenDir.AutoSize = true;
             this.checkBoxOnFinishedOpenDir.Checked = true;
             this.checkBoxOnFinishedOpenDir.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxOnFinishedOpenDir.Location = new System.Drawing.Point(16, 548);
+            this.checkBoxOnFinishedOpenDir.Location = new System.Drawing.Point(16, 406);
             this.checkBoxOnFinishedOpenDir.Name = "checkBoxOnFinishedOpenDir";
             this.checkBoxOnFinishedOpenDir.Size = new System.Drawing.Size(111, 21);
             this.checkBoxOnFinishedOpenDir.TabIndex = 3;
@@ -86,7 +88,8 @@ namespace AntC.CodeGenerate.Forms
             // 
             // buttonCreateCodes
             // 
-            this.buttonCreateCodes.Location = new System.Drawing.Point(143, 595);
+            this.buttonCreateCodes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCreateCodes.Location = new System.Drawing.Point(143, 453);
             this.buttonCreateCodes.Name = "buttonCreateCodes";
             this.buttonCreateCodes.Size = new System.Drawing.Size(248, 51);
             this.buttonCreateCodes.TabIndex = 4;
@@ -100,7 +103,8 @@ namespace AntC.CodeGenerate.Forms
             // 
             // buttonOpenBrowserFolderDialog
             // 
-            this.buttonOpenBrowserFolderDialog.Location = new System.Drawing.Point(408, 546);
+            this.buttonOpenBrowserFolderDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOpenBrowserFolderDialog.Location = new System.Drawing.Point(408, 404);
             this.buttonOpenBrowserFolderDialog.Name = "buttonOpenBrowserFolderDialog";
             this.buttonOpenBrowserFolderDialog.Size = new System.Drawing.Size(75, 23);
             this.buttonOpenBrowserFolderDialog.TabIndex = 5;
@@ -110,15 +114,17 @@ namespace AntC.CodeGenerate.Forms
             // 
             // textBoxOutputFolder
             // 
-            this.textBoxOutputFolder.Location = new System.Drawing.Point(15, 520);
+            this.textBoxOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxOutputFolder.Location = new System.Drawing.Point(15, 378);
             this.textBoxOutputFolder.Name = "textBoxOutputFolder";
             this.textBoxOutputFolder.Size = new System.Drawing.Size(468, 23);
             this.textBoxOutputFolder.TabIndex = 6;
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 500);
+            this.label2.Location = new System.Drawing.Point(12, 358);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(80, 17);
             this.label2.TabIndex = 7;
@@ -154,11 +160,14 @@ namespace AntC.CodeGenerate.Forms
             // 
             // textBoxCodePreview
             // 
+            this.textBoxCodePreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxCodePreview.Location = new System.Drawing.Point(544, 26);
             this.textBoxCodePreview.Multiline = true;
             this.textBoxCodePreview.Name = "textBoxCodePreview";
             this.textBoxCodePreview.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxCodePreview.Size = new System.Drawing.Size(628, 543);
+            this.textBoxCodePreview.Size = new System.Drawing.Size(355, 401);
             this.textBoxCodePreview.TabIndex = 12;
             // 
             // label5
@@ -166,9 +175,9 @@ namespace AntC.CodeGenerate.Forms
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(544, 6);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(92, 17);
+            this.label5.Size = new System.Drawing.Size(116, 17);
             this.label5.TabIndex = 13;
-            this.label5.Text = "模板代码预览：";
+            this.label5.Text = "模板代码生成预览：";
             // 
             // label6
             // 
@@ -191,28 +200,33 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkedListBoxTables
             // 
+            this.checkedListBoxTables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxTables.FormattingEnabled = true;
             this.checkedListBoxTables.Location = new System.Drawing.Point(12, 106);
             this.checkedListBoxTables.Name = "checkedListBoxTables";
-            this.checkedListBoxTables.Size = new System.Drawing.Size(251, 382);
+            this.checkedListBoxTables.Size = new System.Drawing.Size(251, 238);
             this.checkedListBoxTables.TabIndex = 16;
             // 
             // checkedListBoxTemplate
             // 
+            this.checkedListBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxTemplate.FormattingEnabled = true;
             this.checkedListBoxTemplate.HorizontalScrollbar = true;
             this.checkedListBoxTemplate.Location = new System.Drawing.Point(269, 107);
             this.checkedListBoxTemplate.Name = "checkedListBoxTemplate";
-            this.checkedListBoxTemplate.Size = new System.Drawing.Size(269, 382);
+            this.checkedListBoxTemplate.Size = new System.Drawing.Size(269, 238);
             this.checkedListBoxTemplate.TabIndex = 17;
             this.checkedListBoxTemplate.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxTemplate_SelectedIndexChanged);
             // 
             // checkBoxClearDir
             // 
+            this.checkBoxClearDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxClearDir.AutoSize = true;
             this.checkBoxClearDir.Checked = true;
             this.checkBoxClearDir.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxClearDir.Location = new System.Drawing.Point(133, 548);
+            this.checkBoxClearDir.Location = new System.Drawing.Point(133, 406);
             this.checkBoxClearDir.Name = "checkBoxClearDir";
             this.checkBoxClearDir.Size = new System.Drawing.Size(111, 21);
             this.checkBoxClearDir.TabIndex = 18;
@@ -233,7 +247,7 @@ namespace AntC.CodeGenerate.Forms
             // button1
             // 
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(469, 76);
+            this.button1.Location = new System.Drawing.Point(469, 46);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(69, 23);
             this.button1.TabIndex = 20;
@@ -242,17 +256,31 @@ namespace AntC.CodeGenerate.Forms
             // 
             // textBoxGeneratorDesc
             // 
-            this.textBoxGeneratorDesc.Location = new System.Drawing.Point(544, 576);
+            this.textBoxGeneratorDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGeneratorDesc.Location = new System.Drawing.Point(544, 434);
             this.textBoxGeneratorDesc.Multiline = true;
             this.textBoxGeneratorDesc.Name = "textBoxGeneratorDesc";
-            this.textBoxGeneratorDesc.Size = new System.Drawing.Size(628, 75);
+            this.textBoxGeneratorDesc.Size = new System.Drawing.Size(355, 75);
             this.textBoxGeneratorDesc.TabIndex = 21;
+            // 
+            // checkBoxSelectAllTemplate
+            // 
+            this.checkBoxSelectAllTemplate.AutoSize = true;
+            this.checkBoxSelectAllTemplate.Location = new System.Drawing.Point(487, 82);
+            this.checkBoxSelectAllTemplate.Name = "checkBoxSelectAllTemplate";
+            this.checkBoxSelectAllTemplate.Size = new System.Drawing.Size(51, 21);
+            this.checkBoxSelectAllTemplate.TabIndex = 22;
+            this.checkBoxSelectAllTemplate.Text = "全选";
+            this.checkBoxSelectAllTemplate.UseVisualStyleBackColor = true;
+            this.checkBoxSelectAllTemplate.CheckedChanged += new System.EventHandler(this.checkBoxSelectAllTemplate_CheckedChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 658);
+            this.ClientSize = new System.Drawing.Size(911, 516);
+            this.Controls.Add(this.checkBoxSelectAllTemplate);
             this.Controls.Add(this.textBoxGeneratorDesc);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonGroupEdit);
@@ -273,7 +301,7 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
-            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(927, 555);
             this.Name = "MainForm";
             this.Text = "代码生成器 By AntC";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -301,7 +329,7 @@ namespace AntC.CodeGenerate.Forms
         private System.Windows.Forms.ComboBox comboBoxDbNames;
         private System.Windows.Forms.CheckedListBox checkedListBoxTables;
         private System.Windows.Forms.CheckedListBox checkedListBoxTemplate;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxSelectAllTemplate;
         private System.Windows.Forms.CheckBox checkBoxClearDir;
         private System.Windows.Forms.Button buttonGroupEdit;
         private System.Windows.Forms.Button button1;

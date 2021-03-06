@@ -17,7 +17,7 @@ namespace AntC.CodeGenerate.Interfaces
         /// </summary>
         /// <param name="assembly"></param>
         void AddCodeGenerator(Assembly assembly);
-
+        
         /// <summary>
         /// 添加代码创建器
         /// </summary>

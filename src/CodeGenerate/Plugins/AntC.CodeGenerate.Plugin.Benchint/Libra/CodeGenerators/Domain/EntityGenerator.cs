@@ -14,7 +14,7 @@ namespace AntC.CodeGenerate.Plugin.Benchint.Libra.CodeGenerators.Domain
 
         public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            Name = "Libra.Entity",
+            Name = "Libra.Domain.Entity",
             Desc = "此模板生成数据库实体"
         };
 

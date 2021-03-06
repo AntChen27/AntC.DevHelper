@@ -81,7 +81,9 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(250, 174);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(250, 174);
             this.Name = "EditGroupForm";
             this.Text = "编辑分组";
             this.Load += new System.EventHandler(this.EditGroupForm_Load);

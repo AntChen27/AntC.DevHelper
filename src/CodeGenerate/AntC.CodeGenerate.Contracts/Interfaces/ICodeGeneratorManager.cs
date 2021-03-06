@@ -12,6 +12,8 @@ namespace AntC.CodeGenerate.Interfaces
     {
         IServiceProvider ServiceProvider { get; set; }
 
+        event Action<ICodeWriter> OnCodeWriterCreated;
+
         /// <summary>
         /// 执行代码创建
         /// </summary>

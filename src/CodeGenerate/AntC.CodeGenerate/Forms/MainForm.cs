@@ -122,6 +122,15 @@ namespace AntC.CodeGenerate.Forms
                 .Select(t => t.TableName).ToList();
         }
 
+        /// <summary>
+        /// 获取选中的表名
+        /// </summary>
+        /// <returns></returns>
+        private DbTableInfoModel GetSelectedTableName()
+        {
+            return (DbTableInfoModel)checkedListBoxTables.SelectedItem;
+        }
+
         private void buttonCreateCodes_Click(object sender, EventArgs e)
         {
             _selectedTables = GetSelectedTableNames().ToList();
@@ -155,8 +164,20 @@ namespace AntC.CodeGenerate.Forms
 
             var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
             // todo 添加模板选择
-            codeGeneratorManager.AddBenchintCodeGenerateImpl();
-            //codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
+            //codeGeneratorManager.AddBenchintCodeGenerateImpl();
+            GetSelectedTemplates().ToList().ForEach(x =>
+            {
+                if (x.DbGenerator != null)
+                {
+                    codeGeneratorManager.AddCodeGenerator(x.DbGenerator);
+                }
+
+                if (x.TableGenerator != null)
+                {
+                    codeGeneratorManager.AddCodeGenerator(x.TableGenerator);
+                }
+            });
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
             codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             var codeGenerateInfo = new CodeGenerateInfo()
@@ -296,6 +317,14 @@ namespace AntC.CodeGenerate.Forms
             checkedListBoxTemplate.Items.AddRange(codeGenerators.ToArray());
         }
 
+        private void checkBoxSelectAllTemplate_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBoxTemplate.Items.Count; i++)
+            {
+                checkedListBoxTemplate.SetItemChecked(i, checkBoxSelectAllTemplate.Checked);
+            }
+        }
+
         private void checkedListBoxTemplate_SelectedIndexChanged(object sender, EventArgs e)
         {
             var codeGeneratorInfo = GetSelectedTemplate();
@@ -310,6 +339,85 @@ namespace AntC.CodeGenerate.Forms
                 return;
             }
             textBoxGeneratorDesc.Text = codeGeneratorInfo.GeneratorInfo?.Desc ?? "无描述";
+
+            #region 代码预览
+
+            string tableName = GetSelectedTableName()?.TableName;
+            if (string.IsNullOrEmpty(tableName))
+            {
+                tableName = GetSelectedTableNames().FirstOrDefault();
+            }
+
+            if (string.IsNullOrEmpty(tableName))
+            {
+                textBoxGeneratorDesc.Text = string.Empty;
+                return;
+            }
+            ShowCodePreview(tableName, codeGeneratorInfo);
+
+            #endregion
+        }
+
+        private void ShowCodePreview(string tableName, CodeGeneratorInfo codeGeneratorInfo)
+        {
+            if (_dbConnectionInfo.SelectTables == null)
+            {
+                _dbConnectionInfo.SelectTables = new Dictionary<string, List<string>>();
+            }
+
+            if (!_dbConnectionInfo.SelectTables.ContainsKey(_selectedDb.DbName))
+            {
+                _dbConnectionInfo.SelectTables.Add(_selectedDb.DbName, _selectedTables);
+            }
+            else
+            {
+                _dbConnectionInfo.SelectTables[_selectedDb.DbName] = _selectedTables;
+            }
+
+            var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
+
+            if (codeGeneratorInfo.DbGenerator != null)
+            {
+                codeGeneratorManager.AddCodeGenerator(codeGeneratorInfo.DbGenerator);
+            }
+
+            if (codeGeneratorInfo.TableGenerator != null)
+            {
+                codeGeneratorManager.AddCodeGenerator(codeGeneratorInfo.TableGenerator);
+            }
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
+
+            codeGeneratorManager.SetCodeWriterType<CustomCodeWriter>();
+
+            codeGeneratorManager.OnCodeWriterCreated += (writer) =>
+            {
+                if (writer is CustomCodeWriter ccw)
+                {
+                    ccw.OnAppendContent += CustomCodeWriter_OnAppendContent;
+                }
+            };
+
+            textBoxCodePreview.Clear();
+            var codeGenerateInfo = new CodeGenerateInfo()
+            {
+                OutPutRootPath = null,
+                DbName = _selectedDb.DbName,
+                CodeGenerateTableInfos = new List<CodeGenerateTableInfo>()
+                {
+                    new CodeGenerateTableInfo()
+                    {
+                        TableName = tableName,
+                        GroupName = GetGroupName(tableName)
+                    }
+                }
+            };
+
+            codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
+        }
+
+        private void CustomCodeWriter_OnAppendContent(string obj)
+        {
+            textBoxCodePreview.AppendText(obj ?? string.Empty);
         }
 
         #endregion
@@ -317,9 +425,9 @@ namespace AntC.CodeGenerate.Forms
 
     public class CodeGeneratorInfo
     {
-        public ICodeGenerator<TableCodeGenerateContext> TableGenerator { get; set; }
+        public ITableCodeGenerator TableGenerator { get; set; }
 
-        public ICodeGenerator<DbCodeGenerateContext> DbGenerator { get; set; }
+        public IDbCodeGenerator DbGenerator { get; set; }
 
         public GeneratorInfo GeneratorInfo { get; set; }
 

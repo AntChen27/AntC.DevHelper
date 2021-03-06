@@ -185,7 +185,9 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.checkedListBoxNoGroupTables);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(625, 429);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(625, 429);
             this.Name = "TableGroupForm";
             this.Text = "表分组";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TableGroupForm_FormClosing);
