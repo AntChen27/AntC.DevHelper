@@ -23,9 +23,9 @@ namespace AntC.CodeGenerate.CodeWriters
             }
         }
 
-        private StringBuilder _builder;
+        private readonly StringBuilder _builder;
         private long _filePosition = 0;
-        private long _bufferLength = 1024 * 8;
+        public long BufferLength { get; set; } = 1024 * 8;
 
         private static int createTimes = 0;
 
@@ -67,7 +67,7 @@ namespace AntC.CodeGenerate.CodeWriters
 
         private void FlushOnBufferFull()
         {
-            if (_builder.Length >= _bufferLength)
+            if (_builder.Length >= BufferLength)
             {
                 Flush();
             }

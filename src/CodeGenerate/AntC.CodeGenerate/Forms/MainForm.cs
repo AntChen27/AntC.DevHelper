@@ -111,24 +111,19 @@ namespace AntC.CodeGenerate.Forms
             }
         }
 
-        /// <summary>
-        /// 获取选中的表名
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<string> GetSelectedTableNames()
+        private void checkedListBoxTables_SelectedIndexChanged(object sender, EventArgs e)
         {
-            return Enumerable.Cast<DbTableInfoModel>(checkedListBoxTables.Items)
-                .Where((t, i) => checkedListBoxTables.GetItemChecked(i))
-                .Select(t => t.TableName).ToList();
-        }
-
-        /// <summary>
-        /// 获取选中的表名
-        /// </summary>
-        /// <returns></returns>
-        private DbTableInfoModel GetSelectedTableName()
-        {
-            return (DbTableInfoModel)checkedListBoxTables.SelectedItem;
+            var codeGeneratorInfo = GetSelectedTemplate();
+            if (codeGeneratorInfo == null)
+            {
+                codeGeneratorInfo = GetSelectedTemplates().FirstOrDefault();
+            }
+            var tableName = GetSelectedTableName()?.TableName;
+            if (string.IsNullOrEmpty(tableName))
+            {
+                tableName = GetSelectedTableNames().FirstOrDefault();
+            }
+            ShowCodePreview(tableName, codeGeneratorInfo);
         }
 
         private void buttonCreateCodes_Click(object sender, EventArgs e)
@@ -205,14 +200,6 @@ namespace AntC.CodeGenerate.Forms
             }
         }
 
-        private void ClearDir(DirectoryInfo directory)
-        {
-            if (directory != null && directory.Exists)
-            {
-                directory.Delete(true);
-            }
-        }
-
         private void buttonGroupEdit_Click(object sender, EventArgs e)
         {
             var tableNames = Enumerable.Cast<DbTableInfoModel>(checkedListBoxTables.Items).Select(x => x.TableName);
@@ -263,6 +250,38 @@ namespace AntC.CodeGenerate.Forms
         {
             return _tableGroupInfo.FirstOrDefault(x => x.TableName == tableName)?.GroupName ?? string.Empty;
         }
+
+        private void ClearDir(DirectoryInfo directory)
+        {
+            if (directory != null && directory.Exists)
+            {
+                directory.Delete(true);
+            }
+        }
+
+        #region 选表
+
+        /// <summary>
+        /// 获取选中的表名
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<string> GetSelectedTableNames()
+        {
+            return Enumerable.Cast<DbTableInfoModel>(checkedListBoxTables.Items)
+                .Where((t, i) => checkedListBoxTables.GetItemChecked(i))
+                .Select(t => t.TableName).ToList();
+        }
+
+        /// <summary>
+        /// 获取选中的表名
+        /// </summary>
+        /// <returns></returns>
+        private DbTableInfoModel GetSelectedTableName()
+        {
+            return (DbTableInfoModel)checkedListBoxTables.SelectedItem;
+        }
+
+        #endregion
 
         #region 模板操作
 
@@ -342,16 +361,10 @@ namespace AntC.CodeGenerate.Forms
 
             #region 代码预览
 
-            string tableName = GetSelectedTableName()?.TableName;
+            var tableName = GetSelectedTableName()?.TableName;
             if (string.IsNullOrEmpty(tableName))
             {
                 tableName = GetSelectedTableNames().FirstOrDefault();
-            }
-
-            if (string.IsNullOrEmpty(tableName))
-            {
-                textBoxGeneratorDesc.Text = string.Empty;
-                return;
             }
             ShowCodePreview(tableName, codeGeneratorInfo);
 
@@ -360,6 +373,10 @@ namespace AntC.CodeGenerate.Forms
 
         private void ShowCodePreview(string tableName, CodeGeneratorInfo codeGeneratorInfo)
         {
+            if (string.IsNullOrEmpty(tableName) || codeGeneratorInfo == null)
+            {
+                return;
+            }
             if (_dbConnectionInfo.SelectTables == null)
             {
                 _dbConnectionInfo.SelectTables = new Dictionary<string, List<string>>();

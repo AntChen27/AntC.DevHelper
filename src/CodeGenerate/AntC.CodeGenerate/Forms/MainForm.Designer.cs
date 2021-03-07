@@ -207,6 +207,7 @@ namespace AntC.CodeGenerate.Forms
             this.checkedListBoxTables.Name = "checkedListBoxTables";
             this.checkedListBoxTables.Size = new System.Drawing.Size(251, 238);
             this.checkedListBoxTables.TabIndex = 16;
+            this.checkedListBoxTables.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxTables_SelectedIndexChanged);
             // 
             // checkedListBoxTemplate
             // 
