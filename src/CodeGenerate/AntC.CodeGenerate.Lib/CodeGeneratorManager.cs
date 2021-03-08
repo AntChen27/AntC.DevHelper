@@ -173,7 +173,7 @@ namespace AntC.CodeGenerate
             foreach (var codeGenerateExecutor in _dbCodeGenerators)
             {
                 using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
-                OnCodeWriterCreated(codeWriter);
+                OnCodeWriterCreated?.Invoke(codeWriter);
                 context.CodeWriter = codeWriter;
                 codeGenerateExecutor.ExecCodeGenerate(context);
             }
@@ -206,7 +206,7 @@ namespace AntC.CodeGenerate
                 foreach (var codeGenerateExecutor in _tableCodeGenerators)
                 {
                     using var codeWriter = (ICodeWriter)CreateNewInstance(_codeWriterType);
-                    OnCodeWriterCreated(codeWriter);
+                    OnCodeWriterCreated?.Invoke(codeWriter);
                     context.CodeWriter = codeWriter;
                     codeGenerateExecutor.ExecCodeGenerate(context);
                 }

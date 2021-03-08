@@ -118,12 +118,7 @@ namespace AntC.CodeGenerate.Forms
             {
                 codeGeneratorInfo = GetSelectedTemplates().FirstOrDefault();
             }
-            var tableName = GetSelectedTableName()?.TableName;
-            if (string.IsNullOrEmpty(tableName))
-            {
-                tableName = GetSelectedTableNames().FirstOrDefault();
-            }
-            ShowCodePreview(tableName, codeGeneratorInfo);
+            ShowCodePreview(codeGeneratorInfo);
         }
 
         private void buttonCreateCodes_Click(object sender, EventArgs e)
@@ -361,19 +356,14 @@ namespace AntC.CodeGenerate.Forms
 
             #region 代码预览
 
-            var tableName = GetSelectedTableName()?.TableName;
-            if (string.IsNullOrEmpty(tableName))
-            {
-                tableName = GetSelectedTableNames().FirstOrDefault();
-            }
-            ShowCodePreview(tableName, codeGeneratorInfo);
+            ShowCodePreview(codeGeneratorInfo);
 
             #endregion
         }
 
-        private void ShowCodePreview(string tableName, CodeGeneratorInfo codeGeneratorInfo)
+        private void ShowCodePreview(CodeGeneratorInfo codeGeneratorInfo)
         {
-            if (string.IsNullOrEmpty(tableName) || codeGeneratorInfo == null)
+            if (codeGeneratorInfo == null)
             {
                 return;
             }
@@ -393,15 +383,28 @@ namespace AntC.CodeGenerate.Forms
 
             var codeGeneratorManager = ServiceManager.CreateGeneratorManager(_dbConnectionInfo);
 
+            IEnumerable<string> tableNames = null;
+
             if (codeGeneratorInfo.DbGenerator != null)
             {
                 codeGeneratorManager.AddCodeGenerator(codeGeneratorInfo.DbGenerator);
+                tableNames = GetSelectedTableNames();
             }
 
             if (codeGeneratorInfo.TableGenerator != null)
             {
                 codeGeneratorManager.AddCodeGenerator(codeGeneratorInfo.TableGenerator);
+                tableNames = new List<string>()
+                {
+                    GetSelectedTableName()?.TableName??GetSelectedTableNames().FirstOrDefault()
+                };
             }
+
+            if (!tableNames.Any(x => !string.IsNullOrEmpty(x)))
+            {
+                return;
+            }
+
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
 
             codeGeneratorManager.SetCodeWriterType<CustomCodeWriter>();
@@ -419,14 +422,13 @@ namespace AntC.CodeGenerate.Forms
             {
                 OutPutRootPath = null,
                 DbName = _selectedDb.DbName,
-                CodeGenerateTableInfos = new List<CodeGenerateTableInfo>()
-                {
-                    new CodeGenerateTableInfo()
-                    {
-                        TableName = tableName,
-                        GroupName = GetGroupName(tableName)
-                    }
-                }
+                CodeGenerateTableInfos = tableNames.Where(x => !string.IsNullOrEmpty(x)).Select(x =>
+                        new CodeGenerateTableInfo()
+                        {
+                            TableName = x,
+                            GroupName = GetGroupName(x)
+                        }
+                )
             };
 
             codeGeneratorManager.ExecCodeGenerate(codeGenerateInfo);
