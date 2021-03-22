@@ -202,6 +202,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             this.checkedListBoxTables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxTables.CheckOnClick = true;
             this.checkedListBoxTables.FormattingEnabled = true;
             this.checkedListBoxTables.Location = new System.Drawing.Point(12, 106);
             this.checkedListBoxTables.Name = "checkedListBoxTables";
@@ -213,6 +214,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             this.checkedListBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxTemplate.CheckOnClick = true;
             this.checkedListBoxTemplate.FormattingEnabled = true;
             this.checkedListBoxTemplate.HorizontalScrollbar = true;
             this.checkedListBoxTemplate.Location = new System.Drawing.Point(269, 107);
@@ -304,6 +306,7 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.label3);
             this.MinimumSize = new System.Drawing.Size(927, 555);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "代码生成器 By AntC";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);

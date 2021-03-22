@@ -59,6 +59,7 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Name = "AddConnectingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "添加/编辑分组";
             this.ResumeLayout(false);
 
