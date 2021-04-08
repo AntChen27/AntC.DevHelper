@@ -2,8 +2,8 @@
   {
     "Name": "10.4.1.248_3310",
     "DbType": 1,
-    "Host": "127.0.0.1",
-    "Port": 3306,
+    "Host": "10.4.1.248",
+    "Port": 3310,
     "Username": "root",
     "Password": "123456",
     "TableGroups": {

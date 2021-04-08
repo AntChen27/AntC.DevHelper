@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{E6AF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntC.CodeGenerate.Plugin.Benchint", "src\CodeGenerate\Plugins\AntC.CodeGenerate.Plugin.Benchint\AntC.CodeGenerate.Plugin.Benchint.csproj", "{1BD7374A-3E4A-4830-B549-E408FFD77D91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntC.CodeGenerate.Plugin.LZ", "src\CodeGenerate\Plugins\AntC.CodeGenerate.Plugin.LZ\AntC.CodeGenerate.Plugin.LZ.csproj", "{1C772ABE-1643-4813-8FC3-82E4B3A0053D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{1BD7374A-3E4A-4830-B549-E408FFD77D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BD7374A-3E4A-4830-B549-E408FFD77D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BD7374A-3E4A-4830-B549-E408FFD77D91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C772ABE-1643-4813-8FC3-82E4B3A0053D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C772ABE-1643-4813-8FC3-82E4B3A0053D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C772ABE-1643-4813-8FC3-82E4B3A0053D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C772ABE-1643-4813-8FC3-82E4B3A0053D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{0DCB06E4-EFE9-4EBF-BB17-89D3F355498B} = {98261239-99D0-4303-B95C-F225B86D6210}
 		{E6AFAA31-0F1E-4BD2-889B-1222468D0305} = {98261239-99D0-4303-B95C-F225B86D6210}
 		{1BD7374A-3E4A-4830-B549-E408FFD77D91} = {E6AFAA31-0F1E-4BD2-889B-1222468D0305}
+		{1C772ABE-1643-4813-8FC3-82E4B3A0053D} = {E6AFAA31-0F1E-4BD2-889B-1222468D0305}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ADAE9D3-DA35-4112-9DE0-94F5426CDBAD}

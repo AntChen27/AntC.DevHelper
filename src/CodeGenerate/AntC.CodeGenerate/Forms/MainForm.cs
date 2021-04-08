@@ -44,6 +44,7 @@ namespace AntC.CodeGenerate.Forms
             comboBoxDbConnection.DataSource = _dbConnectionInfos;
 
             PluginManager.AddPlugin(new Plugin.Benchint.Plugin());
+            PluginManager.AddPlugin(new Plugin.LZ.Plugin());
             RefreshCheckedListBoxTemplate();
         }
 
@@ -168,6 +169,7 @@ namespace AntC.CodeGenerate.Forms
                 }
             });
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.LZ.Plugin).Assembly);
             codeGeneratorManager.SetCodeWriterType<CodeFileWriter>();
 
             var codeGenerateInfo = new CodeGenerateInfo()
@@ -276,7 +278,7 @@ namespace AntC.CodeGenerate.Forms
             return (DbTableInfoModel)checkedListBoxTables.SelectedItem;
         }
 
-        #endregion
+        #endregion 选表
 
         #region 模板操作
 
@@ -358,7 +360,7 @@ namespace AntC.CodeGenerate.Forms
 
             ShowCodePreview(codeGeneratorInfo);
 
-            #endregion
+            #endregion 代码预览
         }
 
         private void ShowCodePreview(CodeGeneratorInfo codeGeneratorInfo)
@@ -406,6 +408,7 @@ namespace AntC.CodeGenerate.Forms
             }
 
             codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.Benchint.Plugin).Assembly);
+            codeGeneratorManager.AddPropertyTypeConverter(typeof(Plugin.LZ.Plugin).Assembly);
 
             codeGeneratorManager.SetCodeWriterType<CustomCodeWriter>();
 
@@ -439,7 +442,7 @@ namespace AntC.CodeGenerate.Forms
             textBoxCodePreview.AppendText(obj ?? string.Empty);
         }
 
-        #endregion
+        #endregion 模板操作
     }
 
     public class CodeGeneratorInfo
