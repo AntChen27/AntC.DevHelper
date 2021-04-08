@@ -55,6 +55,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkedListBoxNoGroupTables
             // 
+            this.checkedListBoxNoGroupTables.CheckOnClick = true;
             this.checkedListBoxNoGroupTables.FormattingEnabled = true;
             this.checkedListBoxNoGroupTables.Location = new System.Drawing.Point(10, 69);
             this.checkedListBoxNoGroupTables.Name = "checkedListBoxNoGroupTables";
@@ -63,6 +64,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkedListBoxGroupTables
             // 
+            this.checkedListBoxGroupTables.CheckOnClick = true;
             this.checkedListBoxGroupTables.FormattingEnabled = true;
             this.checkedListBoxGroupTables.Location = new System.Drawing.Point(287, 69);
             this.checkedListBoxGroupTables.Name = "checkedListBoxGroupTables";
@@ -189,6 +191,7 @@ namespace AntC.CodeGenerate.Forms
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(625, 429);
             this.Name = "TableGroupForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "表分组";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TableGroupForm_FormClosing);
             this.Load += new System.EventHandler(this.TableGroupForm_Load);

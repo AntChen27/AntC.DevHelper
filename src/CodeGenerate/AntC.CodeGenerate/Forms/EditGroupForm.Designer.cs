@@ -85,6 +85,7 @@ namespace AntC.CodeGenerate.Forms
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(250, 174);
             this.Name = "EditGroupForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "编辑分组";
             this.Load += new System.EventHandler(this.EditGroupForm_Load);
             this.ResumeLayout(false);

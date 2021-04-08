@@ -37,6 +37,7 @@ namespace AntC.CodeGenerate.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "ConnectionSettingsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "数据库连接配置";
             this.ResumeLayout(false);
 
