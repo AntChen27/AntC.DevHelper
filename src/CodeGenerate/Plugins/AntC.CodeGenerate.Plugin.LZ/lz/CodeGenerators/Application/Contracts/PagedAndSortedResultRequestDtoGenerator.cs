@@ -10,7 +10,7 @@ namespace AntC.CodeGenerate.Plugin.LZ.lz.CodeGenerators.Application.Contracts
     {
         public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            Name = "Libra.Dto.PagedAndSortedResultRequest",
+            Name = "Lz.Dto.PagedAndSortedResultRequest",
             Desc = "此模板生成基于Abp的用于接口分页查询的数据传输对象"
         };
 

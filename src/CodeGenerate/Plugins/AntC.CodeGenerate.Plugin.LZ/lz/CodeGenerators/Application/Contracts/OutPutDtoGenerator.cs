@@ -11,7 +11,7 @@ namespace AntC.CodeGenerate.Plugin.LZ.lz.CodeGenerators.Application.Contracts
     {
         public override GeneratorInfo GeneratorInfo => new GeneratorInfo()
         {
-            Name = "Libra.Dto.OutPut",
+            Name = "Lz.Dto.OutPut",
             Desc = "此模板生成基于Abp的用于接口输出的数据传输对象"
         };
 

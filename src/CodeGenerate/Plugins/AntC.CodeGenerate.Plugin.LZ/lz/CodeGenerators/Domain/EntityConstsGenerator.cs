@@ -24,7 +24,7 @@ namespace AntC.CodeGenerate.Plugin.LZ.lz.CodeGenerators.Domain
             {
                 FileRelativePath = Path.Combine("DomainShared",
                     context.ClassInfo.GroupName ?? string.Empty,
-                    $"{context.ClassInfo.ClassFileName}.cs")
+                    $"{context.ClassInfo.ClassFileName}Consts.cs")
             };
         }
 

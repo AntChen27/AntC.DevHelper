@@ -37,7 +37,7 @@ namespace AntC.CodeGenerate.Plugin.LZ.lz.CodeGenerators.Application.Contracts
 
             var key = context.ClassInfo.Properties?.FirstOrDefault(x => x.DbColumnInfo.Key);
 
-            context.AppendLine($"    public interface {className} : ICrudAppService<{context.ClassInfo.ClassName}Dto, {key?.PropertyTypeName}, {context.ClassInfo.ClassName},PagedAndSortedResultRequestDto, Create{context.ClassInfo.ClassName}Dto, Update{context.ClassInfo.ClassName}Dto>");
+            context.AppendLine($"    public interface {className} : ICrudAppService<{context.ClassInfo.ClassName}Dto, {context.ClassInfo.ClassName}Dto,{key?.PropertyTypeName}, PagedAndSortedResultRequestDto, Create{context.ClassInfo.ClassName}Dto, Update{context.ClassInfo.ClassName}Dto>");
 
             context.AppendLine("    {");
 
