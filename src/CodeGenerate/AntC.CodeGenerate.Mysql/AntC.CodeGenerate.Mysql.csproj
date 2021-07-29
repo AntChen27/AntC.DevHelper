@@ -9,8 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AntC.CodeGenerate.Contracts\AntC.CodeGenerate.Contracts.csproj" />
-    <ProjectReference Include="..\AntC.CodeGenerate.Lib\AntC.CodeGenerate.Lib.csproj" />
+    <ProjectReference Include="..\AntC.CodeGenerate.Core\AntC.CodeGenerate.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,16 +1,17 @@
-﻿using AntC.CodeGenerate.DbInfoProviders;
-using AntC.CodeGenerate.Model;
+﻿using AntC.CodeGenerate.Core.Model.Db;
+using AntC.CodeGenerate.Core.Provider;
+using AntC.CodeGenerate.Mysql.Entities;
+using AntC.CodeGenerate.Mysql.Model;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AntC.CodeGenerate.Mysql.Model;
 
 namespace AntC.CodeGenerate.Mysql
 {
     public class MysqlDbInfoProvider : BaseDbInfoProvider
     {
-        public override IEnumerable<DbInfoModel> GetDataBases()
+        public override IEnumerable<DatabaseInfo> GetDataBases()
         {
             return GetDb()
                 .Queryable<MysqlSchemata>()
@@ -19,17 +20,72 @@ namespace AntC.CodeGenerate.Mysql
                 .ToList();
         }
 
-        public override IEnumerable<DbTableInfoModel> GetTables(string dbName)
+        public override IEnumerable<TableInfo> GetTables(string dbName, bool withDetails = false)
         {
-            return GetDb()
+            var db = GetDb();
+            if (withDetails)
+            {
+                return db
+                  .Queryable<MysqlSchemaTable>()
+                  .Where(t => t.TABLE_SCHEMA == dbName)
+                  .ToList()
+                  .Select(Map)
+                  .ToList();
+            }
+
+            var tableInfos = db
                 .Queryable<MysqlSchemaTable>()
                 .Where(t => t.TABLE_SCHEMA == dbName)
                 .ToList()
                 .Select(Map)
                 .ToList();
+
+
+            var columnInfos = db
+                .Queryable<MysqlSchemaColumns>()
+                .Where(t => t.TABLE_SCHEMA == dbName)
+                .ToList();
+
+            tableInfos.ForEach(x =>
+            {
+                x.Columns = columnInfos.Where(col => col.TABLE_SCHEMA == x.TableName).Select(Map).ToList();
+            });
+            return tableInfos;
         }
 
-        public override IEnumerable<DbColumnInfoModel> GetColumns(string tableName)
+        public override DatabaseInfo GetTables(DatabaseInfo databaseInfo)
+        {
+            var db = GetDb();
+            var tableInfos = db
+                .Queryable<MysqlSchemaTable>()
+                .Where(t => t.TABLE_SCHEMA == databaseInfo.DbName)
+                .ToList()
+                .Select(Map)
+                .ToList();
+
+
+            var columnInfos = db
+                .Queryable<MysqlSchemaColumns>()
+                .Where(t => t.TABLE_SCHEMA == databaseInfo.DbName)
+                .ToList();
+
+            tableInfos.ForEach(x =>
+            {
+                x.Columns = columnInfos.Where(col => col.TABLE_NAME == x.TableName)
+                    .Select(o =>
+                    {
+                        var res = Map(o);
+                        res.TableInfo = x;
+                        return res;
+                    }).ToList();
+                x.DatabaseInfo = databaseInfo;
+            });
+
+            databaseInfo.Tables = tableInfos;
+            return databaseInfo;
+        }
+
+        public override IEnumerable<ColumnInfo> GetColumns(string tableName)
         {
             return GetDb()
                 .Queryable<MysqlSchemaColumns>()
@@ -39,7 +95,7 @@ namespace AntC.CodeGenerate.Mysql
                 .ToList();
         }
 
-        public override DbTableInfoModel GetTableInfoWithColumns(string dbName, string tableName)
+        public override TableInfo GetTableInfoWithColumns(string dbName, string tableName)
         {
             var db = GetDb();
 
@@ -48,7 +104,7 @@ namespace AntC.CodeGenerate.Mysql
                 .Where(t => t.TABLE_SCHEMA == dbName && t.TABLE_NAME == tableName)
                 .First());
 
-            dbTableInfoModel.DbInfo = Map(db
+            dbTableInfoModel.DatabaseInfo = Map(db
                 .Queryable<MysqlSchemata>()
                 .Where(x => x.SCHEMA_NAME == dbName)
                 .First());
@@ -62,9 +118,9 @@ namespace AntC.CodeGenerate.Mysql
 
             foreach (var dbColumnInfoModel in dbTableInfoModel.Columns)
             {
-                dbColumnInfoModel.DbTableInfo = dbTableInfoModel;
+                dbColumnInfoModel.TableInfo = dbTableInfoModel;
             }
-            dbTableInfoModel.DbInfo.Tables = new List<DbTableInfoModel>()
+            dbTableInfoModel.DatabaseInfo.Tables = new List<TableInfo>()
             {
                 dbTableInfoModel
             };
@@ -72,7 +128,12 @@ namespace AntC.CodeGenerate.Mysql
             return dbTableInfoModel;
         }
 
-        protected override string GetDefaultFiledTypeName(DbColumnInfoModel column)
+        public override IEnumerable<TableInfo> GetTableInfoWithColumns(string dbName, string[] tableNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string GetDefaultFiledTypeName(ColumnInfo column)
         {
             bool isUnsigned = column.DataTypeName.ToLower().Contains("unsigned");
 
@@ -127,26 +188,27 @@ namespace AntC.CodeGenerate.Mysql
 
             return filedTypeName;
         }
-        private DbInfoModel Map(MysqlSchemata t)
+
+        private DatabaseInfo Map(MysqlSchemata t)
         {
-            return new DbInfoModel()
+            return new DatabaseInfo()
             {
                 DbName = t.SCHEMA_NAME,
             };
         }
 
-        private DbTableInfoModel Map(MysqlSchemaTable t)
+        private TableInfo Map(MysqlSchemaTable t)
         {
-            return new DbTableInfoModel()
+            return new TableInfo()
             {
                 TableName = t.TABLE_NAME,
                 Commont = t.TABLE_COMMENT,
             };
         }
 
-        private DbColumnInfoModel Map(MysqlSchemaColumns t)
+        private ColumnInfo Map(MysqlSchemaColumns t)
         {
-            return new MysqlDbColumnInfoModel()
+            return new MysqlColumnInfo()
             {
                 ColumnName = t.COLUMN_NAME,
                 Commont = t.COLUMN_COMMENT,
@@ -162,7 +224,7 @@ namespace AntC.CodeGenerate.Mysql
                 CollationName = t.COLLATION_NAME,
             };
         }
-        
+
         //创建SqlSugarClient 
         public SqlSugarClient GetDb()
         {

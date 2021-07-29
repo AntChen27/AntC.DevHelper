@@ -1,5 +1,3 @@
-using AntC.CodeGenerate.CodeConverters;
-using AntC.CodeGenerate.Interfaces;
 using AntC.CodeGenerate.Mysql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,7 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AntC.CodeGenerate.CodeGenerateExecutors;
-using AntC.CodeGenerate.Model;
+using AntC.CodeGenerate.Core.CodeConverters;
+using AntC.CodeGenerate.Core.Contracts;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace AntC.CodeGenerate.UnitTest

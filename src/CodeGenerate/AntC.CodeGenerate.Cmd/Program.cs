@@ -17,6 +17,11 @@ namespace AntC.CodeGenerate.Cmd
     {
         static void Main(string[] args)
         {
+            CodeGenerate();
+        }
+
+        private static void CodeGenerate()
+        {
             var dbConnectionString = "server=10.4.1.248;port=3310;database=information_schema;User ID=root;Password=123456;";
             //var dbConnectionString = "server=localhost;port=3306;database=information_schema;User ID=root;Password=123456;";
             var dbName = "libra.kpidb";

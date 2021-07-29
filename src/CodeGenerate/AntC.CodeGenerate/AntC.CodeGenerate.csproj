@@ -8,8 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AntC.CodeGenerate.Contracts\AntC.CodeGenerate.Contracts.csproj" />
-    <ProjectReference Include="..\Plugins\AntC.CodeGenerate.Plugin.Benchint\AntC.CodeGenerate.Plugin.Benchint.csproj" />
-    <ProjectReference Include="..\Plugins\AntC.CodeGenerate.Plugin.LZ\AntC.CodeGenerate.Plugin.LZ.csproj" />
+    <ProjectReference Include="..\AntC.CodeGenerate.Lib\AntC.CodeGenerate.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
