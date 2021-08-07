@@ -4,9 +4,7 @@
 @using AntC.CodeGenerate
 @{
     var classModel = (ClassModel)Model;
-    //这可以
-    //Model.SetOutputFileName(tt+"_Table");
-    //这也行的，但是必须使用变量保存Model中的字段数据
+    //设置输出文件名及相对路径
     classModel.OutPutFileName = $"{(string.IsNullOrWhiteSpace(classModel.GroupName) ? "" : classModel.GroupName+"")}{classModel.ClassName}Entity.cs";
 }
 /// <summary>
