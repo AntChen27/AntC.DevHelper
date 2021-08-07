@@ -26,8 +26,12 @@ namespace AntC.CodeGenerate.Model
             Engine.Razor = RazorEngineService.Create(templateServiceConfiguration);
         }
 
-        public static void LoadTemplates()
+        public static void LoadTemplates(bool clearCache = false)
         {
+            if (clearCache)
+            {
+                TemplateDic.Clear();
+            }
             LoadTemplates(new DirectoryInfo(TemplateRootPath));
         }
 
@@ -59,7 +63,7 @@ namespace AntC.CodeGenerate.Model
             //添加模板
             Engine.Razor.AddTemplate(relativePath, template);
             //编译模板
-            Engine.Razor.Compile(relativePath, null);   
+            Engine.Razor.Compile(relativePath, null);
 
             if (!TemplateDic.ContainsKey(relativePath))
             {

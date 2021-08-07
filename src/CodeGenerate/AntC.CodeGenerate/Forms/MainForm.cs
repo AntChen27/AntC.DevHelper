@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AntC.CodeGenerate.Core.Extension;
 using AntC.CodeGenerate.Core.Model.CLR;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using RazorEngine;
 using Encoding = System.Text.Encoding;
 
@@ -45,9 +46,8 @@ namespace AntC.CodeGenerate.Forms
 
             _dbConnectionInfos = ConfigHelper.LoadConnectionConfigs();
             comboBoxDbConnection.DataSource = _dbConnectionInfos;
-
-            TemplateManager.LoadTemplates();
-            RefreshCheckedListBoxTemplate();
+            RegisterMenuEvent();
+            RefreshTemplates();
         }
 
         private void comboBoxDbConnection_SelectedValueChanged(object sender, EventArgs e)
@@ -116,7 +116,7 @@ namespace AntC.CodeGenerate.Forms
 
         private void checkedListBoxTables_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ShowCodePreview();
+            LoadCodePreview();
         }
 
         private void buttonCreateCodes_Click(object sender, EventArgs e)
@@ -181,10 +181,7 @@ namespace AntC.CodeGenerate.Forms
 
             if (checkBoxOnFinishedOpenDir.Checked)
             {
-                Process p = new Process();
-                p.StartInfo.FileName = "explorer.exe";
-                p.StartInfo.Arguments = textBoxOutputFolder.Text;
-                p.Start();
+                OpenFolder(textBoxOutputFolder.Text);
             }
         }
 
@@ -306,8 +303,12 @@ namespace AntC.CodeGenerate.Forms
                 .Select(t => t);
         }
 
-        private void RefreshCheckedListBoxTemplate()
+        /// <summary>
+        /// 刷新模板
+        /// </summary>
+        private void RefreshTemplates()
         {
+            TemplateManager.LoadTemplates(true);
             checkedListBoxTemplate.Items.Clear();
             checkedListBoxTemplate.ClearSelected();
             checkedListBoxTemplate.Items.AddRange(TemplateManager.TemplateDic.Keys.OrderBy(x => x).ToArray());
@@ -325,12 +326,15 @@ namespace AntC.CodeGenerate.Forms
         {
             #region 代码预览
 
-            ShowCodePreview();
+            LoadCodePreview();
 
             #endregion 代码预览
         }
 
-        private void ShowCodePreview()
+        /// <summary>
+        /// 加载代码预览
+        /// </summary>
+        private void LoadCodePreview()
         {
             var template = GetSelectedTemplate();
             if (template == null)
@@ -359,11 +363,51 @@ namespace AntC.CodeGenerate.Forms
             }
         }
 
-        private void CustomCodeWriter_OnAppendContent(string obj)
+        #endregion 模板操作
+
+        #region 菜单操作        
+        /// <summary>
+        /// 注册菜单事件
+        /// </summary>
+        private void RegisterMenuEvent()
         {
-            textBoxCodePreview.AppendText(obj ?? string.Empty);
+            openTemplateFolderToolStripMenuItem.Click += OpenTemplateFolderToolStripMenuItem_Click;
+            dbConnManagerToolStripMenuItem.Click += DbConnManagerToolStripMenuItem_Click;
+            reloadTemplateToolStripMenuItem.Click += ReloadTemplateToolStripMenuItem_Click;
         }
 
-        #endregion 模板操作
+        private void ReloadTemplateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshTemplates();
+        }
+
+        private void DbConnManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var connectionSettingsForm = new ConnectionSettingsForm();
+            var dialogResult = connectionSettingsForm.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+
+            }
+        }
+
+        private void OpenTemplateFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFolder(TemplateManager.TemplateRootPath);
+        }
+
+        #endregion
+
+        #region 通用操作
+
+        private void OpenFolder(string folder)
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "explorer.exe";
+            p.StartInfo.Arguments = folder;
+            p.Start();
+        }
+
+        #endregion
     }
 }
