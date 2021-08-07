@@ -5,9 +5,9 @@
 @{
     var classModel = (ClassModel)Model;
     //这可以
-	//Model.SetOutputFileName(tt+"_Table");
-	//这也行的，但是必须使用变量保存Model中的字段数据
-    classModel.OutPutFileName=$"{classModel.ClassName}Entity.cs";
+    //Model.SetOutputFileName(tt+"_Table");
+    //这也行的，但是必须使用变量保存Model中的字段数据
+    classModel.OutPutFileName = $"{(string.IsNullOrWhiteSpace(classModel.GroupName) ? "" : classModel.GroupName + "\\")}{classModel.ClassName}Entity.cs";
 }
 public class @classModel.ClassName
 {
@@ -18,9 +18,9 @@ public class @classModel.ClassName
         continue;
     }
     @:/// <summary>
-    @:/// @prop.Annotation
-    @:/// </summary>
-    @:public @prop.PropertyTypeName @prop.PropertyName { get; set; }
-    @:
-}
+        @:/// @prop.Annotation
+        @:/// </summary>
+        @:public @prop.PropertyTypeName @prop.PropertyName { get; set; }
+        @:
+    }
 }
