@@ -23,7 +23,7 @@ namespace AntC.CodeGenerate.Mysql
         public override IEnumerable<TableInfo> GetTables(string dbName, bool withDetails = false)
         {
             var db = GetDb();
-            if (withDetails)
+            if (!withDetails)
             {
                 return db
                   .Queryable<MysqlSchemaTable>()
@@ -46,9 +46,12 @@ namespace AntC.CodeGenerate.Mysql
                 .Where(t => t.TABLE_SCHEMA == dbName)
                 .ToList();
 
+            var dbInfo = new DatabaseInfo() { DbName = dbName, Tables = tableInfos };
+
             tableInfos.ForEach(x =>
             {
-                x.Columns = columnInfos.Where(col => col.TABLE_SCHEMA == x.TableName).Select(Map).ToList();
+                x.Columns = columnInfos.Where(col => col.TABLE_NAME == x.TableName).Select(Map).ToList();
+                x.DatabaseInfo = dbInfo;
             });
             return tableInfos;
         }
@@ -130,7 +133,40 @@ namespace AntC.CodeGenerate.Mysql
 
         public override IEnumerable<TableInfo> GetTableInfoWithColumns(string dbName, string[] tableNames)
         {
-            throw new NotImplementedException();
+            var db = GetDb();
+
+            var tables = db
+                .Queryable<MysqlSchemaTable>()
+                .Where(t => t.TABLE_SCHEMA == dbName)
+                .Where(x => tableNames.Contains(x.TABLE_NAME))
+                .ToList();
+
+            var databaseInfo = new DatabaseInfo()
+            {
+                DbName = dbName,
+            };
+
+            var columns = db
+                .Queryable<MysqlSchemaColumns>()
+                .Where(t => t.TABLE_SCHEMA == dbName)
+                .Where(x => tableNames.Contains(x.TABLE_NAME))
+                .ToList();
+
+            var results = new List<TableInfo>();
+            foreach (var table in tables)
+            {
+                var t = Map(table);
+                t.DatabaseInfo = databaseInfo;
+                foreach (var column in columns.Where(x => x.TABLE_NAME == table.TABLE_NAME))
+                {
+                    var col = Map(column);
+                    col.TableInfo = t;
+                }
+            }
+
+            databaseInfo.Tables = results;
+
+            return results;
         }
 
         protected override string GetDefaultFiledTypeName(ColumnInfo column)

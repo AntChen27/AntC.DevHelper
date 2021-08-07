@@ -37,5 +37,29 @@ namespace AntC.CodeGenerate.Core.Extension
             };
             return classModel;
         }
+
+        public static ClassModel ToClassModel(this IDbInfoProvider provider, TableInfo tableInfo)
+        {
+            var classModel = new ClassModel()
+            {
+                TableInfo = tableInfo,
+                ClassName = CodeHelper.DefaultConverter.Convert(tableInfo.TableName, CodeType.ClassName),
+                OutPutFileName = CodeHelper.DefaultConverter.Convert(tableInfo.TableName, CodeType.ClassFileName),
+                Annotation = tableInfo.Commont,
+                //GroupName = tableInfo.GroupName,
+                Properties = tableInfo.Columns.Select(x =>
+                {
+                    var propertyModel = new PropertyModel()
+                    {
+                        DbColumnInfo = x,
+                        PropertyTypeName = provider.GetFiledTypeName(x),
+                        Annotation = x.Commont,
+                        PropertyName = CodeHelper.DefaultConverter.Convert(x.ColumnName, CodeType.PropertyName),
+                    };
+                    return propertyModel;
+                }),
+            };
+            return classModel;
+        }
     }
 }

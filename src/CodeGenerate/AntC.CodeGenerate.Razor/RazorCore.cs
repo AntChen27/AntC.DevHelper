@@ -55,26 +55,33 @@ namespace AntC.CodeGenerate.Razor
             var dbinfo = new DatabaseInfo() { DbName = "libra.kpidb" };
             //dbinfo = dbInfoProvider.GetTables(dbinfo);
 
-            var templateServiceConfiguration = new TemplateServiceConfiguration();
-            templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core");
-            templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Enum");
-            templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Model.CLR");
-            templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Model.Db");
-            //这里可以类引用解决器
-            templateServiceConfiguration.ReferenceResolver = new MyReferenceResolver();
-            Engine.Razor = RazorEngineService.Create(templateServiceConfiguration);
+            //var templateServiceConfiguration = new TemplateServiceConfiguration();
+            //templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core");
+            //templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Enum");
+            //templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Model.CLR");
+            //templateServiceConfiguration.Namespaces.Add("AntC.CodeGenerate.Core.Model.Db");
+            ////这里可以类引用解决器
+            //templateServiceConfiguration.ReferenceResolver = new MyReferenceResolver();
+            //Engine.Razor = RazorEngineService.Create(templateServiceConfiguration);
 
-            //打开并且读取模板
-            string template = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "templates", "Entity.cshtml"));
-            //添加模板
-            Engine.Razor.AddTemplate("templateKey", template);
-            //编译模板
-            Engine.Razor.Compile("templateKey", null);
+            ////打开并且读取模板
+            //string template = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "templates", "Entity.cshtml"));
+            ////添加模板
+            //Engine.Razor.AddTemplate("Entity.cshtml", template);
+            ////编译模板
+            //Engine.Razor.Compile("Entity.cshtml", null);
+
+
 
             //var tableInfo = dbinfo.Tables.FirstOrDefault(x => x.TableName == "kpi_define");
 
-            var classModel = dbInfoProvider.GetClassModel("libra.kpidb", "kpi_define");
-            var result = Engine.Razor.Run("templateKey", null, classModel);
+            var classModel = dbInfoProvider.GetClassModel("libra.kpidb.debug", "kpi_define");
+            //var result = Engine.Razor.Run("Entity.cshtml", null, classModel);
+
+            TemplateManager.Init();
+            TemplateManager.LoadTemplates();
+
+            var result = TemplateManager.Run(0, classModel);
         }
     }
 }

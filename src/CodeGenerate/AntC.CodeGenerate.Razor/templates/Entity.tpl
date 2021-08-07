@@ -1,19 +1,26 @@
 ﻿@using System
+@using AntC.CodeGenerate.Core.Extension
+@using AntC.CodeGenerate.Core.Model.CLR
 @using AntC.CodeGenerate.Razor
-@using AntC.CodeGenerate.Model
 @{
-    var codeHelper = (CodeHelper)Model;
-	var tt = Model.TableName;
-	//这可以
+    var classModel = (ClassModel)Model;
+    //这可以
 	//Model.SetOutputFileName(tt+"_Table");
 	//这也行的，但是必须使用变量保存Model中的字段数据
-    Model.OutputFileName=tt+"_Table1";
+    classModel.OutPutFileName=$"{classModel.ClassName}Entity.cs";
 }
-public class @codeHelper.TableInfo.TableName
+public class @classModel.ClassName
 {
-    @foreach (var col in codeHelper.TableInfo.Columns)
+@foreach (var prop in classModel.Properties)
+{
+    if (prop.DbColumnInfo.IsAbpProperty())
     {
-        @:public @col.DataType @col.ColumnName { get; set; }
-        @:
+        continue;
     }
+    @:/// <summary>
+    @:/// @prop.Annotation
+    @:/// </summary>
+    @:public @prop.PropertyTypeName @prop.PropertyName { get; set; }
+    @:
+}
 }

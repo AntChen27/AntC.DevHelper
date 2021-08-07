@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AntC.CodeGenerate.Model;
 
 namespace AntC.CodeGenerate
 {
@@ -14,6 +15,8 @@ namespace AntC.CodeGenerate
         [STAThread]
         static void Main()
         {
+            TemplateManager.Init();
+
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
