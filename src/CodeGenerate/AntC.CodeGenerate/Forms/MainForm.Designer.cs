@@ -38,12 +38,10 @@ namespace AntC.CodeGenerate.Forms
             this.buttonOpenBrowserFolderDialog = new System.Windows.Forms.Button();
             this.textBoxOutputFolder = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBoxDbConnection = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxCodePreview = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.comboBoxDbNames = new System.Windows.Forms.ComboBox();
             this.checkedListBoxTables = new System.Windows.Forms.CheckedListBox();
             this.checkedListBoxTemplate = new System.Windows.Forms.CheckedListBox();
@@ -72,7 +70,7 @@ namespace AntC.CodeGenerate.Forms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 110);
+            this.label1.Location = new System.Drawing.Point(16, 80);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(92, 17);
             this.label1.TabIndex = 1;
@@ -81,7 +79,7 @@ namespace AntC.CodeGenerate.Forms
             // checkBoxSelectAllTables
             // 
             this.checkBoxSelectAllTables.AutoSize = true;
-            this.checkBoxSelectAllTables.Location = new System.Drawing.Point(212, 109);
+            this.checkBoxSelectAllTables.Location = new System.Drawing.Point(212, 80);
             this.checkBoxSelectAllTables.Name = "checkBoxSelectAllTables";
             this.checkBoxSelectAllTables.Size = new System.Drawing.Size(51, 21);
             this.checkBoxSelectAllTables.TabIndex = 2;
@@ -146,20 +144,10 @@ namespace AntC.CodeGenerate.Forms
             this.label2.TabIndex = 7;
             this.label2.Text = "输出文件夹：";
             // 
-            // comboBoxDbConnection
-            // 
-            this.comboBoxDbConnection.FormattingEnabled = true;
-            this.comboBoxDbConnection.Location = new System.Drawing.Point(84, 40);
-            this.comboBoxDbConnection.Name = "comboBoxDbConnection";
-            this.comboBoxDbConnection.Size = new System.Drawing.Size(179, 25);
-            this.comboBoxDbConnection.TabIndex = 8;
-            this.comboBoxDbConnection.Text = "请选择数据库连接";
-            this.comboBoxDbConnection.SelectedValueChanged += new System.EventHandler(this.comboBoxDbConnection_SelectedValueChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(36, 76);
+            this.label3.Location = new System.Drawing.Point(16, 43);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 17);
             this.label3.TabIndex = 9;
@@ -168,7 +156,7 @@ namespace AntC.CodeGenerate.Forms
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(269, 109);
+            this.label4.Location = new System.Drawing.Point(269, 80);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 17);
             this.label4.TabIndex = 11;
@@ -195,21 +183,12 @@ namespace AntC.CodeGenerate.Forms
             this.label5.TabIndex = 13;
             this.label5.Text = "模板代码生成预览：";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 43);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(80, 17);
-            this.label6.TabIndex = 15;
-            this.label6.Text = "数据库连接：";
-            // 
             // comboBoxDbNames
             // 
             this.comboBoxDbNames.FormattingEnabled = true;
-            this.comboBoxDbNames.Location = new System.Drawing.Point(84, 73);
+            this.comboBoxDbNames.Location = new System.Drawing.Point(78, 40);
             this.comboBoxDbNames.Name = "comboBoxDbNames";
-            this.comboBoxDbNames.Size = new System.Drawing.Size(179, 25);
+            this.comboBoxDbNames.Size = new System.Drawing.Size(185, 25);
             this.comboBoxDbNames.TabIndex = 14;
             this.comboBoxDbNames.Text = "请选择数据库";
             this.comboBoxDbNames.SelectedValueChanged += new System.EventHandler(this.comboBoxDbNames_SelectedValueChanged);
@@ -220,9 +199,9 @@ namespace AntC.CodeGenerate.Forms
             | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxTables.CheckOnClick = true;
             this.checkedListBoxTables.FormattingEnabled = true;
-            this.checkedListBoxTables.Location = new System.Drawing.Point(12, 142);
+            this.checkedListBoxTables.Location = new System.Drawing.Point(12, 106);
             this.checkedListBoxTables.Name = "checkedListBoxTables";
-            this.checkedListBoxTables.Size = new System.Drawing.Size(251, 274);
+            this.checkedListBoxTables.Size = new System.Drawing.Size(251, 310);
             this.checkedListBoxTables.TabIndex = 16;
             this.checkedListBoxTables.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxTables_SelectedIndexChanged);
             // 
@@ -233,9 +212,9 @@ namespace AntC.CodeGenerate.Forms
             this.checkedListBoxTemplate.CheckOnClick = true;
             this.checkedListBoxTemplate.FormattingEnabled = true;
             this.checkedListBoxTemplate.HorizontalScrollbar = true;
-            this.checkedListBoxTemplate.Location = new System.Drawing.Point(269, 143);
+            this.checkedListBoxTemplate.Location = new System.Drawing.Point(269, 107);
             this.checkedListBoxTemplate.Name = "checkedListBoxTemplate";
-            this.checkedListBoxTemplate.Size = new System.Drawing.Size(269, 274);
+            this.checkedListBoxTemplate.Size = new System.Drawing.Size(269, 310);
             this.checkedListBoxTemplate.TabIndex = 17;
             this.checkedListBoxTemplate.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxTemplate_SelectedIndexChanged);
             // 
@@ -255,9 +234,9 @@ namespace AntC.CodeGenerate.Forms
             // buttonGroupEdit
             // 
             this.buttonGroupEdit.Enabled = false;
-            this.buttonGroupEdit.Location = new System.Drawing.Point(288, 40);
+            this.buttonGroupEdit.Location = new System.Drawing.Point(269, 40);
             this.buttonGroupEdit.Name = "buttonGroupEdit";
-            this.buttonGroupEdit.Size = new System.Drawing.Size(103, 23);
+            this.buttonGroupEdit.Size = new System.Drawing.Size(104, 25);
             this.buttonGroupEdit.TabIndex = 19;
             this.buttonGroupEdit.Text = "表分组信息编辑";
             this.buttonGroupEdit.UseVisualStyleBackColor = true;
@@ -276,7 +255,7 @@ namespace AntC.CodeGenerate.Forms
             // checkBoxSelectAllTemplate
             // 
             this.checkBoxSelectAllTemplate.AutoSize = true;
-            this.checkBoxSelectAllTemplate.Location = new System.Drawing.Point(487, 109);
+            this.checkBoxSelectAllTemplate.Location = new System.Drawing.Point(487, 80);
             this.checkBoxSelectAllTemplate.Name = "checkBoxSelectAllTemplate";
             this.checkBoxSelectAllTemplate.Size = new System.Drawing.Size(51, 21);
             this.checkBoxSelectAllTemplate.TabIndex = 22;
@@ -414,7 +393,6 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxCodePreview);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.comboBoxDbConnection);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxOutputFolder);
             this.Controls.Add(this.buttonOpenBrowserFolderDialog);
@@ -422,7 +400,6 @@ namespace AntC.CodeGenerate.Forms
             this.Controls.Add(this.checkBoxOnFinishedOpenDir);
             this.Controls.Add(this.checkBoxSelectAllTables);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
@@ -448,12 +425,10 @@ namespace AntC.CodeGenerate.Forms
         private System.Windows.Forms.Button buttonOpenBrowserFolderDialog;
         private System.Windows.Forms.TextBox textBoxOutputFolder;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBoxDbConnection;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxCodePreview;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxDbNames;
         private System.Windows.Forms.CheckedListBox checkedListBoxTables;
         private System.Windows.Forms.CheckedListBox checkedListBoxTemplate;

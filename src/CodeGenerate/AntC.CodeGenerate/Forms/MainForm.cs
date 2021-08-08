@@ -25,34 +25,36 @@ namespace AntC.CodeGenerate.Forms
         private List<TableGroupInfo> _tableGroupInfo = new List<TableGroupInfo>();
         private IDbInfoProvider _dbInfoProvider;
         private DbConnectionInfo _dbConnectionInfo;
-        private IEnumerable<DbConnectionInfo> _dbConnectionInfos;
 
         private TableGroupForm _tableGroupForm = new TableGroupForm();
 
         public MainForm()
         {
-            InitializeComponent();
+            var connectionSettingsForm = new ConnectionSettingsForm();
+            if (connectionSettingsForm.ShowDialog() == DialogResult.OK)
+            {
+                InitializeComponent();
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ConfigHelper.SaveConnectionConfigs(_dbConnectionInfos);
+            //ConfigHelper.SaveConnectionConfigs(_dbConnectionInfos);
+            ConfigHelper.Save();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             textBoxOutputFolder.Text =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "output");
-
-            _dbConnectionInfos = ConfigHelper.LoadConnectionConfigs();
-            comboBoxDbConnection.DataSource = _dbConnectionInfos;
             RegisterMenuEvent();
             RefreshTemplates();
+            LoadDbinfo();
         }
 
-        private void comboBoxDbConnection_SelectedValueChanged(object sender, EventArgs e)
+        private void LoadDbinfo()
         {
-            _dbConnectionInfo = (DbConnectionInfo)comboBoxDbConnection.SelectedItem;
+            _dbConnectionInfo = ConfigHelper.CurrentDbConnectionInfo;
             _dbInfoProvider = _mysqlDbInfoProvider;
             _dbInfoProvider.DbConnectionString = _dbConnectionInfo.ToConnectionString();
 
@@ -387,7 +389,8 @@ namespace AntC.CodeGenerate.Forms
             var dialogResult = connectionSettingsForm.ShowDialog();
             if (dialogResult == DialogResult.OK)
             {
-
+                _dbConnectionInfo = ConfigHelper.CurrentDbConnectionInfo;
+                LoadDbinfo();
             }
         }
 

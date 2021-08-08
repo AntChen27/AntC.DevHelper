@@ -1,6 +1,9 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace AntC.CodeGenerate.Model
 {
@@ -9,6 +12,12 @@ namespace AntC.CodeGenerate.Model
     /// </summary>
     public class DbConnectionInfo
     {
+        public DbConnectionInfo()
+        {
+            TableGroups = new Dictionary<string, List<TableGroupInfo>>();
+            SelectTables = new Dictionary<string, List<string>>();
+        }
+
         /// <summary>
         /// 连接名称
         /// </summary>
@@ -73,6 +82,43 @@ namespace AntC.CodeGenerate.Model
             }
 
             return $"server={Host};port={Port};database={dbName};User ID={Username};Password={Password};";
+        }
+
+        public string TestConnect()
+        {
+            IDbConnection conn;
+            switch (DbType)
+            {
+                case DbType.Mysql:
+                    conn = new MySqlConnection(ToConnectionString());
+                    break;
+                case DbType.SqlServer:
+                    conn = new SqlConnection(ToConnectionString());
+                    break;
+                case DbType.Oracle:
+                    conn = new OracleConnection(ToConnectionString());
+                    break;
+                default:
+                    return "当前数据库类型不支持";
+            }
+
+            try
+            {
+                conn.Open();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return "连接成功";
         }
     }
 }

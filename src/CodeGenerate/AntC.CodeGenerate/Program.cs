@@ -16,11 +16,14 @@ namespace AntC.CodeGenerate
         static void Main()
         {
             TemplateManager.Init();
+            ConfigHelper.Load();
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Forms.MainForm());
+
+            ConfigHelper.Save();
         }
     }
 }

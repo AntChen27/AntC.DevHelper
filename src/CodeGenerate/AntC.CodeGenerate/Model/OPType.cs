@@ -7,7 +7,7 @@ namespace AntC.CodeGenerate.Model
     /// <summary>
     /// 操作类型
     /// </summary>
-    public enum OPType
+    public enum OpType
     {
         新建,
         编辑,
