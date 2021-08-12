@@ -14,16 +14,17 @@ namespace AntC.CodeGenerate.Core
         public static ICodeConverter LittleCamelCaseCodeConverter = new LittleCamelCaseCodeConverter();
         public static ICodeConverter PascalCodeConverter = new PascalCodeConverter();
 
-        public static string FirstCharToUpper(string value,params char[] splitChars)
+        public static string FirstCharToUpper(string value, params char[] splitChars)
         {
             return string.Join("", value.Split(splitChars)
-                .Select(t => t.ToUpper().Substring(0, 1) + t.Substring(1)));
+                .Select(t => string.IsNullOrEmpty(t) ? t : (t.Length > 1 ? (t.ToUpper().Substring(0, 1) + t.Substring(1)) : (t.ToUpper()))));
         }
 
-        public static string FirstCharToLower(string value,params char[] splitChars)
+        public static string FirstCharToLower(string value, params char[] splitChars)
         {
             return string.Join("", value.Split(splitChars)
-                .Select(t => t.ToLower().Substring(0, 1) + t.Substring(1)));
+                 //.Select(t => t.ToLower().Substring(0, 1) + t.Substring(1)));
+                 .Select(t => string.IsNullOrEmpty(t) ? t : (t.Length > 1 ? (t.ToLower().Substring(0, 1) + t.Substring(1)) : (t.ToLower()))));
         }
     }
 }

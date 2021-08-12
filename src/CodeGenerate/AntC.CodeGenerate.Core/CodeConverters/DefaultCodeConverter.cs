@@ -28,13 +28,13 @@ namespace AntC.CodeGenerate.Core.CodeConverters
         private string FirstCharUpper(string value)
         {
             return string.Join("", value.Split(SplitChar.ToCharArray())
-                .Select(t => t.ToUpper().Substring(0, 1) + t.Substring(1)));
+                .Select(t => string.IsNullOrEmpty(t) ? t : (t.Length > 1 ? (t.ToUpper().Substring(0, 1) + t.Substring(1)) : (t.ToUpper()))));
         }
 
         private string FirstCharLower(string value)
         {
             return string.Join("", value.Split(SplitChar.ToCharArray())
-                .Select(t => "_" + t.ToLower().Substring(0, 1) + t.Substring(1)));
+                .Select(t => string.IsNullOrEmpty(t) ? t : (t.Length > 1 ? (t.ToLower().Substring(0, 1) + t.Substring(1)) : (t.ToLower()))));
         }
     }
 }
