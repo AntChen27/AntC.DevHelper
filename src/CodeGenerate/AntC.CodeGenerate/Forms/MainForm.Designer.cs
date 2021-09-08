@@ -164,8 +164,8 @@ namespace AntC.CodeGenerate.Forms
             // 
             // textBoxCodePreview
             // 
-            this.textBoxCodePreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxCodePreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxCodePreview.Location = new System.Drawing.Point(544, 66);
             this.textBoxCodePreview.Multiline = true;
@@ -195,7 +195,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkedListBoxTables
             // 
-            this.checkedListBoxTables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.checkedListBoxTables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxTables.CheckOnClick = true;
             this.checkedListBoxTables.FormattingEnabled = true;
@@ -207,7 +207,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             // checkedListBoxTemplate
             // 
-            this.checkedListBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.checkedListBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxTemplate.CheckOnClick = true;
             this.checkedListBoxTemplate.FormattingEnabled = true;
@@ -244,7 +244,7 @@ namespace AntC.CodeGenerate.Forms
             // 
             // textBoxGeneratorDesc
             // 
-            this.textBoxGeneratorDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxGeneratorDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxGeneratorDesc.Location = new System.Drawing.Point(544, 522);
             this.textBoxGeneratorDesc.Multiline = true;

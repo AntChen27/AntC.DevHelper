@@ -1,9 +1,9 @@
 [
   {
-    "Name": "127.0.0.1_3310",
+    "Name": "127.0.0.1_3306",
     "DbType": 1,
     "Host": "127.0.0.1",
-    "Port": 3310,
+    "Port": 3306,
     "Username": "root",
     "Password": "123456",
     "TableGroups": {},
