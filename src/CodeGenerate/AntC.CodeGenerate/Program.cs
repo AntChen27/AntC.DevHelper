@@ -23,7 +23,7 @@ namespace AntC.CodeGenerate
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Forms.MainForm());
 
-            ConfigHelper.Save();
+            //ConfigHelper.Save();
         }
     }
 }

@@ -35,6 +35,14 @@ namespace AntC.CodeGenerate.Forms
             {
                 InitializeComponent();
             }
+            ConfigHelper.OnSave += ConfigHelper_OnSave;
+        }
+
+        private void ConfigHelper_OnSave(ConfigHelper.ConfigEntity obj)
+        {
+            obj.OutputFolder = textBoxOutputFolder.Text;
+            obj.IsOnFinishedOpenFolder = checkBoxOnFinishedOpenDir.Checked;
+            obj.IsClearFolderBeforeRunning = checkBoxClearDir.Checked;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -45,11 +53,19 @@ namespace AntC.CodeGenerate.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            textBoxOutputFolder.Text =
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "output");
+            LoadFormStatus();
             RegisterMenuEvent();
             RefreshTemplates();
             LoadDbinfo();
+        }
+
+        private void LoadFormStatus()
+        {
+            textBoxOutputFolder.Text = string.IsNullOrWhiteSpace(ConfigHelper.Config.OutputFolder) ?
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "output")
+                : ConfigHelper.Config.OutputFolder;
+            checkBoxOnFinishedOpenDir.Checked = ConfigHelper.Config.IsOnFinishedOpenFolder;
+            checkBoxClearDir.Checked = ConfigHelper.Config.IsClearFolderBeforeRunning;
         }
 
         private void LoadDbinfo()
