@@ -42,7 +42,7 @@ namespace AntC.CodeGenerate.Model
                 return;
             }
 
-            var fileInfos = directoryInfo.GetFiles("*.tpl");
+            var fileInfos = directoryInfo.GetFiles("*.cshtml");
 
             foreach (var fileInfo in fileInfos)
             {
