@@ -1,0 +1,20 @@
+﻿@using System
+@using System.Linq
+@using AntC.CodeGenerate.Core.Extension
+@using AntC.CodeGenerate.Core.Model.CLR
+@using AntC.CodeGenerate
+@{
+    var classModel = (ClassModel)Model;
+    //设置输出文件名及相对路径
+    classModel.OutPutFileName = $"{(string.IsNullOrWhiteSpace(classModel.GroupName) ? "" : classModel.GroupName + "")}{classModel.ClassName}_SelectSql.txt";
+
+    var propIndex = 0;
+}
+SELECT
+@foreach (var prop in classModel.Properties)
+{
+    propIndex++;
+    var lineStr = $"\tt.`{prop.DbColumnInfo.ColumnName}` AS {prop.PropertyName}{(propIndex < classModel.Properties.Count()?",":"")} -- {prop.DbColumnInfo.Commont}{Environment.NewLine}";
+    @lineStr
+}
+FROM `@classModel.TableInfo.TableName` AS t

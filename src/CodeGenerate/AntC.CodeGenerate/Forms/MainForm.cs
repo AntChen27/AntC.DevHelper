@@ -258,7 +258,7 @@ namespace AntC.CodeGenerate.Forms
         {
             if (!string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
             {
-                Directory.Delete(dir);
+                Directory.Delete(dir, true);
             }
         }
 

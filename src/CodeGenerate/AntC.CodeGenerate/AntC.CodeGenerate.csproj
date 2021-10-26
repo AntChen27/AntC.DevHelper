@@ -35,10 +35,10 @@
     <None Update="dbConnections.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\default\Entity.cshtml">
+    <None Update="templates\default\SelectSql.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\default\Entity.tpl">
+    <None Update="templates\default\Entity.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
