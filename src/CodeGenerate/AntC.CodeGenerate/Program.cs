@@ -21,7 +21,11 @@ namespace AntC.CodeGenerate
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Forms.MainForm());
+            var mainForm = new Forms.MainForm();
+            if (!mainForm.IsDisposed)
+            {
+                Application.Run(mainForm);
+            }
 
             //ConfigHelper.Save();
         }

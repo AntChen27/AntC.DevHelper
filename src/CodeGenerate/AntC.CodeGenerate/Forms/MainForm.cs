@@ -35,6 +35,11 @@ namespace AntC.CodeGenerate.Forms
             {
                 InitializeComponent();
             }
+            else
+            {
+                Close();
+                return;
+            }
             ConfigHelper.OnSave += ConfigHelper_OnSave;
         }
 
